@@ -2,3 +2,4 @@
 *.log
 target/
 project/
+*.DS_Store
