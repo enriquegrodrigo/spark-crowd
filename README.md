@@ -30,8 +30,56 @@ In the `spark-crowd` folder one should execute the command
 to publish the library to a local Ivy repository. One then can use the 
 library adding the following line to the `build.sbt` file of a new
 project:
-
+```scala
     libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1"
+```
+
+
+## Usage 
+
+### Types
+
+This package makes extensive use of Spark *DataFrame* an *Dataset* APIs. The last
+uses typed rows which is beneficial for debugging purposes, among other things. 
+As the annotations datasets normally have a fixed structure the package includes types
+for three annotations datasets (binary, multiclass and real annotations), all of them 
+with the following structure:
+
+example | annotator | value 
+--------|-----------|------
+1 | 1| 0
+1 | 2| 1 
+2 | 2| 0
+...|...|...
+
+So the user needs to provide the annotations using this typed datasets to use the learning 
+methods. This is usually simple if the user has all the information above in a Spark DataFrame:
+
+```scala
+import com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation
+
+val df = annotationDataFrame
+
+val converted = fixed.map(x => BinaryAnnotation(x.getLong(0), x.getLong(1), x.getInt(2)))
+                     .as[BinaryAnnotation]
+```
+The process is similar for the other types of annotation data. The `converted` Spark Dataset is ready to be use with the methods commented in the *Methods* subsection.
+
+In the case of the feature dataset, the requisites are that:
+ * Appart from the features, the data must have an `example` and a `class` columns
+ * The example must be of type `Long`
+ * Class must be of type `Integer` or `Double`, depending on the type of class (discrete or continuous)
+ * All features must be of type `Double`
+
+
+
+
+
+
+
+
+
+
 
 
 
