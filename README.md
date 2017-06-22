@@ -30,6 +30,7 @@ In the `spark-crowd` folder one should execute the command
 to publish the library to a local Ivy repository. One then can use the 
 library adding the following line to the `build.sbt` file of a new
 project:
+
     libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1"
 
 
