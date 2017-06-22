@@ -110,7 +110,7 @@ be found in the [documentation](https://enriquegrodrigo.github.io/spark-crowd).
 ## Credits
 
 Author:
- * Enrique G.Rodrigo
+ * Enrique G. Rodrigo
 
 Contributors: 
  * Juan A. Aledo 
