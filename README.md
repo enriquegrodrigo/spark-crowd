@@ -107,7 +107,7 @@ groundTruth = result.dataset
 The information obtained from each algorithm as well as about the parameters needed by them can 
 be found in the [documentation](https://enriquegrodrigo.github.io/spark-crowd).
 
-## CREDITS
+## Credits
 
 Author:
  * Enrique G.Rodrigo
@@ -116,11 +116,11 @@ Contributors:
  * Juan A. Aledo 
  * Jose A. Gamez
 
-## LICENSE
+## License
 
 MIT License
 
-Copyright (c) [2017] [Enrique González Rodrigo]
+Copyright (c) 2017 Enrique González Rodrigo
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
