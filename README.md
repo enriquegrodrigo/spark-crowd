@@ -104,8 +104,8 @@ annotatorReliability = result.params.pi
 groundTruth = result.dataset
 ```
 
-The information obtained from each algorithm as well as about the parameters needed  
-by them can be found in the [documentation](https://enriquegrodrigo.github.io/spark-crowd).
+The information obtained from each algorithm as well as about the parameters needed by them can 
+be found in the [documentation](https://enriquegrodrigo.github.io/spark-crowd).
 
 
 
