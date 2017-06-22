@@ -1,5 +1,14 @@
 # spark-crowd
-The repository for spark-crowd, a package for dealing with crowdsourced big data. 
+
+A package for dealing with crowdsourced big data. 
+
+Crowdsourced data introduces new problems that need to be addressed by 
+Machine learning algorithms. This illustration exemplifies the main problems
+of using this kind of data. 
+
+![Crowdsourcing illustration](https://raw.githubusercontent.com/enriquegrodrigo/spark-crowd/master/img/illustration.png)
+
+
 
 ## Installation
 
