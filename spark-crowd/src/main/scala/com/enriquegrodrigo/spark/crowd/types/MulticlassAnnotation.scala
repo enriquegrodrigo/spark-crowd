@@ -2,7 +2,7 @@
 package com.enriquegrodrigo.spark.crowd.types
 
 /**
- * class for storing a multiclass annotation.
+ * Class for storing a Multiclass annotation.
  *
  * @param example example for which the annotation is made
  * @param annotator annotator that made the annotation
