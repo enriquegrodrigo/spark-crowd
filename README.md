@@ -13,10 +13,18 @@ of using this kind of data.
 ## Installation
 
 The package uses [sbt](http://www.scala-sbt.org) for building the project, 
-so the first step is installing this tool if it is not yet installed.
+so we recommend installing this tool if you do not yet have it installed.
 
-After that, one can create a `.jar` for adding to a new project or publish
-to a local repository. 
+The simplest way to use the package is adding the next dependency directly 
+into the `build.sbt` file of your project:
+
+```scala
+libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1"
+```
+
+If this is not a possibility, you can compile the project and create a 
+`.jar` file or you can publish the project to a local repository, as 
+explained below.  
 
 ### Creating a `.jar` file and adding it to a new project
 
