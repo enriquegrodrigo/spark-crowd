@@ -1,5 +1,6 @@
 *.class
 *.log
 target/
-project/
+project/project
+project/target
 *.DS_Store
