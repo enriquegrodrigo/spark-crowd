@@ -1,4 +1,5 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/enriquegrodrigo/spark-crowd.svg)](https://circleci.com/gh/enriquegrodrigo/spark-crowd)
+[![Codecov](https://img.shields.io/codecov/c/github/enriquegrodrigo/spark-crowd.svg)](https://codecov.io/gh/enriquegrodrigo/spark-crowd)
  [![Maven Central](https://img.shields.io/maven-central/v/com.enriquegrodrigo/spark-crowd_2.11.svg)](https://mvnrepository.com/artifact/com.enriquegrodrigo/spark-crowd_2.11)
 [![license](https://img.shields.io/github/license/enriquegrodrigo/spark-crowd.svg)](https://opensource.org/licenses/MIT)
 # spark-crowd
