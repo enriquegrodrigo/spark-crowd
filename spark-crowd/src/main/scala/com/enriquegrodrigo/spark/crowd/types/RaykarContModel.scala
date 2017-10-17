@@ -22,7 +22,7 @@ class RaykarContModel(mu: Dataset[RealLabel],
   /**
   *  Method that returns the estimation of the true label 
   *
-  *  @return [[org.apache.spark.sql.Dataset]]
+  *  @return org.apache.spark.sql.Dataset
   *  @author enrique.grodrigo
   *  @version 0.1 
   */

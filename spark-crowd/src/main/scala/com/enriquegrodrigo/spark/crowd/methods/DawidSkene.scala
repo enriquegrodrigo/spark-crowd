@@ -227,8 +227,8 @@ object DawidSkene {
   /**
    *  Applies the E Step of the EM algorithm.
    *
-   *  @param model the partial DawidSkene model ([com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel])
-   *  @return [[com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel]]   
+   *  @param model the partial DawidSkene model (DawidSkenePartialModel)
+   *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
@@ -251,8 +251,8 @@ object DawidSkene {
   /**
    *  Applies the M Step of the EM algorithm.
    *
-   *  @param model the partial DawidSkene model ([com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel])
-   *  @return [[com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel]]   
+   *  @param model the partial DawidSkene model (DawidSkenePartialModel)
+   *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
@@ -306,9 +306,9 @@ object DawidSkene {
   /**
    *  A full EM algorithm step with negative log-likelihood calculation.
    *
-   *  @param model the partial DawidSkene model ([com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel])
+   *  @param model the partial DawidSkene model (DawidSkenePartialModel)
    *  @param i step number
-   *  @return [[com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel]]   
+   *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
@@ -323,8 +323,8 @@ object DawidSkene {
   /**
    *  Log likelihood calculation. 
    *
-   *  @param model the partial DawidSkene model ([com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel])
-   *  @return [[com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel]]   
+   *  @param model the partial DawidSkene model (DawidSkenePartialModel)
+   *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
@@ -338,8 +338,8 @@ object DawidSkene {
   /**
    *  Initialization of the parameters for the algorithm. 
    *
-   *  @param dataset the dataset of [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]]
-   *  @return [[com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel]]   
+   *  @param dataset the dataset of MulticlassAnnotation
+   *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
    *  @version 0.1 
    */

@@ -22,7 +22,7 @@ class GladModel(mu: Dataset[BinarySoftLabel],
   /**
   *  Method that returns the probabilistic estimation of the true label 
   *
-  *  @return [[org.apache.spark.sql.Dataset]]
+  *  @return org.apache.spark.sql.Dataset
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
