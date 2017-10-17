@@ -32,7 +32,7 @@ jobs:
           - v1-dependencies-
 
       - run: ls ~/spark-crowd/ 
-      - run: cat /dev/null | cd spark-crowd; sbt test:compile
+      - run: cd spark-crowd && sbt test:compile
 
       - save_cache:
           paths:
@@ -40,4 +40,4 @@ jobs:
           key: v1-dependencies--{{ checksum "spark-crowd/build.sbt" }}
         
       # run tests!
-      - run: cat /dev/null | cd spark-crowd; sbt test:test
+      - run: cd spark-crowd && sbt test:test
