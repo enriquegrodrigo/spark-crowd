@@ -31,7 +31,6 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: ls ~/spark-crowd/ 
       - run: cd spark-crowd && sbt test:compile
 
       - save_cache:
@@ -40,4 +39,7 @@ jobs:
           key: v1-dependencies--{{ checksum "spark-crowd/build.sbt" }}
         
       # run tests!
-      - run: cd spark-crowd && sbt test:test
+      - run: cd spark-crowd && sbt clean coverate test coverageReport 
+
+      # upload coverage!
+      - run: cd spark-crowd && bash <(curl -s https://codecov.io/bash) 
