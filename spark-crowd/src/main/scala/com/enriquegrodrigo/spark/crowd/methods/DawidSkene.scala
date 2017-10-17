@@ -1,19 +1,15 @@
 
 package com.enriquegrodrigo.spark.crowd.methods
 
-import com.enriquegrodrigo.spark.crowd.types.DawidSkenePartial
-import com.enriquegrodrigo.spark.crowd.types.DawidSkenePartialModel
-import com.enriquegrodrigo.spark.crowd.types.DawidSkeneModel
-import com.enriquegrodrigo.spark.crowd.types.DawidSkeneParams
-import com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation
-import com.enriquegrodrigo.spark.crowd.types.MulticlassLabel
-import com.enriquegrodrigo.spark.crowd.aggregators.DawidSkeneEAggregator 
-import com.enriquegrodrigo.spark.crowd.aggregators.DawidSkeneLogLikelihoodAggregator 
+import com.enriquegrodrigo.spark.crowd.types._
 
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Column
+import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.expressions.Aggregator
 import org.apache.spark.broadcast.Broadcast
+
+import scala.math.{log => mathLog}
+
 
 /**
  *  Provides functions for transforming an annotation dataset into 
@@ -33,6 +29,49 @@ import org.apache.spark.broadcast.Broadcast
  */
 object DawidSkene {
 
+  /****************************************************/
+  /****************** CASE CLASSES ********************/
+  /****************************************************/
+
+  /**
+  *  Partial model shared through EM iterations 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class DawidSkenePartialModel(dataset: Dataset[DawidSkenePartial], params: Broadcast[DawidSkeneParams], 
+                                  logLikelihood: Double, improvement: Double, nClasses: Int, 
+                                  nAnnotators: Long) {
+
+    def modify(nDataset: Dataset[DawidSkenePartial] =dataset, 
+        nParams: Broadcast[DawidSkeneParams] =params, 
+        nLogLikelihood: Double =logLikelihood, 
+        nImprovement: Double =improvement, 
+        nNClasses: Int =nClasses, 
+        nNAnnotators: Long =nAnnotators) = 
+          new DawidSkenePartialModel(nDataset, nParams, 
+                                                  nLogLikelihood, 
+                                                  nImprovement, 
+                                                  nNClasses, 
+                                                  nNAnnotators)
+  }
+
+  /**
+  * Case class storing the annotator precision and the class weights 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class DawidSkeneParams(pi: Array[Array[Array[Double]]], w: Array[Double])
+
+ /**
+  *  Stores examples with class estimation 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class DawidSkenePartial(example: Long, annotator: Long, value: Int, est: Int)
+
   /**
    *  Case class for saving the annotator accuracy parameters. 
    *  This class stores the probability that an {{annotator}} 
@@ -41,7 +80,7 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private case class PiValue(annotator: Long, j: Integer, l:Integer, pi: Double)
+  case class PiValue(annotator: Long, j: Integer, l:Integer, pi: Double)
 
   /**
    *  Case class for saving class weights. For each class, it stores the estimated
@@ -50,7 +89,109 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private case class WValue(c: Integer, p: Double)
+  case class WValue(c: Integer, p: Double)
+
+  /**
+  *  Buffer for the E step aggregator for DawidSkene Method 
+  *  
+  *  
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class DawidSkeneAggregatorBuffer(aggVect: scala.collection.Seq[Double])
+
+  /**
+  *  Buffer for the LogLikelihood calculation of the DawidSkene method 
+  *  
+  *  
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class DawidSkeneLogLikelihoodAggregatorBuffer(agg: Double, predClass: Int)
+
+  /****************************************************/
+  /****************** AGGREGATORS ********************/
+  /****************************************************/
+
+  /**
+  *  Aggregator for the ground truth estimation of the E step  
+  *  
+  *  
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  class DawidSkeneEAggregator(params: Broadcast[DawidSkeneParams], nClasses: Int) 
+    extends Aggregator[DawidSkenePartial, DawidSkeneAggregatorBuffer, Int]{
+  
+    def zero: DawidSkeneAggregatorBuffer = DawidSkeneAggregatorBuffer(Vector.fill(nClasses)(1))
+    
+    def reduce(b: DawidSkeneAggregatorBuffer, a: DawidSkenePartial) : DawidSkeneAggregatorBuffer = {
+      val pi = params.value.pi 
+      val classCondi = Vector.range(0,nClasses).map( c => pi(a.annotator.toInt)(c)(a.value))
+      val newVect = classCondi.zip(b.aggVect).map(x => x._1 * x._2)
+      DawidSkeneAggregatorBuffer(newVect) 
+    }
+  
+    def merge(b1: DawidSkeneAggregatorBuffer, b2: DawidSkeneAggregatorBuffer) : DawidSkeneAggregatorBuffer = { 
+      val buf = DawidSkeneAggregatorBuffer(b1.aggVect.zip(b2.aggVect).map(x => x._1 * x._2))
+      buf
+    }
+  
+    def finish(reduction: DawidSkeneAggregatorBuffer) = {
+      val result = reduction.aggVect.zipWithIndex.maxBy(x => x._1*params.value.w(x._2))._2
+      result
+    }
+  
+    def bufferEncoder: Encoder[DawidSkeneAggregatorBuffer] = Encoders.product[DawidSkeneAggregatorBuffer]
+  
+    def outputEncoder: Encoder[Int] = Encoders.scalaInt
+  }
+  
+  /**
+  *  Aggregator for the likelihood calculation of the DawidSkene Method 
+  *  
+  *  
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  class DawidSkeneLogLikelihoodAggregator(params: Broadcast[DawidSkeneParams]) 
+    extends Aggregator[DawidSkenePartial, DawidSkeneLogLikelihoodAggregatorBuffer, Double]{
+
+    def sumKey(map: Map[Int,Double], pair: (Int,Double)) = {
+        val key = pair._1
+        val value = pair._2
+        val new_value = map.get(key) match {
+          case Some(x) => x + value
+          case None => value 
+        }
+        map.updated(key, new_value)
+    }
+  
+    def zero: DawidSkeneLogLikelihoodAggregatorBuffer = DawidSkeneLogLikelihoodAggregatorBuffer(0, -1)
+  
+    def reduce(b: DawidSkeneLogLikelihoodAggregatorBuffer, a: DawidSkenePartial) : DawidSkeneLogLikelihoodAggregatorBuffer = {
+      val pival = params.value.pi(a.annotator.toInt)(a.est)(a.value)
+      DawidSkeneLogLikelihoodAggregatorBuffer(b.agg + mathLog(pival), a.est) 
+    }
+  
+    def merge(b1: DawidSkeneLogLikelihoodAggregatorBuffer, b2: DawidSkeneLogLikelihoodAggregatorBuffer) : DawidSkeneLogLikelihoodAggregatorBuffer = { 
+      DawidSkeneLogLikelihoodAggregatorBuffer(b1.agg + b2.agg, if (b1.predClass == -1) b2.predClass else b1.predClass) 
+    }
+  
+    def finish(reduction: DawidSkeneLogLikelihoodAggregatorBuffer) =  {
+      reduction.agg + mathLog(params.value.w(reduction.predClass))
+    }
+  
+  
+    def bufferEncoder: Encoder[DawidSkeneLogLikelihoodAggregatorBuffer] = Encoders.product[DawidSkeneLogLikelihoodAggregatorBuffer]
+  
+    def outputEncoder: Encoder[Double] = Encoders.scalaDouble
+  }
+
+
+  /****************************************************/
+  /******************** METHODS **********************/
+  /****************************************************/
 
   /**
    *  Applies learning algorithm.
@@ -78,7 +219,7 @@ object DawidSkene {
     val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct() //Ground truth
 
     new DawidSkeneModel(preparedDataset.as[MulticlassLabel], //Ground truth
-                        l.params.value, //Model parameters (pi, for the reliability matrix and w for the class weights) 
+                        l.params.value.pi, //Model parameters (pi, for the reliability matrix and w for the class weights) 
                         l.logLikelihood //Neg log-likelihood of the model
                        )
   }
@@ -91,7 +232,7 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private[crowd] def eStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
+  def eStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val aggregator = new DawidSkeneEAggregator(model.params, model.nClasses)
     //Obtains the new estimation of the ground truth for each example
@@ -115,7 +256,7 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private[crowd] def mStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
+  def mStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._
 
     val sc = model.dataset.sparkSession.sparkContext
@@ -171,7 +312,7 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private[crowd] def step(model: DawidSkenePartialModel, i: Int): DawidSkenePartialModel = {
+  def step(model: DawidSkenePartialModel, i: Int): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val m = mStep(model)
     val e = eStep(m)
@@ -187,7 +328,7 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private[crowd] def logLikelihood(model: DawidSkenePartialModel): DawidSkenePartialModel = {
+  def logLikelihood(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val aggregator = new DawidSkeneLogLikelihoodAggregator(model.params)
     val logLikelihood = model.dataset.groupByKey(_.example).agg(aggregator.toColumn).reduce((x,y) => (x._1, x._2 + y._2))._2
@@ -202,7 +343,7 @@ object DawidSkene {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  private[crowd] def initialization(dataset: Dataset[MulticlassAnnotation]): DawidSkenePartialModel = {
+  def initialization(dataset: Dataset[MulticlassAnnotation]): DawidSkenePartialModel = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val datasetCached = dataset.cache() 

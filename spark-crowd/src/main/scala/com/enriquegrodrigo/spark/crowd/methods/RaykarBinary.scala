@@ -1,33 +1,17 @@
 
 package com.enriquegrodrigo.spark.crowd.methods
 
-import com.enriquegrodrigo.spark.crowd.types.RaykarBinaryPartial
-import com.enriquegrodrigo.spark.crowd.types.RaykarBinaryPartialModel
-import com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel
-import com.enriquegrodrigo.spark.crowd.types.RaykarBinaryParams
-import com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel
-import com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation
-import com.enriquegrodrigo.spark.crowd.types.BinaryLabel
-import com.enriquegrodrigo.spark.crowd.types.RaykarBinaryStatistics
-import com.enriquegrodrigo.spark.crowd.aggregators.RaykarBinaryStatisticsAggregator 
+import com.enriquegrodrigo.spark.crowd.types._
 import com.enriquegrodrigo.spark.crowd.utils.Functions
 
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.Column
-import org.apache.spark.sql.functions.{lit,sum,col}
+import org.apache.spark.sql._
+import org.apache.spark.sql.functions._
+import org.apache.spark.mllib.optimization._
+import org.apache.spark.sql.expressions.Aggregator
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.mllib.optimization.Gradient
-import org.apache.spark.mllib.optimization.SimpleUpdater
-import org.apache.spark.mllib.optimization.LogisticGradient
-import org.apache.spark.mllib.optimization.Updater
-import org.apache.spark.mllib.optimization.GradientDescent
-import org.apache.spark.mllib.linalg.Vector
-import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.linalg.{Vector,Vectors}
 
 import scala.util.Random
-import scala.math._
 
 /**
  *  Provides functions for transforming an annotation dataset into 
@@ -47,54 +31,167 @@ import scala.math._
  */
 object RaykarBinary {
 
+  /****************************************************/
+  /****************** CASE CLASSES ********************/
+  /****************************************************/
+
+  /**
+  * Case class for the RaykarBinary partial model
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class RaykarBinaryPartialModel(dataset: DataFrame, annotatorData: Dataset[BinaryAnnotation], 
+                                      mu: Dataset[BinarySoftLabel], dataStatistics: Dataset[RaykarBinaryStatistics],
+                                      params: Broadcast[RaykarBinaryParams], logLikelihood: Double, 
+                                      improvement: Double, nAnnotators: Int, nFeatures: Int) {
+  
+    def modify(nDataset: DataFrame =dataset, 
+        nAnnotatorData: Dataset[BinaryAnnotation] =annotatorData, 
+        nMu: Dataset[BinarySoftLabel] =mu, 
+        nDataStatistics: Dataset[RaykarBinaryStatistics] = dataStatistics, 
+        nParams: Broadcast[RaykarBinaryParams] =params, 
+        nLogLikelihood: Double =logLikelihood, 
+        nImprovement: Double =improvement, 
+        nNAnnotators: Int =nAnnotators, 
+        nNFeatures: Int =nFeatures) = 
+          new RaykarBinaryPartialModel(nDataset, nAnnotatorData, nMu, nDataStatistics, 
+            nParams, nLogLikelihood, nImprovement, nNAnnotators, nNFeatures)
+  }
+
+  /**
+  * Estimation of a y b for an example
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class RaykarBinaryStatistics(example: Long, a: Double, b: Double)
+
+  /**
+  * Case class for storing RaykarBinary parameters
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class RaykarBinaryParams(alpha: Array[Double], beta: Array[Double], w: Array[Double], 
+                                    a: Array[Array[Double]], b: Array[Array[Double]], wp: Array[Array[Double]])
+
+  /**
+  * Case class that stores annotations with class probability estimation 
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class RaykarBinaryPartial(example: Long, annotator: Int, value: Int, mu: Double)
+  
   /**
   * Stores the logistic predictions 
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private[crowd] case class LogisticPrediction(example: Long, p: Double) 
+  case class LogisticPrediction(example: Long, p: Double) 
 
   /**
   * Stores annotators parameters 
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private[crowd] case class AnnotatorParameters(example: Long, a: Double, b: Double) 
+  case class AnnotatorParameters(example: Long, a: Double, b: Double) 
 
   /**
   * Stores the parameters for the label estimation
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private[crowd] case class FullParameters(example: Long, p:Double, a: Double, b: Double) 
+  case class FullParameters(example: Long, p:Double, a: Double, b: Double) 
 
   /**
   * Stores the ground truth estimation
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] case class MuEstimation(example: Long, mu:Double) 
+  case class MuEstimation(example: Long, mu:Double) 
 
   /**
   * Stores the parameters with the estimation of the ground truth label 
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] case class ParameterWithEstimation(example: Long, mu:Double, a: Double, b: Double, p: Double) 
+  case class ParameterWithEstimation(example: Long, mu:Double, a: Double, b: Double, p: Double) 
 
   /**
   * Stores the value of an annotator parameter 
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] case class ParamValue(annotator: Long, value:Double) 
+  case class ParamValue(annotator: Long, value:Double) 
 
   /**
   * Stores data for parameter calculation 
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] case class ParamCalc(annotator: Long, num: Double, denom:Double) 
+  case class ParamCalc(annotator: Long, num: Double, denom:Double) 
 
+  /**
+  * Stores partial estimations of a and b in the statistics aggregator 
+  * @author enrique.grodrigo
+  * @version 0.1 
+  */
+  case class RaykarBinaryStatisticsAggregatorBuffer(a: Double, b: Double)
+
+  /****************************************************/
+  /****************** AGGREGATORS ********************/
+  /****************************************************/
+
+  /**
+  * Aggregator for obtaining a and b estimation for each example
+  *
+  * @author enrique.grodrigo
+  * @version 0.1 
+  */
+  class RaykarBinaryStatisticsAggregator(params: Broadcast[RaykarBinaryParams]) 
+    extends Aggregator[RaykarBinaryPartial, RaykarBinaryStatisticsAggregatorBuffer, (Double,Double)] {
+
+    def zero: RaykarBinaryStatisticsAggregatorBuffer = RaykarBinaryStatisticsAggregatorBuffer(1,1) //Binary
+    
+    def reduce(b: RaykarBinaryStatisticsAggregatorBuffer, a: RaykarBinaryPartial) : RaykarBinaryStatisticsAggregatorBuffer = {
+      val alphaValue = params.value.alpha(a.annotator)
+      val alphaTerm = if (a.value == 1) alphaValue else 1-alphaValue
+      val betaValue = params.value.beta(a.annotator)
+      val betaTerm = if (a.value == 0) betaValue else 1-betaValue 
+      RaykarBinaryStatisticsAggregatorBuffer(b.a * alphaTerm, b.b * betaTerm)
+    }
+  
+    def merge(b1: RaykarBinaryStatisticsAggregatorBuffer, b2: RaykarBinaryStatisticsAggregatorBuffer) : RaykarBinaryStatisticsAggregatorBuffer = { 
+      RaykarBinaryStatisticsAggregatorBuffer(b1.a * b2.a, b1.b*b2.b)
+    }
+  
+    def finish(reduction: RaykarBinaryStatisticsAggregatorBuffer) = {
+      (reduction.a,reduction.b)
+    }
+  
+    def bufferEncoder: Encoder[RaykarBinaryStatisticsAggregatorBuffer] = Encoders.product[RaykarBinaryStatisticsAggregatorBuffer]
+  
+    def outputEncoder: Encoder[(Double,Double)] = Encoders.product[(Double,Double)]
+  }
+
+  /****************************************************/
+  /******************** GRADIENT **********************/
+  /****************************************************/
 
   /**
   * Computes the logistic function for a data point 
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] def computeSigmoid(x: Array[Double], w: Array[Double]): Double = {
+  def computeSigmoid(x: Array[Double], w: Array[Double]): Double = {
       val vectMult = x.zip(w).map{case (x,w) =>  x*w}
       Functions.sigmoid(vectMult.sum)
   }
 
   /**
   * Computes the negative likelihood of a point (loss)
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] def computePointLoss(mui: Double, pi: Double, ai: Double, bi: Double): Double = {
+  def computePointLoss(mui: Double, pi: Double, ai: Double, bi: Double): Double = {
     val mulaipi = ai*pi
     val mulbipi = bi*(1-pi)
     -(Functions.prodlog(mui,mulaipi) + Functions.prodlog((1-mui),mulbipi))
@@ -102,15 +199,19 @@ object RaykarBinary {
 
   /**
   * Matrix multiplication (TODO: improving using libraries)
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] def matMult (mat: Array[Array[Double]], v: Array[Double]): Array[Double] = {
+  def matMult (mat: Array[Array[Double]], v: Array[Double]): Array[Double] = {
     mat.map(mv => mv.zip(v).map{ case (x,y) => x*y }.reduce(_ + _))
   }
 
   /**
   * Computes the gradient for the SGD algorithm 
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] class RaykarBinaryGradient(params: Broadcast[RaykarBinaryParams]) extends Gradient {
+  class RaykarBinaryGradient(params: Broadcast[RaykarBinaryParams]) extends Gradient {
 
     override def compute(data: Vector, label: Double, weights: Vector, cumGradient:Vector): Double = {
       val w = weights.toArray 
@@ -136,17 +237,18 @@ object RaykarBinary {
     }
   }
 
-
   /**
   * Computes updater for the SGD algorithm.
   * Adds the regularization priors.
+  * @author enrique.grodrigo
+  * @version 0.1 
   */
-  private[crowd] class RaykarBinaryUpdater(priors: Broadcast[RaykarBinaryParams]) extends Updater {
+  class RaykarBinaryUpdater(priors: Broadcast[RaykarBinaryParams]) extends Updater {
     def compute(weightsOld:Vector, gradient: Vector, stepSize: Double, iter: Int, regParam: Double) = {
 
       val regTerm = matMult(priors.value.wp, weightsOld.toArray) //Regularization with prior weights
 
-      val stepS = stepSize/sqrt(iter) //Atenuates step size
+      val stepS = stepSize/scala.math.sqrt(iter) //Atenuates step size
 
       //Full update
       val fullGradient = gradient.toArray.zip(regTerm).map{case (g,t) => g - t}
@@ -155,6 +257,10 @@ object RaykarBinary {
       (newVector, 0) //Second parameter is not used
     }
   }
+
+  /****************************************************/
+  /******************** METHODS **********************/
+  /****************************************************/
 
   /**
   *  Applies the learning algorithm
@@ -182,7 +288,7 @@ object RaykarBinary {
             b_prior: Option[Array[Array[Double]]]= None,
             w_prior: Option[Array[Array[Double]]]= None): RaykarBinaryModel = {
     import dataset.sparkSession.implicits._
-    val datasetFixed = dataset.withColumn("com.enriquegrodrigo.temp.independent", lit(1))
+    val datasetFixed = dataset.withColumn("comenriquegrodrigotempindependent", lit(1))
     val initialModel = initialization(datasetFixed, annDataset, a_prior, b_prior, w_prior)
     val secondModel = step(gradIters, gradThreshold, gradLearning)(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
@@ -190,7 +296,7 @@ object RaykarBinary {
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
     val preparedDataset = l.mu.select($"example", $"value").distinct()
-    new RaykarBinaryModel(preparedDataset.as[BinarySoftLabel], l.params.value, l.logLikelihood)
+    new RaykarBinaryModel(preparedDataset.as[BinarySoftLabel], l.params.value.alpha, l.params.value.beta, l.params.value.w, l.logLikelihood)
   }
   
   /**
@@ -200,7 +306,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def initialization(dataset: DataFrame, annotatorData: Dataset[BinaryAnnotation], 
+  def initialization(dataset: DataFrame, annotatorData: Dataset[BinaryAnnotation], 
                       a_prior: Option[Array[Array[Double]]], b_prior: Option[Array[Array[Double]]],
                       w_prior: Option[Array[Array[Double]]]): RaykarBinaryPartialModel = {
     val sc = dataset.sparkSession.sparkContext
@@ -247,7 +353,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def mStep(model: RaykarBinaryPartialModel, gradIters: Int, gradThreshold: Double, gradLearning: Double): RaykarBinaryPartialModel = {
+  def mStep(model: RaykarBinaryPartialModel, gradIters: Int, gradThreshold: Double, gradLearning: Double): RaykarBinaryPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val sc = model.dataset.sparkSession.sparkContext
 
@@ -261,18 +367,18 @@ object RaykarBinary {
             case d: Int => d.toDouble
       })
 
-      val a_index = names.indexOf("com.enriquegrodrigo.temp.a")
+      val a_index = names.indexOf("comenriquegrodrigotempa")
       val a_val = s(a_index)
-      val b_index = names.indexOf("com.enriquegrodrigo.temp.b")
+      val b_index = names.indexOf("comenriquegrodrigotempb")
       val b_val = s(b_index)
-      val mu_index = names.indexOf("com.enriquegrodrigo.temp.mu")
+      val mu_index = names.indexOf("comenriquegrodrigotempmu")
       val mu_val = s(mu_index)
-      val indep_index = names.indexOf("com.enriquegrodrigo.temp.independent")
+      val indep_index = names.indexOf("comenriquegrodrigotempindependent")
       val indep_val = s(indep_index)
-      val featureVector = s.zip(names).filter( { case (x,name) => name != "com.enriquegrodrigo.temp.a" && 
-                                                                  name != "com.enriquegrodrigo.temp.b" && 
-                                                                  name != "com.enriquegrodrigo.temp.independent" && 
-                                                                  name != "com.enriquegrodrigo.temp.mu"}) 
+      val featureVector = s.zip(names).filter( { case (x,name) => name != "comenriquegrodrigotempa" && 
+                                                                  name != "comenriquegrodrigotempb" && 
+                                                                  name != "comenriquegrodrigotempindependent" && 
+                                                                  name != "comenriquegrodrigotempmu"}) 
                                       .map( { case (x,name) => x })
       val nAr = Array(a_val, b_val, indep_val) ++ featureVector
       val vect = Vectors.dense(nAr)
@@ -326,12 +432,12 @@ object RaykarBinary {
                                    .map(x => RaykarBinaryStatistics(x._1, x._2._1, x._2._2))
                                    
     //Renames a and b, joining with full training data.
-    val statsFixed = dataStatistics.toDF().withColumnRenamed("a", "com.enriquegrodrigo.temp.a")
-                                          .withColumnRenamed("b", "com.enriquegrodrigo.temp.b")
+    val statsFixed = dataStatistics.toDF().withColumnRenamed("a", "comenriquegrodrigotempa")
+                                          .withColumnRenamed("b", "comenriquegrodrigotempb")
     val withPar = model.dataset.as('d).join(statsFixed, "example")  
 
     // Renames mu column and adds it to full data
-    val withMuRenamed = model.mu.toDF().withColumnRenamed("value","com.enriquegrodrigo.temp.mu")
+    val withMuRenamed = model.mu.toDF().withColumnRenamed("value","comenriquegrodrigotempmu")
     val withMu = withPar.join(withMuRenamed,"example").drop("example") 
     val colNames = withMu.columns
 
@@ -360,7 +466,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def computeP(params : Broadcast[RaykarBinaryParams])(r: Row): LogisticPrediction = {
+  def computeP(params : Broadcast[RaykarBinaryParams])(r: Row): LogisticPrediction = {
     val w = params.value.w
     //Converts number data to double
     val s: Seq[Double] = r.toSeq.map( x => 
@@ -380,7 +486,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def estimateMu(params: FullParameters): BinarySoftLabel = {
+  def estimateMu(params: FullParameters): BinarySoftLabel = {
     val a: Double = params.a
     val b: Double = params.b 
     val p: Double = params.p 
@@ -393,7 +499,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def eStep(model: RaykarBinaryPartialModel): RaykarBinaryPartialModel = {
+  def eStep(model: RaykarBinaryPartialModel): RaykarBinaryPartialModel = {
 
     import model.dataset.sparkSession.implicits._ 
 
@@ -415,7 +521,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def logLikelihood(model: RaykarBinaryPartialModel): RaykarBinaryPartialModel = {
+  def logLikelihood(model: RaykarBinaryPartialModel): RaykarBinaryPartialModel = {
     import model.dataset.sparkSession.implicits._ 
 
     val p = model.dataset.map(computeP(model.params)).as[LogisticPrediction]
@@ -437,7 +543,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarBinaryPartialModel, i: Int): RaykarBinaryPartialModel = {
+  def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarBinaryPartialModel, i: Int): RaykarBinaryPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val m = mStep(model, gradIters, gradThreshold, gradLearning)
     val e = eStep(m)

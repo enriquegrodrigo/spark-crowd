@@ -5,14 +5,53 @@ import org.apache.spark.sql.Dataset
 import org.apache.spark.broadcast.Broadcast
 
 /**
- * Class for storing the results from the DawidSkene method [[com.enriquegrodrigo.spark.crowd.methods.Glad]].
- *
- * @param dataset Ground truth values probabilities for the input annotation dataset 
- * @param params model parameters, which include the annotator reliability and the class weights [[com.enriquegrodrigo.spark.crowd.types.GladParams]]
- * @param logLikelihood likelihood of the resulting model 
- * @author enrique.grodrigo
- * @version 0.1
- */
-case class GladModel(dataset: Dataset[BinarySoftLabel], 
-                      params: GladParams, logLikelihood: Double)
+*  Glad model returned by the Glad method 
+*
+*  @param mu label estimation returned from the model.
+*  @param alphas precision of annotator given by the Glad model.
+*  @param betas instance difficulty given by Glad model. 
+*  @param logLikelihood logLikelihood of the final estimation of the model.  
+*  @author enrique.grodrigo
+*  @version 0.1 
+*/
+class GladModel(mu: Dataset[BinarySoftLabel], 
+                          prec: Array[Double], 
+                          diffic: Dataset[GladInstanceDifficulty],
+                          logLikelihood: Double) extends Model[BinarySoftLabel] {
+                            
+  /**
+  *  Method that returns the probabilistic estimation of the true label 
+  *
+  *  @return [[org.apache.spark.sql.Dataset]]
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  def getMu(): Dataset[BinarySoftLabel] = mu 
 
+  /**
+  *  Method that returns the likelihood of the model 
+  *
+  *  @return Double 
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  def getLogLikelihood(): Double = logLikelihood 
+
+  /**
+  *  Method that returns the annotator precision information 
+  *
+  *  @return Double 
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  def getAnnotatorPrecision(): Array[Double] = prec 
+
+  /**
+  *  Method that returns information about instance difficulty
+  *
+  *  @return Double 
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  def getInstanceDifficulty(): Dataset[GladInstanceDifficulty] = diffic 
+}

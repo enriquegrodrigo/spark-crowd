@@ -5,6 +5,7 @@ import scala.collection.mutable.ArrayBuilder
 import com.enriquegrodrigo.spark.crowd.aggregators._
 import com.enriquegrodrigo.spark.crowd.types._
 import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.functions.{count,lit,sum,col}
 
 /**
  *  Provides functions for transforming an annotation dataset into 
@@ -30,8 +31,6 @@ import org.apache.spark.sql.Dataset
  *  @version 0.1 
  */
 object MajorityVoting {
-
-
   /**
    * Obtains the most frequent class for BinaryAnnotation datasets
    * @param dataset The annotations dataset to be aggregated
@@ -81,14 +80,18 @@ object MajorityVoting {
    * Obtain a list of datasets resulting of applying [[transformSoftBinary]] to
    * each class against the others
    * @param dataset The annotations dataset to be aggregated
+   * TODO: Habría que cuidar casos que no aparecen (al menos tienen que tener un 0)
    */
-  def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): List[Dataset[BinarySoftLabel]] = {
+  def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassSoftProb] = {
     import dataset.sparkSession.implicits._
     val nClasses = dataset.select($"value").distinct().count().toInt
-    List.range(0,nClasses).map(i => transformSoftBinary( //For each class
-        dataset.map(d => BinaryAnnotation(d.example,d.annotator,if(d.value==i) 1 else 0))
-      )
-    )
+    val exampleClassCounts = dataset.groupBy(col("example"), col("value")).agg(count(col("annotator")) as "classcount")
+    val classCounts =  dataset.groupBy(col("example")).agg(count(col("annotator")) as "totalcount")
+    val estimation = exampleClassCounts.join(classCounts, "example")
+                                        .select(col("example"), 
+                                                col("value") as "clas", 
+                                                col("classcount")/col("totalcount") as "prob")
+                                        .as[MulticlassSoftProb]
+    return estimation
   }
-
 }

@@ -7,8 +7,8 @@ import scala.math.pow
 
 object Functions {
 
-  val COMPTHRES = pow(10, -6) 
-  val BIGNUMBER = pow(10, 6) 
+  val COMPTHRES = pow(10, -5) 
+  val BIGNUMBER = pow(10, 2) 
 
   def nearZero(x:Double): Boolean = (x < COMPTHRES) && (x > -COMPTHRES)
 

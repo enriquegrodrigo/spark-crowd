@@ -1,30 +1,14 @@
 
 package com.enriquegrodrigo.spark.crowd.methods
 
-import com.enriquegrodrigo.spark.crowd.types.KajinoPartialModel
-import com.enriquegrodrigo.spark.crowd.types.KajinoModel
-import com.enriquegrodrigo.spark.crowd.types.KajinoPriors
-import com.enriquegrodrigo.spark.crowd.types.KajinoEstimation
-import com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation
-import com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel
-import com.enriquegrodrigo.spark.crowd.aggregators.RaykarBinaryStatisticsAggregator 
+import com.enriquegrodrigo.spark.crowd.types._
 import com.enriquegrodrigo.spark.crowd.utils.Functions
 
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.Column
+import org.apache.spark.sql._
 import org.apache.spark.sql.functions.lit
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.mllib.optimization.Gradient
-import org.apache.spark.mllib.optimization.LogisticGradient
-import org.apache.spark.mllib.optimization.SimpleUpdater
-import org.apache.spark.mllib.optimization.L1Updater
-import org.apache.spark.mllib.optimization.Updater
-import org.apache.spark.mllib.optimization.LBFGS
-import org.apache.spark.mllib.optimization.GradientDescent
-import org.apache.spark.mllib.linalg.Vector
-import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.optimization._
+import org.apache.spark.mllib.linalg.{Vector,Vectors}
 
 import scala.util.Random
 import scala.math._
@@ -48,25 +32,80 @@ import scala.math._
  */
 object Kajino {
 
+  /****************************************************/
+  /****************** CASE CLASSES ********************/
+  /****************************************************/
+
+  /**
+  * Kajino partial model shared through method iterations
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class KajinoPartialModel(dataset: DataFrame, annotatorData: Dataset[BinaryAnnotation], 
+                                    w0: Broadcast[Array[Double]], w: Array[Array[Double]], priors: Broadcast[KajinoPriors], 
+                                    variation: Double, nAnnotators: Int, nFeatures: Int) {
+
+    def modify(nDataset: DataFrame =dataset, 
+        nAnnotatorData: Dataset[BinaryAnnotation] =annotatorData, 
+        nW0: Broadcast[Array[Double]] =w0, 
+        nW: Array[Array[Double]] = w, 
+        nPriors: Broadcast[KajinoPriors] =priors, 
+        nVariation: Double =variation, 
+        nNAnnotators: Int =nAnnotators, 
+        nNFeatures: Int =nFeatures) = 
+        new KajinoPartialModel(nDataset, nAnnotatorData, nW0, nW, nPriors,
+          nVariation, nNAnnotators, nNFeatures)
+  }
+
+  /**
+  *  Case class for storing class estimations 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class KajinoEstimation(example: Long, est: Double)
+
+  /**
+  *  Case class for storing kajino prior 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  case class KajinoPriors(lambda: Double, eta: Double) 
+
+  /****************************************************/
+  /******************** GRADIENT **********************/
+  /****************************************************/
+
   /**
   * Computes logistic function values.
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private def computeSigmoid(x: Array[Double], w: Array[Double]): Double = {
+  def computeSigmoid(x: Array[Double], w: Array[Double]): Double = {
       val vectMult = x.zip(w).map{case (x,w) =>  x*w}
       Functions.sigmoid(vectMult.sum)
   }
 
   /**
   * Computes loss from the likelihood function
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private def computePointLoss(est: Double, sig: Double): Double = {
+  def computePointLoss(est: Double, sig: Double): Double = {
     -(Functions.prodlog(est,sig) + Functions.prodlog(est,sig))
   }  
 
   /**
   * Updater for the SGD algorithm 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private class KajinoUpdater(w0: Broadcast[Array[Double]], priors: Broadcast[KajinoPriors]) extends Updater {
+  class KajinoUpdater(w0: Broadcast[Array[Double]], priors: Broadcast[KajinoPriors]) extends Updater {
     def compute(weightsOld:Vector, gradient: Vector, stepSize: Double, iter: Int, regParam: Double) = {
       val lambda = priors.value.lambda
       val step = stepSize/sqrt(iter)
@@ -80,8 +119,11 @@ object Kajino {
 
   /**
   * Gradient calculation for the SGD algorithm
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
   */
-  private class KajinoGradient() extends Gradient {
+  class KajinoGradient() extends Gradient {
 
     override def compute(data: Vector, label: Double, weights: Vector, cumGradient:Vector): Double = {
       val w = weights.toArray 
@@ -96,11 +138,17 @@ object Kajino {
     }
   }
 
+  /****************************************************/
+  /******************** METHODS **********************/
+  /****************************************************/
 
   /**
    * Compute probability with a weight vector
+   *
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def computeProb(bweights: Broadcast[Array[Double]])(example: Row): BinarySoftLabel = {
+  def computeProb(bweights: Broadcast[Array[Double]])(example: Row): BinarySoftLabel = {
        val weights = bweights.value
        val exampleID = example.getLong(0)
        val s: Array[Double] = example.toSeq.map( x => 
@@ -115,6 +163,7 @@ object Kajino {
       val sigm = Functions.sigmoid(toSigm) 
       BinarySoftLabel(exampleID,sigm)
   }
+
 
   /**
   *  Applies the learning algorithm
@@ -151,9 +200,12 @@ object Kajino {
   }
 
   /**
-   * Converts row to RDD for SGD
-   */
-  private def rowToRDD(r: Row, colNames: Array[String]): (Double,Vector) = {
+  * Converts row to RDD for SGD
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1 
+  */
+  def rowToRDD(r: Row, colNames: Array[String]): (Double,Vector) = {
 
       val annotationIndex = colNames.indexOf("com_enriquegrodrigo_spark_crowd_temp_value")
       val annotation = r.getInt(annotationIndex).toDouble
@@ -172,8 +224,11 @@ object Kajino {
  
   /**
    * Initilalization of weights for each annotator
+   *
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def initializeWJ(j: Int, data: DataFrame, annotatorData: Dataset[BinaryAnnotation], nFeatures: Int, gradIters: Int , gradLearning: Double, gradThreshold: Double): Array[Double] = { 
+  def initializeWJ(j: Int, data: DataFrame, annotatorData: Dataset[BinaryAnnotation], nFeatures: Int, gradIters: Int , gradLearning: Double, gradThreshold: Double): Array[Double] = { 
     import data.sparkSession.implicits._
 
     val jAnnData = annotatorData.filter(_.annotator == j)
@@ -202,8 +257,10 @@ object Kajino {
 
   /**
    * Initialization step of the algorithm
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def initialization(dataset: DataFrame, annotatorData: Dataset[BinaryAnnotation], priors: KajinoPriors, gradIters: Int , gradLearning: Double, gradThreshold: Double):KajinoPartialModel = {
+  def initialization(dataset: DataFrame, annotatorData: Dataset[BinaryAnnotation], priors: KajinoPriors, gradIters: Int , gradLearning: Double, gradThreshold: Double):KajinoPartialModel = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val annCached = annotatorData.cache() 
@@ -220,8 +277,10 @@ object Kajino {
 
   /**
    * Estimation of the weights for the general logistic regresion model 
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def optimizeW0(model: KajinoPartialModel): KajinoPartialModel = {
+  def optimizeW0(model: KajinoPartialModel): KajinoPartialModel = {
 
     def mergeWeights(x: Array[Double], y: Array[Double]) : Array[Double] = {
       x.zip(y).map{ case (x,y) => x + y } 
@@ -243,8 +302,10 @@ object Kajino {
 
   /**
    * Calculation of the weights for the personal logistic regresion model for each annotator
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def computeWJ(j: Int, model: KajinoPartialModel, gradIters: Int , gradLearning: Double, gradThreshold: Double): Array[Double] = { 
+  def computeWJ(j: Int, model: KajinoPartialModel, gradIters: Int , gradLearning: Double, gradThreshold: Double): Array[Double] = { 
      import model.dataset.sparkSession.implicits._
    
     val jAnnData = model.annotatorData.filter(_.annotator == j)
@@ -275,8 +336,10 @@ object Kajino {
 
   /**
    * Obtains all annotator logistic regression models 
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def optimizeWJ(model: KajinoPartialModel, gradIters: Int , gradLearning: Double, gradThreshold: Double): KajinoPartialModel = {
+  def optimizeWJ(model: KajinoPartialModel, gradIters: Int , gradLearning: Double, gradThreshold: Double): KajinoPartialModel = {
     val sc = model.dataset.sparkSession.sparkContext
     import model.dataset.sparkSession.implicits._
     val wJ = Array.tabulate(model.nAnnotators)(j => computeWJ(j,model, gradIters, gradLearning, gradThreshold)) 
@@ -285,8 +348,10 @@ object Kajino {
 
   /**
    * Full iteration of the algorithm
+   *  @author enrique.grodrigo
+   *  @version 0.1 
    */
-  private def step(gradIters: Int , gradLearning: Double, gradThreshold: Double)(model: KajinoPartialModel, i: Int): KajinoPartialModel = {
+  def step(gradIters: Int , gradLearning: Double, gradThreshold: Double)(model: KajinoPartialModel, i: Int): KajinoPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val m = optimizeW0(model)
     val result = optimizeWJ(m, gradIters, gradLearning, gradThreshold) 
