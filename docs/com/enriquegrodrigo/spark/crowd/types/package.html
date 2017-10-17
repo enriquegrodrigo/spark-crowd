@@ -66,7 +66,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="BinaryAnnotationextendsProductwithSerializable"></a>
       <a id="BinaryAnnotation:BinaryAnnotation"></a>
       <h4 class="signature">
@@ -82,9 +82,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">class for storing a binary annotation.</p><div class="fullcomment"><div class="comment cmt"><p>class for storing a binary annotation.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example for which the annotation is made</p></dd><dt class="param">annotator</dt><dd class="cmt"><p>annotator that made the annotation</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the annotation</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.BinaryLabel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.BinaryLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="BinaryLabelextendsProductwithSerializable"></a>
       <a id="BinaryLabel:BinaryLabel"></a>
       <h4 class="signature">
@@ -100,9 +99,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing a binary label.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing a binary label.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example to which label refers to</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the label</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="BinarySoftLabelextendsProductwithSerializable"></a>
       <a id="BinarySoftLabel:BinarySoftLabel"></a>
       <h4 class="signature">
@@ -118,81 +116,121 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing a binary probabilistic label.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing a binary probabilistic label.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example to which label refers to</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the label</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+      
     </li><li name="com.enriquegrodrigo.spark.crowd.types.DawidSkeneModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="DawidSkeneModelextendsProductwithSerializable"></a>
+      <a id="DawidSkeneModelextendsModel[com.enriquegrodrigo.spark.crowd.types.MulticlassLabel]"></a>
       <a id="DawidSkeneModel:DawidSkeneModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="DawidSkeneModel.html"><span class="name">DawidSkeneModel</span></a><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="MulticlassLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassLabel">MulticlassLabel</a>]</span>, <span name="params">params: <a href="DawidSkeneParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.DawidSkeneParams">DawidSkeneParams</a></span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="DawidSkeneModel.html"><span class="name">DawidSkeneModel</span></a><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="MulticlassLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassLabel">MulticlassLabel</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@DawidSkeneModelextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@DawidSkeneModelextendsModel[com.enriquegrodrigo.spark.crowd.types.MulticlassLabel]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing the results from the DawidSkene method <a href="../methods/DawidSkene$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.DawidSkene">com.enriquegrodrigo.spark.crowd.methods.DawidSkene</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing the results from the DawidSkene method <a href="../methods/DawidSkene$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.DawidSkene">com.enriquegrodrigo.spark.crowd.methods.DawidSkene</a>.
-</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>Ground truth values for the input annotation dataset</p></dd><dt class="param">params</dt><dd class="cmt"><p>model parameters, which include the annotator reliability and the class weights <a href="DawidSkeneParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.DawidSkeneParams">com.enriquegrodrigo.spark.crowd.types.DawidSkeneParams</a></p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>likelihood of the resulting model</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.DawidSkeneParams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="DawidSkeneParamsextendsProductwithSerializable"></a>
-      <a id="DawidSkeneParams:DawidSkeneParams"></a>
+      <p class="shortcomment cmt"> DawidSkene model returned by the DawidSkene method
+</p><div class="fullcomment"><div class="comment cmt"><p> DawidSkene model returned by the DawidSkene method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.DiscreteAnnotatorPrecision" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DiscreteAnnotatorPrecisionextendsProductwithSerializable"></a>
+      <a id="DiscreteAnnotatorPrecision:DiscreteAnnotatorPrecision"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="DawidSkeneParams.html"><span class="name">DawidSkeneParams</span></a><span class="params">(<span name="pi">pi: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]]</span>, <span name="w">w: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="DiscreteAnnotatorPrecision.html"><span class="name">DiscreteAnnotatorPrecision</span></a><span class="params">(<span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="c">c: <span class="extype" name="scala.Int">Int</span></span>, <span name="k">k: <span class="extype" name="scala.Int">Int</span></span>, <span name="prob">prob: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@DawidSkeneParamsextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@DiscreteAnnotatorPrecisionextendsProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing the DawidSkene method params <a href="../methods/DawidSkene$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.DawidSkene">com.enriquegrodrigo.spark.crowd.methods.DawidSkene</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing the DawidSkene method params <a href="../methods/DawidSkene$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.DawidSkene">com.enriquegrodrigo.spark.crowd.methods.DawidSkene</a>.
-</p></div><dl class="paramcmts block"><dt class="param">pi</dt><dd class="cmt"><p>confusion matrix for each annotator</p></dd><dt class="param">w</dt><dd class="cmt"><p>weight for each class</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+      <p class="shortcomment cmt"> Probability that the annotator &quot;annotator&quot; labels an example
+ with true class &quot;c&quot; as &quot;k&quot;.</p><div class="fullcomment"><div class="comment cmt"><p> Probability that the annotator &quot;annotator&quot; labels an example
+ with true class &quot;c&quot; as &quot;k&quot;.
+</p></div><dl class="paramcmts block"><dt class="param">annotator</dt><dd class="cmt"><p>annotator of the relation</p></dd><dt class="param">c</dt><dd class="cmt"><p>true class</p></dd><dt class="param">k</dt><dd class="cmt"><p>labeled class</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladInstanceDifficultyextendsProductwithSerializable"></a>
+      <a id="GladInstanceDifficulty:GladInstanceDifficulty"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GladInstanceDifficulty.html"><span class="name">GladInstanceDifficulty</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="beta">beta: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@GladInstanceDifficultyextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Beta parameter for each instance in the Glad model
+</p><div class="fullcomment"><div class="comment cmt"><p> Beta parameter for each instance in the Glad model
+</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example</p></dd><dt class="param">beta</dt><dd class="cmt"><p>beta estimate</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="GladModelextendsProductwithSerializable"></a>
+      <a id="GladModelextendsModel[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]"></a>
       <a id="GladModel:GladModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="GladModel.html"><span class="name">GladModel</span></a><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>, <span name="params">params: <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">GladParams</a></span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="GladModel.html"><span class="name">GladModel</span></a><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@GladModelextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@GladModelextendsModel[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing the results from the DawidSkene method <a href="../methods/Glad$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad">com.enriquegrodrigo.spark.crowd.methods.Glad</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing the results from the DawidSkene method <a href="../methods/Glad$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad">com.enriquegrodrigo.spark.crowd.methods.Glad</a>.
-</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>Ground truth values probabilities for the input annotation dataset</p></dd><dt class="param">params</dt><dd class="cmt"><p>model parameters, which include the annotator reliability and the class weights <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">com.enriquegrodrigo.spark.crowd.types.GladParams</a></p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>likelihood of the resulting model</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladParams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="GladParamsextendsProductwithSerializable"></a>
-      <a id="GladParams:GladParams"></a>
+      <p class="shortcomment cmt"> Glad model returned by the Glad method
+</p><div class="fullcomment"><div class="comment cmt"><p> Glad model returned by the Glad method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.KajinoModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="KajinoModelextendsModel[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]"></a>
+      <a id="KajinoModel:KajinoModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="GladParams.html"><span class="name">GladParams</span></a><span class="params">(<span name="alpha">alpha: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="w">w: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="KajinoModel.html"><span class="name">KajinoModel</span></a><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@GladParamsextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@KajinoModelextendsModel[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing the Glad method params <a href="../methods/Glad$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad">com.enriquegrodrigo.spark.crowd.methods.Glad</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing the Glad method params <a href="../methods/Glad$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad">com.enriquegrodrigo.spark.crowd.methods.Glad</a>.
-</p></div><dl class="paramcmts block"><dt class="param">alpha</dt><dd class="cmt"><p>reliability factor for each annotator</p></dd><dt class="param">w</dt><dd class="cmt"><p>weight for each class</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt"> Kajino model returned by the Kajino method
+</p><div class="fullcomment"><div class="comment cmt"><p> Kajino model returned by the Kajino method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.Model" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Model[A]extendsAnyRef"></a>
+      <a id="Model[A]:Model[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Model.html"><span class="name">Model</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@Model[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="MulticlassAnnotationextendsProductwithSerializable"></a>
       <a id="MulticlassAnnotation:MulticlassAnnotation"></a>
       <h4 class="signature">
@@ -208,9 +246,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing a Multiclass annotation.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing a Multiclass annotation.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example for which the annotation is made</p></dd><dt class="param">annotator</dt><dd class="cmt"><p>annotator that made the annotation</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the annotation</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.MulticlassLabel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.MulticlassLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="MulticlassLabelextendsProductwithSerializable"></a>
       <a id="MulticlassLabel:MulticlassLabel"></a>
       <h4 class="signature">
@@ -226,45 +263,82 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing a multiclass label.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing a multiclass label.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example to which label refers to</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the label</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+      
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MulticlassSoftProbextendsProductwithSerializable"></a>
+      <a id="MulticlassSoftProb:MulticlassSoftProb"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="MulticlassSoftProb.html"><span class="name">MulticlassSoftProb</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="clas">clas: <span class="extype" name="scala.Int">Int</span></span>, <span name="prob">prob: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@MulticlassSoftProbextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="RaykarBinaryModelextendsProductwithSerializable"></a>
+      <a id="RaykarBinaryModelextendsModel[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]"></a>
       <a id="RaykarBinaryModel:RaykarBinaryModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="RaykarBinaryModel.html"><span class="name">RaykarBinaryModel</span></a><span class="params">(<span name="estimation">estimation: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>, <span name="params">params: <a href="RaykarBinaryParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarBinaryParams">RaykarBinaryParams</a></span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="RaykarBinaryModel.html"><span class="name">RaykarBinaryModel</span></a><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@RaykarBinaryModelextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@RaykarBinaryModelextendsModel[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing the results from the RaykarBinary method <a href="../methods/RaykarBinary$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarBinary">com.enriquegrodrigo.spark.crowd.methods.RaykarBinary</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing the results from the RaykarBinary method <a href="../methods/RaykarBinary$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarBinary">com.enriquegrodrigo.spark.crowd.methods.RaykarBinary</a>.
-</p></div><dl class="paramcmts block"><dt class="param">estimation</dt><dd class="cmt"><p>Ground truth values for the input annotation dataset</p></dd><dt class="param">params</dt><dd class="cmt"><p>model parameters, which include the annotator reliability and the logistic regression coefficients <a href="RaykarBinaryParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarBinaryParams">com.enriquegrodrigo.spark.crowd.types.RaykarBinaryParams</a></p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>likelihood of the resulting model</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.RaykarBinaryParams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="RaykarBinaryParamsextendsProductwithSerializable"></a>
-      <a id="RaykarBinaryParams:RaykarBinaryParams"></a>
+      <p class="shortcomment cmt"> Raykar Binary model returned by the RaykarBinary method
+</p><div class="fullcomment"><div class="comment cmt"><p> Raykar Binary model returned by the RaykarBinary method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RaykarContModelextendsModel[com.enriquegrodrigo.spark.crowd.types.RealLabel]"></a>
+      <a id="RaykarContModel:RaykarContModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="RaykarBinaryParams.html"><span class="name">RaykarBinaryParams</span></a><span class="params">(<span name="alpha">alpha: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="beta">beta: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="w">w: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="a">a: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>, <span name="b">b: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>, <span name="wp">wp: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="RaykarContModel.html"><span class="name">RaykarContModel</span></a><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="RealLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealLabel">RealLabel</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@RaykarBinaryParamsextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@RaykarContModelextendsModel[com.enriquegrodrigo.spark.crowd.types.RealLabel]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing the RaykarBinary method params <a href="../methods/RaykarBinary$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarBinary">com.enriquegrodrigo.spark.crowd.methods.RaykarBinary</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing the RaykarBinary method params <a href="../methods/RaykarBinary$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarBinary">com.enriquegrodrigo.spark.crowd.methods.RaykarBinary</a>.
-</p></div><dl class="paramcmts block"><dt class="param">alpha</dt><dd class="cmt"><p>Reliability in positive class</p></dd><dt class="param">beta</dt><dd class="cmt"><p>Reliability in negative class</p></dd><dt class="param">a</dt><dd class="cmt"><p>prior for the reliability in positive class</p></dd><dt class="param">b</dt><dd class="cmt"><p>prior for the reliability in negative class</p></dd><dt class="param">wp</dt><dd class="cmt"><p>prior for the logistic regression model weights</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt"> Raykar Continuous model returned by the RaykarCont method
+</p><div class="fullcomment"><div class="comment cmt"><p> Raykar Continuous model returned by the RaykarCont method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.RaykarMultiModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RaykarMultiModelextendsModel[com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb]"></a>
+      <a id="RaykarMultiModel:RaykarMultiModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="RaykarMultiModel.html"><span class="name">RaykarMultiModel</span></a><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="MulticlassSoftProb.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb">MulticlassSoftProb</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@RaykarMultiModelextendsModel[com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Raykar Multiclass model returned by the RaykarMulti method
+</p><div class="fullcomment"><div class="comment cmt"><p> Raykar Multiclass model returned by the RaykarMulti method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="RealAnnotationextendsProductwithSerializable"></a>
       <a id="RealAnnotation:RealAnnotation"></a>
       <h4 class="signature">
@@ -280,9 +354,30 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing real annotations.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing real annotations.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example for which the annotation is made</p></dd><dt class="param">annotator</dt><dd class="cmt"><p>annotator that made the annotation</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the annotation</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.RealLabel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RealAnnotatorPrecisionextendsProductwithSerializable"></a>
+      <a id="RealAnnotatorPrecision:RealAnnotatorPrecision"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RealAnnotatorPrecision.html"><span class="name">RealAnnotatorPrecision</span></a><span class="params">(<span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="lambda">lambda: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.package@RealAnnotatorPrecisionextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Given a normal probability for each N(&quot;true label&quot;,1/lambda), lambda
+ is the parameter that represents the precision of the annotator
+ labelling.</p><div class="fullcomment"><div class="comment cmt"><p> Given a normal probability for each N(&quot;true label&quot;,1/lambda), lambda
+ is the parameter that represents the precision of the annotator
+ labelling.
+</p></div><dl class="paramcmts block"><dt class="param">annotator</dt><dd class="cmt"><p>annotator of the relation</p></dd><dt class="param">lambda</dt><dd class="cmt"><p>the precision of the annotator</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.RealLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="RealLabelextendsProductwithSerializable"></a>
       <a id="RealLabel:RealLabel"></a>
       <h4 class="signature">
@@ -298,8 +393,7 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class for storing a real label.</p><div class="fullcomment"><div class="comment cmt"><p>Class for storing a real label.
-</p></div><dl class="paramcmts block"><dt class="param">example</dt><dd class="cmt"><p>example to which label refers to</p></dd><dt class="param">value</dt><dd class="cmt"><p>value of the label</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+      
     </li></ol>
             </div>
 

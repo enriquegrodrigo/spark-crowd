@@ -458,24 +458,25 @@
     </span>
       <p class="shortcomment cmt">Obtains probability of the class being positive for BinaryAnnotation datasets</p><div class="fullcomment"><div class="comment cmt"><p>Obtains probability of the class being positive for BinaryAnnotation datasets</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftMulti" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="transformSoftMulti(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]):List[org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]]"></a>
-      <a id="transformSoftMulti(Dataset[MulticlassAnnotation]):List[Dataset[BinarySoftLabel]]"></a>
+      <a id="transformSoftMulti(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb]"></a>
+      <a id="transformSoftMulti(Dataset[MulticlassAnnotation]):Dataset[MulticlassSoftProb]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">transformSoftMulti</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">MulticlassAnnotation</a>]</span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]]</span>
+        <span class="name">transformSoftMulti</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">MulticlassAnnotation</a>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/MulticlassSoftProb.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb">MulticlassSoftProb</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$@transformSoftMulti(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]):List[org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]]" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$@transformSoftMulti(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Obtain a list of datasets resulting of applying <a href="#transformSoftBinary(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" class="extmbr" name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftBinary">transformSoftBinary</a> to
 each class against the others</p><div class="fullcomment"><div class="comment cmt"><p>Obtain a list of datasets resulting of applying <a href="#transformSoftBinary(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" class="extmbr" name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftBinary">transformSoftBinary</a> to
-each class against the others</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated</p></dd></dl></div>
+each class against the others</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated
+TODO: Habría que cuidar casos que no aparecen (al menos tienen que tener un 0)</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

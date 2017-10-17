@@ -94,7 +94,105 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoEstimation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="KajinoEstimationextendsProductwithSerializable"></a>
+      <a id="KajinoEstimation:KajinoEstimation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Kajino$$KajinoEstimation.html"><span class="name">KajinoEstimation</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="est">est: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@KajinoEstimationextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Case class for storing class estimations
+</p><div class="fullcomment"><div class="comment cmt"><p> Case class for storing class estimations
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoGradient" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="KajinoGradientextendsGradient"></a>
+      <a id="KajinoGradient:KajinoGradient"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Kajino$$KajinoGradient.html"><span class="name">KajinoGradient</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.mllib.optimization.Gradient">Gradient</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@KajinoGradientextendsGradient" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Gradient calculation for the SGD algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p>Gradient calculation for the SGD algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="KajinoPartialModelextendsProductwithSerializable"></a>
+      <a id="KajinoPartialModel:KajinoPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Kajino$$KajinoPartialModel.html"><span class="name">KajinoPartialModel</span></a><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annotatorData">annotatorData: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="w0">w0: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>, <span name="w">w: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>, <span name="priors">priors: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<a href="Kajino$$KajinoPriors.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPriors">KajinoPriors</a>]</span>, <span name="variation">variation: <span class="extype" name="scala.Double">Double</span></span>, <span name="nAnnotators">nAnnotators: <span class="extype" name="scala.Int">Int</span></span>, <span name="nFeatures">nFeatures: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@KajinoPartialModelextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Kajino partial model shared through method iterations
+</p><div class="fullcomment"><div class="comment cmt"><p>Kajino partial model shared through method iterations
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPriors" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="KajinoPriorsextendsProductwithSerializable"></a>
+      <a id="KajinoPriors:KajinoPriors"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Kajino$$KajinoPriors.html"><span class="name">KajinoPriors</span></a><span class="params">(<span name="lambda">lambda: <span class="extype" name="scala.Double">Double</span></span>, <span name="eta">eta: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@KajinoPriorsextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Case class for storing kajino prior
+</p><div class="fullcomment"><div class="comment cmt"><p> Case class for storing kajino prior
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoUpdater" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="KajinoUpdaterextendsUpdater"></a>
+      <a id="KajinoUpdater:KajinoUpdater"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Kajino$$KajinoUpdater.html"><span class="name">KajinoUpdater</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.mllib.optimization.Updater">Updater</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@KajinoUpdaterextendsUpdater" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Updater for the SGD algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p>Updater for the SGD algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         
 
@@ -160,7 +258,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annDataset">annDataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="maxIters">maxIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="iterThreshold">iterThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.001</span></span>, <span name="lambda">lambda: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1</span></span>, <span name="eta">eta: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1.0</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.01</span></span>)</span><span class="result">: <span class="extype" name="com.enriquegrodrigo.spark.crowd.types.KajinoModel">KajinoModel</span></span>
+        <span class="name">apply</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annDataset">annDataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="maxIters">maxIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="iterThreshold">iterThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.001</span></span>, <span name="lambda">lambda: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1</span></span>, <span name="eta">eta: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1.0</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.01</span></span>)</span><span class="result">: <a href="../types/KajinoModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.KajinoModel">KajinoModel</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@apply(dataset:org.apache.spark.sql.DataFrame,annDataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],maxIters:Int,iterThreshold:Double,lambda:Double,eta:Double,gradIters:Int,gradLearning:Double,gradThreshold:Double):com.enriquegrodrigo.spark.crowd.types.KajinoModel" title="Permalink" target="_top">
@@ -169,7 +267,7 @@
     </span>
       <p class="shortcomment cmt"> Applies the learning algorithm
 </p><div class="fullcomment"><div class="comment cmt"><p> Applies the learning algorithm
-</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>the dataset with feature vectors.</p></dd><dt class="param">annDataset</dt><dd class="cmt"><p>the dataset with the annotations.</p></dd><dt class="param">maxIters</dt><dd class="cmt"><p>number of iterations of the Kajino algorithm</p></dd><dt class="param">iterThreshold</dt><dd class="cmt"><p>threshold for the improvement in the likelihood</p></dd><dt class="param">lambda</dt><dd class="cmt"><p>lambda parameter of the algorithm</p></dd><dt class="param">eta</dt><dd class="cmt"><p>eta parameter of the algorithm</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>maximum number of iterations for the gradient descent algorithm</p></dd><dt class="param">gradLearning</dt><dd class="cmt"><p>learning rate for the gradient descent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt>returns</dt><dd class="cmt"><p><span class="extype" name="com.enriquegrodrigo.spark.crowd.types.KajinoModel">com.enriquegrodrigo.spark.crowd.types.KajinoModel</span></p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>the dataset with feature vectors.</p></dd><dt class="param">annDataset</dt><dd class="cmt"><p>the dataset with the annotations.</p></dd><dt class="param">maxIters</dt><dd class="cmt"><p>number of iterations of the Kajino algorithm</p></dd><dt class="param">iterThreshold</dt><dd class="cmt"><p>threshold for the improvement in the likelihood</p></dd><dt class="param">lambda</dt><dd class="cmt"><p>lambda parameter of the algorithm</p></dd><dt class="param">eta</dt><dd class="cmt"><p>eta parameter of the algorithm</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>maximum number of iterations for the gradient descent algorithm</p></dd><dt class="param">gradLearning</dt><dd class="cmt"><p>learning rate for the gradient descent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../types/KajinoModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.KajinoModel">com.enriquegrodrigo.spark.crowd.types.KajinoModel</a></p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -210,6 +308,79 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#computePointLoss" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computePointLoss(est:Double,sig:Double):Double"></a>
+      <a id="computePointLoss(Double,Double):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">computePointLoss</span><span class="params">(<span name="est">est: <span class="extype" name="scala.Double">Double</span></span>, <span name="sig">sig: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@computePointLoss(est:Double,sig:Double):Double" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Computes loss from the likelihood function
+</p><div class="fullcomment"><div class="comment cmt"><p>Computes loss from the likelihood function
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#computeProb" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computeProb(bweights:org.apache.spark.broadcast.Broadcast[Array[Double]])(example:org.apache.spark.sql.Row):com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel"></a>
+      <a id="computeProb(Broadcast[Array[Double]])(Row):BinarySoftLabel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">computeProb</span><span class="params">(<span name="bweights">bweights: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>)</span><span class="params">(<span name="example">example: <span class="extype" name="org.apache.spark.sql.Row">Row</span></span>)</span><span class="result">: <a href="../types/BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@computeProb(bweights:org.apache.spark.broadcast.Broadcast[Array[Double]])(example:org.apache.spark.sql.Row):com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Compute probability with a weight vector
+</p><div class="fullcomment"><div class="comment cmt"><p>Compute probability with a weight vector
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#computeSigmoid" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computeSigmoid(x:Array[Double],w:Array[Double]):Double"></a>
+      <a id="computeSigmoid(Array[Double],Array[Double]):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">computeSigmoid</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="w">w: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@computeSigmoid(x:Array[Double],w:Array[Double]):Double" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Computes logistic function values.</p><div class="fullcomment"><div class="comment cmt"><p>Computes logistic function values.
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#computeWJ" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computeWJ(j:Int,model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel,gradIters:Int,gradLearning:Double,gradThreshold:Double):Array[Double]"></a>
+      <a id="computeWJ(Int,KajinoPartialModel,Int,Double,Double):Array[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">computeWJ</span><span class="params">(<span name="j">j: <span class="extype" name="scala.Int">Int</span></span>, <span name="model">model: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@computeWJ(j:Int,model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel,gradIters:Int,gradLearning:Double,gradThreshold:Double):Array[Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Calculation of the weights for the personal logistic regresion model for each annotator</p><div class="fullcomment"><div class="comment cmt"><p>Calculation of the weights for the personal logistic regresion model for each annotator</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -301,6 +472,42 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#initialization" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initialization(dataset:org.apache.spark.sql.DataFrame,annotatorData:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],priors:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPriors,gradIters:Int,gradLearning:Double,gradThreshold:Double):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel"></a>
+      <a id="initialization(DataFrame,Dataset[BinaryAnnotation],KajinoPriors,Int,Double,Double):KajinoPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initialization</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annotatorData">annotatorData: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="priors">priors: <a href="Kajino$$KajinoPriors.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPriors">KajinoPriors</a></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@initialization(dataset:org.apache.spark.sql.DataFrame,annotatorData:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],priors:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPriors,gradIters:Int,gradLearning:Double,gradThreshold:Double):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Initialization step of the algorithm</p><div class="fullcomment"><div class="comment cmt"><p>Initialization step of the algorithm</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#initializeWJ" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initializeWJ(j:Int,data:org.apache.spark.sql.DataFrame,annotatorData:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],nFeatures:Int,gradIters:Int,gradLearning:Double,gradThreshold:Double):Array[Double]"></a>
+      <a id="initializeWJ(Int,DataFrame,Dataset[BinaryAnnotation],Int,Int,Double,Double):Array[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initializeWJ</span><span class="params">(<span name="j">j: <span class="extype" name="scala.Int">Int</span></span>, <span name="data">data: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annotatorData">annotatorData: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="nFeatures">nFeatures: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@initializeWJ(j:Int,data:org.apache.spark.sql.DataFrame,annotatorData:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],nFeatures:Int,gradIters:Int,gradLearning:Double,gradThreshold:Double):Array[Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Initilalization of weights for each annotator
+</p><div class="fullcomment"><div class="comment cmt"><p>Initilalization of weights for each annotator
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -369,6 +576,76 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#optimizeW0" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="optimizeW0(model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel"></a>
+      <a id="optimizeW0(KajinoPartialModel):KajinoPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">optimizeW0</span><span class="params">(<span name="model">model: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>)</span><span class="result">: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@optimizeW0(model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Estimation of the weights for the general logistic regresion model</p><div class="fullcomment"><div class="comment cmt"><p>Estimation of the weights for the general logistic regresion model</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#optimizeWJ" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="optimizeWJ(model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel,gradIters:Int,gradLearning:Double,gradThreshold:Double):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel"></a>
+      <a id="optimizeWJ(KajinoPartialModel,Int,Double,Double):KajinoPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">optimizeWJ</span><span class="params">(<span name="model">model: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@optimizeWJ(model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel,gradIters:Int,gradLearning:Double,gradThreshold:Double):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Obtains all annotator logistic regression models</p><div class="fullcomment"><div class="comment cmt"><p>Obtains all annotator logistic regression models</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#rowToRDD" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rowToRDD(r:org.apache.spark.sql.Row,colNames:Array[String]):(Double,org.apache.spark.mllib.linalg.Vector)"></a>
+      <a id="rowToRDD(Row,Array[String]):(Double,Vector)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rowToRDD</span><span class="params">(<span name="r">r: <span class="extype" name="org.apache.spark.sql.Row">Row</span></span>, <span name="colNames">colNames: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Double">Double</span>, <span class="extype" name="org.apache.spark.mllib.linalg.Vector">Vector</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@rowToRDD(r:org.apache.spark.sql.Row,colNames:Array[String]):(Double,org.apache.spark.mllib.linalg.Vector)" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Converts row to RDD for SGD
+</p><div class="fullcomment"><div class="comment cmt"><p>Converts row to RDD for SGD
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Kajino#step" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="step(gradIters:Int,gradLearning:Double,gradThreshold:Double)(model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel,i:Int):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel"></a>
+      <a id="step(Int,Double,Double)(KajinoPartialModel,Int):KajinoPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">step</span><span class="params">(<span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="params">(<span name="model">model: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>, <span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="Kajino$$KajinoPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel">KajinoPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Kajino$@step(gradIters:Int,gradLearning:Double,gradThreshold:Double)(model:com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel,i:Int):com.enriquegrodrigo.spark.crowd.methods.Kajino.KajinoPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Full iteration of the algorithm</p><div class="fullcomment"><div class="comment cmt"><p>Full iteration of the algorithm</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

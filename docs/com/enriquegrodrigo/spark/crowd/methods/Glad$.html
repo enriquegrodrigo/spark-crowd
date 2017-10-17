@@ -94,7 +94,255 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladAlphaAggregator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladAlphaAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladAlphaAggregatorBuffer,Double]"></a>
+      <a id="GladAlphaAggregator:GladAlphaAggregator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladAlphaAggregator.html"><span class="name">GladAlphaAggregator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.Aggregator">Aggregator</span>[<a href="Glad$$GladPartial.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial">GladPartial</a>, <a href="Glad$$GladAlphaAggregatorBuffer.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladAlphaAggregatorBuffer">GladAlphaAggregatorBuffer</a>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladAlphaAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladAlphaAggregatorBuffer,Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Aggregator for the precision of annotators
+</p><div class="fullcomment"><div class="comment cmt"><p> Aggregator for the precision of annotators
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladAlphaAggregatorBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladAlphaAggregatorBufferextendsProductwithSerializable"></a>
+      <a id="GladAlphaAggregatorBuffer:GladAlphaAggregatorBuffer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladAlphaAggregatorBuffer.html"><span class="name">GladAlphaAggregatorBuffer</span></a><span class="params">(<span name="agg">agg: <span class="extype" name="scala.Double">Double</span></span>, <span name="alpha">alpha: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladAlphaAggregatorBufferextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Buffer for the alpha aggregator
+</p><div class="fullcomment"><div class="comment cmt"><p> Buffer for the alpha aggregator
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladAlphas" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladAlphasextendsProductwithSerializable"></a>
+      <a id="GladAlphas:GladAlphas"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladAlphas.html"><span class="name">GladAlphas</span></a><span class="params">(<span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="alpha">alpha: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladAlphasextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Class that storage the reliability for an annotator
+</p><div class="fullcomment"><div class="comment cmt"><p>Class that storage the reliability for an annotator
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladAnnotatorPrecision" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladAnnotatorPrecisionextendsProductwithSerializable"></a>
+      <a id="GladAnnotatorPrecision:GladAnnotatorPrecision"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladAnnotatorPrecision.html"><span class="name">GladAnnotatorPrecision</span></a><span class="params">(<span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="alpha">alpha: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladAnnotatorPrecisionextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Glad Annotator precision estimation
+</p><div class="fullcomment"><div class="comment cmt"><p> Glad Annotator precision estimation
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladBetaAggregator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladBetaAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladBetaAggregatorBuffer,Double]"></a>
+      <a id="GladBetaAggregator:GladBetaAggregator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladBetaAggregator.html"><span class="name">GladBetaAggregator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.Aggregator">Aggregator</span>[<a href="Glad$$GladPartial.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial">GladPartial</a>, <a href="Glad$$GladBetaAggregatorBuffer.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladBetaAggregatorBuffer">GladBetaAggregatorBuffer</a>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladBetaAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladBetaAggregatorBuffer,Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Aggregator for the difficulty of each example
+</p><div class="fullcomment"><div class="comment cmt"><p> Aggregator for the difficulty of each example
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladBetaAggregatorBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladBetaAggregatorBufferextendsProductwithSerializable"></a>
+      <a id="GladBetaAggregatorBuffer:GladBetaAggregatorBuffer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladBetaAggregatorBuffer.html"><span class="name">GladBetaAggregatorBuffer</span></a><span class="params">(<span name="agg">agg: <span class="extype" name="scala.Double">Double</span></span>, <span name="beta">beta: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladBetaAggregatorBufferextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Buffer for the beta aggregator
+</p><div class="fullcomment"><div class="comment cmt"><p> Buffer for the beta aggregator
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladEAggregator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladEAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladEAggregatorBuffer,Double]"></a>
+      <a id="GladEAggregator:GladEAggregator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladEAggregator.html"><span class="name">GladEAggregator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.Aggregator">Aggregator</span>[<a href="Glad$$GladPartial.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial">GladPartial</a>, <a href="Glad$$GladEAggregatorBuffer.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladEAggregatorBuffer">GladEAggregatorBuffer</a>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladEAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladEAggregatorBuffer,Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Aggregator for the E step of the EM algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p> Aggregator for the E step of the EM algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladEAggregatorBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladEAggregatorBufferextendsProductwithSerializable"></a>
+      <a id="GladEAggregatorBuffer:GladEAggregatorBuffer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladEAggregatorBuffer.html"><span class="name">GladEAggregatorBuffer</span></a><span class="params">(<span name="aggVect">aggVect: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladEAggregatorBufferextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Buffer for the E step aggregator
+</p><div class="fullcomment"><div class="comment cmt"><p> Buffer for the E step aggregator
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladLogLikelihoodAggregator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladLogLikelihoodAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladLogLikelihoodAggregatorBuffer,Double]"></a>
+      <a id="GladLogLikelihoodAggregator:GladLogLikelihoodAggregator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladLogLikelihoodAggregator.html"><span class="name">GladLogLikelihoodAggregator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.Aggregator">Aggregator</span>[<a href="Glad$$GladPartial.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial">GladPartial</a>, <a href="Glad$$GladLogLikelihoodAggregatorBuffer.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladLogLikelihoodAggregatorBuffer">GladLogLikelihoodAggregatorBuffer</a>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladLogLikelihoodAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial,com.enriquegrodrigo.spark.crowd.methods.Glad.GladLogLikelihoodAggregatorBuffer,Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Aggregator for the Likelihood estimation of the EM algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p> Aggregator for the Likelihood estimation of the EM algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladLogLikelihoodAggregatorBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladLogLikelihoodAggregatorBufferextendsProductwithSerializable"></a>
+      <a id="GladLogLikelihoodAggregatorBuffer:GladLogLikelihoodAggregatorBuffer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladLogLikelihoodAggregatorBuffer.html"><span class="name">GladLogLikelihoodAggregatorBuffer</span></a><span class="params">(<span name="agg">agg: <span class="extype" name="scala.Double">Double</span></span>, <span name="classProb">classProb: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladLogLikelihoodAggregatorBufferextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Buffer for the likelihood aggregator
+</p><div class="fullcomment"><div class="comment cmt"><p> Buffer for the likelihood aggregator
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladParams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladParamsextendsProductwithSerializable"></a>
+      <a id="GladParams:GladParams"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladParams.html"><span class="name">GladParams</span></a><span class="params">(<span name="alpha">alpha: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="w">w: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladParamsextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Case class for storing Glad model parameters
+</p><div class="fullcomment"><div class="comment cmt"><p> Case class for storing Glad model parameters
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GladPartialextendsProductwithSerializable"></a>
+      <a id="GladPartial:GladPartial"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladPartial.html"><span class="name">GladPartial</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="annotator">annotator: <span class="extype" name="scala.Int">Int</span></span>, <span name="value">value: <span class="extype" name="scala.Int">Int</span></span>, <span name="est">est: <span class="extype" name="scala.Double">Double</span></span>, <span name="beta">beta: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladPartialextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Case class for storing annotations with class estimations and beta
+</p><div class="fullcomment"><div class="comment cmt"><p> Case class for storing annotations with class estimations and beta
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GladPartialModelextendsProductwithSerializable"></a>
+      <a id="GladPartialModel:GladPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Glad$$GladPartialModel.html"><span class="name">GladPartialModel</span></a><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="Glad$$GladPartial.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartial">GladPartial</a>]</span>, <span name="params">params: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<a href="Glad$$GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladParams">GladParams</a>]</span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="improvement">improvement: <span class="extype" name="scala.Double">Double</span></span>, <span name="nAnnotators">nAnnotators: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@GladPartialModelextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">*************************************************</p>
+    </li></ol>
+            </div>
 
         
 
@@ -209,6 +457,25 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad#eStep" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eStep(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel"></a>
+      <a id="eStep(GladPartialModel):GladPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eStep</span><span class="params">(<span name="model">model: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>)</span><span class="result">: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@eStep(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> The E step from the EM algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p> The E step from the EM algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -300,6 +567,25 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad#initialization" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initialization(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],alphaPrior:Double,betaPrior:Double):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel"></a>
+      <a id="initialization(Dataset[BinaryAnnotation],Double,Double):GladPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initialization</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="alphaPrior">alphaPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="betaPrior">betaPrior: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@initialization(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],alphaPrior:Double,betaPrior:Double):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Initialization of the parameters of the algorithm.</p><div class="fullcomment"><div class="comment cmt"><p> Initialization of the parameters of the algorithm.
+ The first label estimation is done using majority voting
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -317,6 +603,44 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad#logLikelihood" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logLikelihood(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel"></a>
+      <a id="logLikelihood(GladPartialModel):GladPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logLikelihood</span><span class="params">(<span name="model">model: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>)</span><span class="result">: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@logLikelihood(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Neg-logLikelihood calculation
+</p><div class="fullcomment"><div class="comment cmt"><p> Neg-logLikelihood calculation
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad#mStep" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mStep(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel,maxGradIters:Int,thresholdGrad:Double,learningRate:Double):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel"></a>
+      <a id="mStep(GladPartialModel,Int,Double,Double):GladPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mStep</span><span class="params">(<span name="model">model: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>, <span name="maxGradIters">maxGradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="thresholdGrad">thresholdGrad: <span class="extype" name="scala.Double">Double</span></span>, <span name="learningRate">learningRate: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@mStep(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel,maxGradIters:Int,thresholdGrad:Double,learningRate:Double):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> The M step from the EM algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p> The M step from the EM algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -368,6 +692,25 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.methods.Glad#step" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="step(maxGradIters:Int,thresholdGrad:Double,learningRate:Double)(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel,i:Int):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel"></a>
+      <a id="step(Int,Double,Double)(GladPartialModel,Int):GladPartialModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">step</span><span class="params">(<span name="maxGradIters">maxGradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="thresholdGrad">thresholdGrad: <span class="extype" name="scala.Double">Double</span></span>, <span name="learningRate">learningRate: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="params">(<span name="model">model: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>, <span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="Glad$$GladPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel">GladPartialModel</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$@step(maxGradIters:Int,thresholdGrad:Double,learningRate:Double)(model:com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel,i:Int):com.enriquegrodrigo.spark.crowd.methods.Glad.GladPartialModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Full step of the EM algorithm
+</p><div class="fullcomment"><div class="comment cmt"><p> Full step of the EM algorithm
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

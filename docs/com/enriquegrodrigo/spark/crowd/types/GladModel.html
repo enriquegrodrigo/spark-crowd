@@ -42,17 +42,17 @@
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">GladModel</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>, <span name="params">params: <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">GladParams</a></span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">GladModel</span><span class="result"> extends <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class for storing the results from the DawidSkene method <a href="../methods/Glad$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.Glad">com.enriquegrodrigo.spark.crowd.methods.Glad</a>.
-</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>Ground truth values probabilities for the input annotation dataset</p></dd><dt class="param">params</dt><dd class="cmt"><p>model parameters, which include the annotator reliability and the class weights <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">com.enriquegrodrigo.spark.crowd.types.GladParams</a></p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>likelihood of the resulting model</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p> Glad model returned by the Glad method
+</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -70,7 +70,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.enriquegrodrigo.spark.crowd.types.GladModel"><span>GladModel</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.enriquegrodrigo.spark.crowd.types.GladModel"><span>GladModel</span></li><li class="in" name="com.enriquegrodrigo.spark.crowd.types.Model"><span>Model</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -90,7 +90,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel],params:com.enriquegrodrigo.spark.crowd.types.GladParams,logLikelihood:Double):com.enriquegrodrigo.spark.crowd.types.GladModel"></a>
+      <a id="&lt;init&gt;(mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel],prec:Array[Double],diffic:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty],logLikelihood:Double):com.enriquegrodrigo.spark.crowd.types.GladModel"></a>
       <a id="&lt;init&gt;:GladModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,14 +98,14 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GladModel</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>, <span name="params">params: <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">GladParams</a></span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span>
+        <span class="name">GladModel</span><span class="params">(<span name="mu">mu: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>, <span name="prec">prec: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="diffic">diffic: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="GladInstanceDifficulty.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty">GladInstanceDifficulty</a>]</span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@&lt;init&gt;(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel],params:com.enriquegrodrigo.spark.crowd.types.GladParams,logLikelihood:Double):com.enriquegrodrigo.spark.crowd.types.GladModel" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@&lt;init&gt;(mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel],prec:Array[Double],diffic:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty],logLikelihood:Double):com.enriquegrodrigo.spark.crowd.types.GladModel" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>Ground truth values probabilities for the input annotation dataset</p></dd><dt class="param">params</dt><dd class="cmt"><p>model parameters, which include the annotator reliability and the class weights <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">com.enriquegrodrigo.spark.crowd.types.GladParams</a></p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>likelihood of the resulting model</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">mu</dt><dd class="cmt"><p>label estimation returned from the model.</p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>logLikelihood of the final estimation of the model.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -206,23 +206,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#dataset" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]"></a>
-      <a id="dataset:Dataset[BinarySoftLabel]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">dataset</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Ground truth values probabilities for the input annotation dataset</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -240,6 +223,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -263,6 +263,25 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#getAnnotatorPrecision" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getAnnotatorPrecision():Array[Double]"></a>
+      <a id="getAnnotatorPrecision():Array[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getAnnotatorPrecision</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@getAnnotatorPrecision():Array[Double]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Method that returns the annotator precision information
+</p><div class="fullcomment"><div class="comment cmt"><p> Method that returns the annotator precision information
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Double</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -276,6 +295,80 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#getInstanceDifficulty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getInstanceDifficulty():org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty]"></a>
+      <a id="getInstanceDifficulty():Dataset[GladInstanceDifficulty]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getInstanceDifficulty</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="GladInstanceDifficulty.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty">GladInstanceDifficulty</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@getInstanceDifficulty():org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.GladInstanceDifficulty]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Method that returns information about instance difficulty
+</p><div class="fullcomment"><div class="comment cmt"><p> Method that returns information about instance difficulty
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Double</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#getLogLikelihood" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getLogLikelihood():Double"></a>
+      <a id="getLogLikelihood():Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getLogLikelihood</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@getLogLikelihood():Double" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Method that returns the likelihood of the model
+</p><div class="fullcomment"><div class="comment cmt"><p> Method that returns the likelihood of the model
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Double</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#getMu" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getMu():org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]"></a>
+      <a id="getMu():Dataset[BinarySoftLabel]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getMu</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@getMu():org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Method that returns the probabilistic estimation of the true label
+</p><div class="fullcomment"><div class="comment cmt"><p> Method that returns the probabilistic estimation of the true label
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>org.apache.spark.sql.Dataset</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladModel">GladModel</a> → <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a></dd><dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@hashCode():Int" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -297,23 +390,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#logLikelihood" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="logLikelihood:Double"></a>
-      <a id="logLikelihood:Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logLikelihood</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@logLikelihood:Double" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">likelihood of the resulting model</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -365,23 +441,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.GladModel#params" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="params:com.enriquegrodrigo.spark.crowd.types.GladParams"></a>
-      <a id="params:GladParams"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">params</span><span class="result">: <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">GladParams</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@params:com.enriquegrodrigo.spark.crowd.types.GladParams" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">model parameters, which include the annotator reliability and the class weights <a href="GladParams.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.GladParams">com.enriquegrodrigo.spark.crowd.types.GladParams</a></p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -399,6 +458,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.GladModel@toString():String" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -477,14 +553,8 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+        <div class="parent" name="com.enriquegrodrigo.spark.crowd.types.Model">
+              <h3>Inherited from <a href="Model.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.Model">Model</a>[<a href="BinarySoftLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel">BinarySoftLabel</a>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
