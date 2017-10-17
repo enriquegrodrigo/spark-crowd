@@ -39,7 +39,7 @@ jobs:
           key: v1-dependencies--{{ checksum "spark-crowd/build.sbt" }}
         
       # run tests!
-      - run: cd spark-crowd && sbt clean coverate test coverageReport 
+      - run: cd spark-crowd && sbt clean coverage test coverageReport 
 
       # upload coverage!
       - run: cd spark-crowd && bash <(curl -s https://codecov.io/bash) 
