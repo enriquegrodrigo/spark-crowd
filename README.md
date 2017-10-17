@@ -1,3 +1,4 @@
+[![CircleCI](https://img.shields.io/circleci/project/github/enriquegrodrigo/spark-crowd.svg)](https://circleci.com/gh/enriquegrodrigo/spark-crowd)
 # spark-crowd
 
 A package for dealing with crowdsourced big data. 
