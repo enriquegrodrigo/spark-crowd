@@ -102,7 +102,7 @@ Method | Binary | Multiclass | Real | Reference
 [MajorityVoting](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$) | :white_check_mark: | :white_check_mark: | :white_check_mark: |  
 [DawidSkene](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.DawidSkene$) |:white_check_mark: | :white_check_mark: | | [JRSS](https://www.jstor.org/stable/2346806?seq=1#page_scan_tab_contents) 
 [GLAD](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.Glad$) | :white_check_mark: | | | [NIPS](https://papers.nips.cc/paper/3644-whose-vote-should-count-more-optimal-integration-of-labels-from-labelers-of-unknown-expertise)
-[Raykar](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$) | :white_check_mark: | | | [JMLR](http://jmlr.csail.mit.edu/papers/v11/raykar10a.html) 
+[Raykar](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$) | :white_check_mark: | :white_check_mark:| :white_check_mark:| [JMLR](http://jmlr.csail.mit.edu/papers/v11/raykar10a.html) 
 [Kajino](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.Kajino$) | :white_check_mark: | | | [AAAI](https://www.aaai.org/ocs/index.php/AAAI/AAAI12/paper/view/4919)
 
 The algorithm name links to the documentation of the implemented method in our application, 
