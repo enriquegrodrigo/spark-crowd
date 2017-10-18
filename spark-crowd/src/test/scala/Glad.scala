@@ -8,6 +8,7 @@ import com.enriquegrodrigo.spark.crowd.methods.Glad
 import com.enriquegrodrigo.spark.crowd.types._
 import org.scalatest._
 import org.scalatest.fixture
+import org.scalactic.TolerantNumerics 
 import java.io._
 
 class GladTest extends fixture.FlatSpec with Matchers {
@@ -16,6 +17,8 @@ class GladTest extends fixture.FlatSpec with Matchers {
   Logger.getLogger("akka").setLevel(Level.OFF)
 
   case class FixtureParam(spark: SparkSession)
+
+  implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-4f)
 
   def withFixture(test: OneArgTest) = {
       val conf = new SparkConf().setAppName("Glad test").setMaster("local[4]")
@@ -35,7 +38,7 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = Glad(exampleData)
     val fis = mode.getMu().filter(_.example == 0).collect()(0).value
-    assert(fis ==  1) 
+    assert(fis ===  1.0) 
   }
 
   it should "obtain the expected result in the second example" in { f => 
@@ -46,7 +49,7 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = Glad(exampleData)
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value 
-    assert(fis ==  1) 
+    assert(fis ===  1.0) 
   }
 
   it should "obtain the expected result in the eleventh example" in { f => 
@@ -57,7 +60,7 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = Glad(exampleData)
     val fis = mode.getMu().filter(_.example == 10).collect()(0).value
-    assert(fis ==  0) 
+    assert(fis ===  0.0) 
   }
 
   it should "obtain the expected result in the third example" in { f => 
@@ -68,7 +71,7 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = Glad(exampleData)
     val fis = mode.getMu().filter(_.example == 2).collect()(0).value
-    assert(fis ==  1) 
+    assert(fis ===  1.0) 
   }
 
 }
