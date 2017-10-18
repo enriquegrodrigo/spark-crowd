@@ -157,16 +157,6 @@ object DawidSkene {
   class DawidSkeneLogLikelihoodAggregator(params: Broadcast[DawidSkeneParams]) 
     extends Aggregator[DawidSkenePartial, DawidSkeneLogLikelihoodAggregatorBuffer, Double]{
 
-    def sumKey(map: Map[Int,Double], pair: (Int,Double)) = {
-        val key = pair._1
-        val value = pair._2
-        val new_value = map.get(key) match {
-          case Some(x) => x + value
-          case None => value 
-        }
-        map.updated(key, new_value)
-    }
-  
     def zero: DawidSkeneLogLikelihoodAggregatorBuffer = DawidSkeneLogLikelihoodAggregatorBuffer(0, -1)
   
     def reduce(b: DawidSkeneLogLikelihoodAggregatorBuffer, a: DawidSkenePartial) : DawidSkeneLogLikelihoodAggregatorBuffer = {
