@@ -20,6 +20,7 @@ lazy val root = (project in file(".")).settings(
         email="mail@enriquegrodrigo.com",
         url = url("https://github.com/enriquegrodrigo"))),
     publishMavenStyle := true,
+    parallelExecution in Test := false,
     libraryDependencies += "org.apache.spark" % "spark-core_2.11" % "2.1.0" % "provided",
     libraryDependencies += "org.apache.spark" % "spark-sql_2.11" % "2.1.0" % "provided",
     libraryDependencies += "org.apache.spark" % "spark-mllib_2.11" % "2.1.0" % "provided",
