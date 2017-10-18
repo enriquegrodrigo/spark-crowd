@@ -107,6 +107,40 @@ class MajorityVotingTest extends fixture.FlatSpec with Matchers {
     assert(fis.value ==  1) 
   }
 
+  it should "obtain the expected probability in the sixth element of the multiclass file" in { f => 
+    val multiclassFile = getClass.getResource("/multi-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val multiclassData = spark.read.parquet(multiclassFile).as[MulticlassAnnotation] 
+    val processed = MajorityVoting.transformSoftMulti(multiclassData).collect()
+    val fis = processed.filter(x => x.example == 5 && x.clas == 2)(0)
+    assert(fis.prob ===  0.8) 
+  }
+
+  it should "obtain the expected probability in the fourth element of the multiclass file" in { f => 
+    val multiclassFile = getClass.getResource("/multi-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val multiclassData = spark.read.parquet(multiclassFile).as[MulticlassAnnotation] 
+    val processed = MajorityVoting.transformSoftMulti(multiclassData).collect()
+    val fis = processed.filter(x => x.example == 3 && x.clas == 1)(0)
+    assert(fis.prob ===  0.9) 
+  }
+
+  it should "obtain the expected probability in the first element of the multiclass file" in { f => 
+    val multiclassFile = getClass.getResource("/multi-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val multiclassData = spark.read.parquet(multiclassFile).as[MulticlassAnnotation] 
+    val processed = MajorityVoting.transformSoftMulti(multiclassData).collect()
+    val fis = processed.filter(x => x.example == 0 && x.clas == 0)(0)
+    assert(fis.prob ===  0.9) 
+  }
+
+
   it should "obtain the expected result in the first element of the continuous file" in { f => 
     val contFile = getClass.getResource("/cont-ann.parquet").getPath
     val spark = f.spark
