@@ -51,6 +51,29 @@ class MajorityVotingTest extends fixture.FlatSpec with Matchers {
     assert(fis.value ==  0) 
   }
 
+   it should "obtain the expected probability in the third element of the binary file" in { f => 
+    val binaryFile = getClass.getResource("/binary-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val binaryData = spark.read.parquet(binaryFile).as[BinaryAnnotation] 
+    val processed = MajorityVoting.transformSoftBinary(binaryData).collect()
+    val fis = processed.filter(_.example == 2)(0)
+    assert(fis.value ===  0.9) 
+  }
+    
+  it should "obtain the expected probability in the sixth element of the binary file" in { f => 
+    val binaryFile = getClass.getResource("/binary-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val binaryData = spark.read.parquet(binaryFile).as[BinaryAnnotation] 
+    val processed = MajorityVoting.transformSoftBinary(binaryData).collect()
+    val fis = processed.filter(_.example == 5)(0)
+    assert(fis.value ===  0.2) 
+  }
+  
+
   it should "obtain the expected result in the first element of the multiclass file" in { f => 
     val multiclassFile = getClass.getResource("/multi-ann.parquet").getPath
     val spark = f.spark
@@ -105,9 +128,6 @@ class MajorityVotingTest extends fixture.FlatSpec with Matchers {
     val fis = processed.filter(_.example == 2)(0)
     assert(fis.value ===  -2.65438) 
   }
-
-
-
 
 
 }

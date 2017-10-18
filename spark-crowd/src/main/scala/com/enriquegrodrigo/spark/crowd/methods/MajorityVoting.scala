@@ -80,7 +80,7 @@ object MajorityVoting {
    * Obtain a list of datasets resulting of applying [[transformSoftBinary]] to
    * each class against the others
    * @param dataset The annotations dataset to be aggregated
-   * TODO: Habría que cuidar casos que no aparecen (al menos tienen que tener un 0)
+   * TODO: Taking care of cases with incomplete information 
    */
   def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassSoftProb] = {
     import dataset.sparkSession.implicits._
