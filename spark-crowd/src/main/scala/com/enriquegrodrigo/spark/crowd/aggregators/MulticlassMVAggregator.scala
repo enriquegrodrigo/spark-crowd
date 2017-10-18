@@ -7,16 +7,6 @@ import org.apache.spark.sql.expressions.Aggregator
 
 private[crowd] class MulticlassMVAggregator(nClasses: Int) extends Aggregator[MulticlassAnnotation, MulticlassMVPartial, Int]{
 
-  def sumKey(map: Map[Int,Long], pair: (Int,Long)) = {
-      val key = pair._1
-      val value = pair._2
-      val new_value = map.get(key) match {
-        case Some(x) => x + value
-        case None => value 
-      }
-      map.updated(key, new_value)
-  }
-
   def zero: MulticlassMVPartial = MulticlassMVPartial(Vector.fill(nClasses)(0),0)
 
   def reduce(b: MulticlassMVPartial, a: MulticlassAnnotation) : MulticlassMVPartial = {
