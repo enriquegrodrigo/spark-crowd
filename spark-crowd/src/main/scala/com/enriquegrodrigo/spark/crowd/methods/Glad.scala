@@ -282,7 +282,7 @@ object Glad {
   */
   def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 1, eMThreshold: Double = 0.001, 
             gradIters: Int = 3, gradThreshold: Double = 0.5, gradLearningRate: Double=0.1,
-            alphaPrior: Double = 10, betaPrior: Double = 10): GladModel = {
+            alphaPrior: Double = 1, betaPrior: Double = 1): GladModel = {
     import dataset.sparkSession.implicits._
     val initialModel = initialization(dataset, alphaPrior, betaPrior)
     val secondModel = step(gradIters,gradThreshold,gradLearningRate)(initialModel,0)
