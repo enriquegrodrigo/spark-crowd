@@ -25,6 +25,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
       val conf = new SparkConf().setAppName("Raykar Binary test").setMaster("local[*]")
       val spark = SparkSession.builder().config(conf).getOrCreate() 
       val sc = spark.sparkContext
+      spark.sparkContext.setCheckpointDir("checkpoint")
       try super.withFixture(test.toNoArgTest(FixtureParam(spark))) finally {
         sc.stop()
       }
