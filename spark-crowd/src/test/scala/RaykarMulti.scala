@@ -76,4 +76,48 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     assert(fis ===  1.0) 
   }
 
+  it should "obtain the expected result in the likelihood" in { f => 
+    val spark = f.spark
+    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+    
+    import spark.implicits._
+
+    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+    val data = spark.read.parquet(dataFile) 
+    val sc = spark.sparkContext
+    val mode = RaykarMulti(data, annotations)
+    val fis = mode.getLogLikelihood()
+    assert(fis ===  -7296.8973) 
+  }
+
+  it should "obtain the expected result in first annotator precision" in { f => 
+    val spark = f.spark
+    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+    
+    import spark.implicits._
+
+    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+    val data = spark.read.parquet(dataFile) 
+    val sc = spark.sparkContext
+    val mode = RaykarMulti(data, annotations)
+    val fis = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
+    assert(fis ===  0.690696) 
+  }
+
+  it should "obtain the expected result in weights vector" in { f => 
+    val spark = f.spark
+    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+    
+    import spark.implicits._
+
+    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+    val data = spark.read.parquet(dataFile) 
+    val sc = spark.sparkContext
+    val mode = RaykarMulti(data, annotations)
+    val fis = mode.getModelWeights(0)(1)
+    assert(fis ===  0.09233) 
+  }
 }

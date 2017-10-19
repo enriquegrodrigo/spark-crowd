@@ -60,6 +60,52 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     assert(fis ===  0.00845) 
   }
 
+  it should "obtain the expected result in mean square error" in { f => 
+    val spark = f.spark
+    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
+    val dataFile = getClass.getResource("/cont-data.parquet").getPath
+    
+    import spark.implicits._
+
+    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
+    val data = spark.read.parquet(dataFile) 
+    val sc = spark.sparkContext
+    val mode = RaykarCont(data, annotations)
+    val fis = mode.getLogLikelihood()
+    assert(fis ===  5.036307910496084E33) 
+  }
+
+  it should "obtain the expected result in first annotator precision" in { f => 
+    val spark = f.spark
+    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
+    val dataFile = getClass.getResource("/cont-data.parquet").getPath
+    
+    import spark.implicits._
+
+    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
+    val data = spark.read.parquet(dataFile) 
+    val sc = spark.sparkContext
+    val mode = RaykarCont(data, annotations)
+    val fis = mode.getAnnotatorPrecision().filter(_.example == 0).collect()(0).value
+    assert(fis ===  0.2806) 
+  }
+
+  it should "obtain the expected result in model weights" in { f => 
+    val spark = f.spark
+    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
+    val dataFile = getClass.getResource("/cont-data.parquet").getPath
+    
+    import spark.implicits._
+
+    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
+    val data = spark.read.parquet(dataFile) 
+    val sc = spark.sparkContext
+    val mode = RaykarCont(data, annotations)
+    val fis = mode.getModelWeights()(0)
+    assert(fis ===  1.748148393084228E15) 
+  }
+
+
 
 
 }
