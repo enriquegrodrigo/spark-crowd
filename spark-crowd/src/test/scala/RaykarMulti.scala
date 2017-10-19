@@ -58,7 +58,7 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarMulti(data, annotations)
     val fis = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
-    assert(fis ===  0.99003) 
+    assert(fis ===  0.98553) 
   }
 
   it should "obtain the expected result in the fifth example" in { f => 
