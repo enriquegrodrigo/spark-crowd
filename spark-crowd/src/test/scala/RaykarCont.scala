@@ -45,7 +45,7 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     assert(fis ===  20.7012) 
   }
 
-  "RaykarCont" should "obtain the expected result in the sixth example" in { f => 
+  it should "obtain the expected result in the sixth example" in { f => 
     val spark = f.spark
     val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
     val dataFile = getClass.getResource("/cont-data.parquet").getPath
