@@ -74,4 +74,41 @@ class GladTest extends fixture.FlatSpec with Matchers {
     assert(fis ===  1.0) 
   }
 
+  it should "obtain the expected result in the first annotator" in { f => 
+    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
+    val mode = Glad(exampleData)
+    val fis = mode.getAnnotatorPrecision()(0)
+    assert(fis ===  58.6114) 
+  }
+
+  it should "obtain the expected result in logLikelihood" in { f => 
+    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
+    val mode = Glad(exampleData)
+    val fis = mode.getLogLikelihood()
+    assert(fis ===  1386031.2049) 
+  }
+
+  it should "obtain the expected result in first example difficulty" in { f => 
+    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
+    val spark = f.spark
+    import spark.implicits._
+    val sc = spark.sparkContext
+    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
+    val mode = Glad(exampleData)
+    val fis = mode.getInstanceDifficulty().filter(_.example==1).collect()(0).beta
+    assert(fis ===  1.2689) 
+  }
+
+
+
+
+
 }
