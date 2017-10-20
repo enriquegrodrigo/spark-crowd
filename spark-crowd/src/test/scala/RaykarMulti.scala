@@ -81,6 +81,7 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
     val dataFile = getClass.getResource("/multi-data.parquet").getPath
     
+    implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-1f)
     import spark.implicits._
 
     val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 

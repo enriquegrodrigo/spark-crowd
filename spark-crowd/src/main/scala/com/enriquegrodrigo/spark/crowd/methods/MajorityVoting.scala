@@ -4,8 +4,10 @@ package com.enriquegrodrigo.spark.crowd.methods
 import scala.collection.mutable.ArrayBuilder
 import com.enriquegrodrigo.spark.crowd.aggregators._
 import com.enriquegrodrigo.spark.crowd.types._
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.functions.{count,lit,sum,col}
+import org.apache.spark.sql._
+import org.apache.spark.sql.expressions.Aggregator
+import org.apache.spark.sql.functions.{count,lit,sum,col, explode, array}
+
 
 /**
  *  Provides functions for transforming an annotation dataset into 
@@ -31,6 +33,60 @@ import org.apache.spark.sql.functions.{count,lit,sum,col}
  *  @version 0.1 
  */
 object MajorityVoting {
+  
+  /****************************************************/
+  /****************** CASE CLASSES ********************/
+  /****************************************************/
+
+  /**
+   *  Combination example class for complete multiclass probability estimation 
+   *  @author enrique.grodrigo
+   *  @version 0.1 
+   */
+  case class ExampleClassCombination(example: Long, clas: Int)
+
+  /**
+   *  Frequency of a concrete class for example  
+   *  @author enrique.grodrigo
+   *  @version 0.1 
+   */
+  case class ExampleClassFrequency(example: Long, clas: Int, freq: Double)
+
+  /**
+   *  Number of labels for an example 
+   *  @author enrique.grodrigo
+   *  @version 0.1 
+   */
+  case class ExampleFrequency(example: Long, freq: Double)
+
+
+
+  /****************************************************/
+  /****************** AGGREGATORS ********************/
+  /****************************************************/
+
+  /**
+   *  Obtain multiclass soft probability estimation 
+   *  @author enrique.grodrigo
+   *  @version 0.1 
+   */
+  class MulticlassMajorityEstimation() extends Aggregator[(ExampleClassCombination, MulticlassAnnotation), Double, Double] {
+    def zero: Double = 0.0 
+    def reduce(b: Double, a: (ExampleClassCombination,MulticlassAnnotation)) : Double =  a match {
+      case (_,null) => b
+      case (_,ann) => b + 1 
+    }
+    def merge(b1: Double, b2: Double) : Double = b1 + b2 
+    def finish(b: Double) = b 
+    def bufferEncoder: Encoder[Double] = Encoders.scalaDouble
+    def outputEncoder: Encoder[Double] = Encoders.scalaDouble
+  }
+ 
+
+  /****************************************************/
+  /******************** METHODS **********************/
+  /****************************************************/
+
   /**
    * Obtains the most frequent class for BinaryAnnotation datasets
    * @param dataset The annotations dataset to be aggregated
@@ -80,18 +136,35 @@ object MajorityVoting {
    * Obtain a list of datasets resulting of applying [[transformSoftBinary]] to
    * each class against the others
    * @param dataset The annotations dataset to be aggregated
-   * TODO: Taking care of cases with incomplete information 
    */
   def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassSoftProb] = {
     import dataset.sparkSession.implicits._
     val nClasses = dataset.select($"value").distinct().count().toInt
-    val exampleClassCounts = dataset.groupBy(col("example"), col("value")).agg(count(col("annotator")) as "classcount")
-    val classCounts =  dataset.groupBy(col("example")).agg(count(col("annotator")) as "totalcount")
-    val estimation = exampleClassCounts.join(classCounts, "example")
-                                        .select(col("example"), 
-                                                col("value") as "clas", 
-                                                col("classcount")/col("totalcount") as "prob")
-                                        .as[MulticlassSoftProb]
+    val exampleClass = dataset.map(_.example)
+                                    .distinct
+                                    .withColumnRenamed("value", "example")
+                                    .withColumn("clas", explode(array((0 until nClasses).map(lit): _*)))
+                                    .as[ExampleClassCombination]
+    val classFrequencies = exampleClass.joinWith(dataset, 
+                                            exampleClass.col("example") === dataset.col("example") &&  
+                                              exampleClass.col("clas") === dataset.col("value"),
+                                          "left_outer") 
+                                       .as[(ExampleClassCombination, MulticlassAnnotation)]
+                                       .groupByKey(_._1) 
+                                       .agg((new MulticlassMajorityEstimation()).toColumn)
+                                       .as[(ExampleClassCombination, Double)]
+                                       .map(x => ExampleClassFrequency(x._1.example, x._1.clas, x._2))
+                                       .as[ExampleClassFrequency]
+
+    val exampleFrequencies =  dataset.groupBy(col("example"))
+                                     .agg(count(col("annotator")) as "freq")
+                                     .as[ExampleFrequency]
+
+    val estimation = exampleFrequencies.joinWith(classFrequencies, 
+                                          exampleFrequencies.col("example") === classFrequencies.col("example"))
+                                       .as[(ExampleFrequency, ExampleClassFrequency)]
+                                       .map(x => MulticlassSoftProb(x._1.example, x._2.clas, x._2.freq/x._1.freq))
+                                       .as[MulticlassSoftProb]
     return estimation
   }
 }
