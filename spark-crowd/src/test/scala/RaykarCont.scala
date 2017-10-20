@@ -72,6 +72,7 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarCont(data, annotations)
     val fis = mode.getLogLikelihood()
+    implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e30f)
     assert(fis ===  5.036307910496084E33) 
   }
 
@@ -102,6 +103,7 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarCont(data, annotations)
     val fis = mode.getModelWeights()(0)
+    implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e10f)
     assert(fis ===  1.748148393084228E15) 
   }
 
