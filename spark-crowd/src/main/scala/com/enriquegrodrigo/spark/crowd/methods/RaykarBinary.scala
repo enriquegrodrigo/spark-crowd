@@ -335,7 +335,7 @@ object RaykarBinary {
       placeholderStatistics, //Parameters a and b for each example 
       sc.broadcast(
         new RaykarBinaryParams(Array.fill(nAnnotators)(-1), //Alpha
-                                Array.fill(nAnnotators)(-1), //Alpha
+                                Array.fill(nAnnotators)(-1), //Beta
                                 Array.fill(nFeatures)(-1), //Logistic weights
                                 ap, bp, wp //Alpha, beta and weight priors
         )

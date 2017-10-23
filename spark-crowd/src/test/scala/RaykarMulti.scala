@@ -58,7 +58,7 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarMulti(data, annotations)
     val fis = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
-    assert(fis ===  0.98553) 
+    assert(fis ===  0.984955) 
   }
 
   it should "obtain the expected result in the fifth example" in { f => 
@@ -89,7 +89,7 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarMulti(data, annotations)
     val fis = mode.getLogLikelihood()
-    assert(fis ===  -7296.8973) 
+    assert(fis ===  -7298.1039) 
   }
 
   it should "obtain the expected result in first annotator precision" in { f => 
@@ -104,7 +104,7 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarMulti(data, annotations)
     val fis = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
-    assert(fis ===  0.690696) 
+    assert(fis ===  0.6883) 
   }
 
   it should "obtain the expected result in weights vector" in { f => 

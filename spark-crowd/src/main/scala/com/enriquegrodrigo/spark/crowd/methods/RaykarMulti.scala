@@ -49,8 +49,8 @@ object RaykarMulti {
                                       logisticWeights: Array[Array[Double]],
                                       logisticPrediction: Dataset[LogisticMultiPrediction],
                                       annotationsLikelihood: Dataset[MulticlassSoftProb],
-                                      annotatorPriorMatrix: Array[Array[Array[Double]]],
-                                      weightsPriorMatrix: Array[Array[Array[Double]]],
+                                      annotatorPriorMatrix: Broadcast[Array[Array[Array[Double]]]],
+                                      weightsPriorMatrix: Broadcast[Array[Array[Array[Double]]]],
                                       likelihood: Double,
                                       improvement: Double,
                                       annotatorClassCombination: Dataset[AnnotatorClassCombination],
@@ -64,8 +64,8 @@ object RaykarMulti {
                 logisticWeights: Array[Array[Double]]= logisticWeights, 
                 logisticPrediction: Dataset[LogisticMultiPrediction]= logisticPrediction, 
                 annotationsLikelihood: Dataset[MulticlassSoftProb]= annotationsLikelihood, 
-                annotatorPriorMatrix: Array[Array[Array[Double]]]= annotatorPriorMatrix, 
-                weightsPriorMatrix: Array[Array[Array[Double]]]= weightsPriorMatrix, 
+                annotatorPriorMatrix: Broadcast[Array[Array[Array[Double]]]]= annotatorPriorMatrix, 
+                weightsPriorMatrix: Broadcast[Array[Array[Array[Double]]]]= weightsPriorMatrix, 
                 likelihood: Double= likelihood, 
                 improvement: Double= improvement, 
                 annotatorClassCombination: Dataset[AnnotatorClassCombination]=annotatorClassCombination, 
@@ -454,8 +454,8 @@ object RaykarMulti {
                             Array.ofDim[Double](nClasses, nFeatures),
                             sparkSession.emptyDataset[LogisticMultiPrediction],
                             sparkSession.emptyDataset[MulticlassSoftProb],
-                            annotatorPrior,
-                            weightsPrior, 
+                            sc.broadcast(annotatorPrior),
+                            sc.broadcast(weightsPrior), 
                             -1,
                             -1,
                             combinations,
@@ -501,13 +501,31 @@ object RaykarMulti {
 
     def annotatorPrecision( frequencies: Dataset[AnnotatorFrequency], 
         classFreq: Dataset[AnnotatorClassFrequency] ) : Dataset[DiscreteAnnotatorPrecision] = {
+          def getPrecisionWithPrior(annotator: Int, clas: Int, k: Int, num: Double, denom: Double) = {
+            val numPrior = model.annotatorPriorMatrix.value(annotator)(clas)(k)
+            val denomPrior = model.annotatorPriorMatrix.value(annotator)(clas).sum
+            println("----------------")
+            println(s"Num = $num")
+            println(s"Denom = $denom")
+            println(s"NumPrior = $numPrior")
+            println(s"DenomPrior = $denomPrior")
+            val withoutPrior = num/denom 
+            println(s"WithoutPrior = $withoutPrior")
+            val precision = ((numPrior - 1) + num)/((denomPrior - model.nClasses) + denom)
+            println(s"Precision = $precision")
+            println("----------------")
+            precision
+          }
 
       frequencies.joinWith(classFreq, frequencies.col("annotator") === classFreq.col("annotator") &&
                                             frequencies.col("clas") === classFreq.col("clas"))
                  .as[(AnnotatorFrequency, AnnotatorClassFrequency)]
-                 .map(x => DiscreteAnnotatorPrecision(x._1.annotator, x._1.clas, x._1.k, x._1.frequency/x._2.frequency))
+                 .map(x => DiscreteAnnotatorPrecision(x._1.annotator, 
+                                x._1.clas, 
+                                x._1.k, 
+                                getPrecisionWithPrior(x._1.annotator.toInt, x._1.clas, x._1.k, x._1.frequency, x._2.frequency)
+                  ))
                  .as[DiscreteAnnotatorPrecision]
-
     }
     
 
@@ -517,7 +535,18 @@ object RaykarMulti {
         def binarizeClas(k: Int) = if(k == c) 1 else 0
 
         val fixFrequencies = frequencies.map(x => AnnotatorFrequency(x.annotator, binarizeClas(x.clas), binarizeClas(x.k), x.frequency))
+                                        .groupByKey(x => (x.annotator, x.clas, x.k))
+                                        .reduceGroups((af1, af2) => AnnotatorFrequency(af1.annotator, af1.clas, af1.k, af1.frequency + af2.frequency)) 
+                                        .as[((Long, Int, Int), AnnotatorFrequency)]
+                                        .map(x => x._2)
+                                        .as[AnnotatorFrequency]
+
         val fixClasFrequencies = frequencies.map(x => AnnotatorClassFrequency(x.annotator, binarizeClas(x.clas), x.frequency))
+                                            .groupByKey(x => (x.annotator, x.clas))
+                                            .reduceGroups((af1, af2) => AnnotatorClassFrequency(af1.annotator, af1.clas, af1.frequency + af2.frequency)) 
+                                            .as[((Long, Int), AnnotatorClassFrequency)]
+                                            .map(x => x._2)
+                                            .as[AnnotatorClassFrequency]
         val annTable = annotatorPrecision(fixFrequencies, fixClasFrequencies)
 
         //Obtains RaykarBinary Logistic Regression annotator params 
