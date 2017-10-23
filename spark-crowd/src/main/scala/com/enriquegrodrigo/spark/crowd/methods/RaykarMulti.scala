@@ -50,7 +50,7 @@ object RaykarMulti {
                                       logisticPrediction: Dataset[LogisticMultiPrediction],
                                       annotationsLikelihood: Dataset[MulticlassSoftProb],
                                       annotatorPriorMatrix: Broadcast[Array[Array[Array[Double]]]],
-                                      weightsPriorMatrix: Broadcast[Array[Array[Array[Double]]]],
+                                      weightsPriorMatrix: Array[Broadcast[Array[Array[Double]]]],
                                       likelihood: Double,
                                       improvement: Double,
                                       annotatorClassCombination: Dataset[AnnotatorClassCombination],
@@ -65,7 +65,7 @@ object RaykarMulti {
                 logisticPrediction: Dataset[LogisticMultiPrediction]= logisticPrediction, 
                 annotationsLikelihood: Dataset[MulticlassSoftProb]= annotationsLikelihood, 
                 annotatorPriorMatrix: Broadcast[Array[Array[Array[Double]]]]= annotatorPriorMatrix, 
-                weightsPriorMatrix: Broadcast[Array[Array[Array[Double]]]]= weightsPriorMatrix, 
+                weightsPriorMatrix: Array[Broadcast[Array[Array[Double]]]]= weightsPriorMatrix, 
                 likelihood: Double= likelihood, 
                 improvement: Double= improvement, 
                 annotatorClassCombination: Dataset[AnnotatorClassCombination]=annotatorClassCombination, 
@@ -325,16 +325,16 @@ object RaykarMulti {
   * Computes updater for the SGD algorithm.
   * Adds the regularization priors.
   */
-  class RaykarMultiUpdater() extends Updater {
+  class RaykarMultiUpdater(weightsPrior: Broadcast[Array[Array[Double]]]) extends Updater {
     def compute(weightsOld:Vector, gradient: Vector, stepSize: Double, iter: Int, regParam: Double) = {
 
-      val regTerm = 0//matMult(priors.value.wp, weightsOld.toArray) //Regularization with prior weights
+      val regTerm = matMult(weightsPrior.value, weightsOld.toArray) //Regularization with prior weights
 
       val stepS = stepSize/scala.math.sqrt(iter) //Atenuates step size
 
       //Full update
-      //      val fullGradient = gradient.toArray.zip(regTerm).map{case (g,t) => g - t}
-      val fullGradient = gradient.toArray
+      val fullGradient = gradient.toArray.zip(regTerm).map{case (g,t) => g - t}
+      //val fullGradient = gradient.toArray
       val newWeights: Array[Double] = weightsOld.toArray.zip(fullGradient).map{ case (wold,fg) => wold + stepS*fg }
       val newVector = Vectors.dense(newWeights)
       (newVector, 0) //Second parameter is not used
@@ -455,7 +455,7 @@ object RaykarMulti {
                             sparkSession.emptyDataset[LogisticMultiPrediction],
                             sparkSession.emptyDataset[MulticlassSoftProb],
                             sc.broadcast(annotatorPrior),
-                            sc.broadcast(weightsPrior), 
+                            weightsPrior.map(x => sc.broadcast(x)), 
                             -1,
                             -1,
                             combinations,
@@ -504,16 +504,8 @@ object RaykarMulti {
           def getPrecisionWithPrior(annotator: Int, clas: Int, k: Int, num: Double, denom: Double) = {
             val numPrior = model.annotatorPriorMatrix.value(annotator)(clas)(k)
             val denomPrior = model.annotatorPriorMatrix.value(annotator)(clas).sum
-            println("----------------")
-            println(s"Num = $num")
-            println(s"Denom = $denom")
-            println(s"NumPrior = $numPrior")
-            println(s"DenomPrior = $denomPrior")
             val withoutPrior = num/denom 
-            println(s"WithoutPrior = $withoutPrior")
             val precision = ((numPrior - 1) + num)/((denomPrior - model.nClasses) + denom)
-            println(s"Precision = $precision")
-            println("----------------")
             precision
           }
 
@@ -614,7 +606,7 @@ object RaykarMulti {
         //Obtains optmized logistic regression
         //TODO: Añadir priors
         val grad = new RaykarMultiGradient()
-        val updater = new RaykarMultiUpdater()
+        val updater = new RaykarMultiUpdater(model.weightsPriorMatrix(c))
         val rand = new Random(0) //First weight estimation is random
         val initialWeights = Vectors.dense(Array.tabulate(model.nFeatures)(x => rand.nextDouble())) 
         val opt = GradientDescent.runMiniBatchSGD(preparedRDD,grad,updater,gradLearning,gradIters,0,1,initialWeights,gradThreshold)._1
