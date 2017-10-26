@@ -1,7 +1,7 @@
 lazy val root = (project in file(".")).settings(
     name := "spark-crowd",
     organization := "com.enriquegrodrigo",
-    version := "0.2",
+    version := "0.1.1",
     scalaVersion := "2.11.8",
     pomIncludeRepository := { _ => false },
     publishTo := Some(
