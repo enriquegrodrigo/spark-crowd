@@ -5,3 +5,4 @@ project/project
 project/target
 *.DS_Store
 checkpoint/
+.ivy

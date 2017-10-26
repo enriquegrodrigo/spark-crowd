@@ -137,7 +137,7 @@ object RaykarCont {
       val innerPart = label-xw
       val sumTerm = (Array(1.0)++x).map(_ * innerPart)
       val cumGradientArray = cumGradient.toDense.values
-      cumGradient.foreachActive({ case (i,gi) => cumGradientArray(i) += sumTerm(i) })
+      cumGradient.foreachActive({ case (i,gi) => cumGradientArray(i) -= sumTerm(i) })
       val loss = computeLikeInstance(label,xw)
       loss
     }
