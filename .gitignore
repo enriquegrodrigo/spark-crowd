@@ -6,3 +6,4 @@ project/target
 *.DS_Store
 checkpoint/
 .ivy
+metastore_db/
