@@ -457,7 +457,7 @@ object RaykarBinary {
     //Saving results in the partial model
     val param = sc.broadcast(RaykarBinaryParams(alpha=alpha, beta=beta, w=optWeights, 
                               model.params.value.a, model.params.value.b, model.params.value.wp))
-    model.modify(nDataStatistics=dataStatistics, nParams=param)
+    model.modify(nDataStatistics=dataStatistics.cache(), nParams=param)
   }
 
   /**
