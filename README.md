@@ -65,11 +65,11 @@ project:
 
 For running the examples of this package one can use our docker image with the latest version of spark-crowd. Let's see how to run the DawidSkeneExample.scala file:
 
-	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/docker-spark-crowd DawidSkeneExample.scala
+	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/spark-crowd DawidSkeneExample.scala
 
 For running a spark-shell with the library pre-loaded, one can use: 
 
-	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/docker-spark-crowd 
+	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/spark-crowd 
 
 ### Types
 
