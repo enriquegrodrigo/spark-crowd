@@ -2,6 +2,7 @@
 [![Codecov](https://img.shields.io/codecov/c/github/enriquegrodrigo/spark-crowd.svg)](https://codecov.io/gh/enriquegrodrigo/spark-crowd)
  [![Maven Central](https://img.shields.io/maven-central/v/com.enriquegrodrigo/spark-crowd_2.11.svg)](https://mvnrepository.com/artifact/com.enriquegrodrigo/spark-crowd_2.11)
 [![license](https://img.shields.io/github/license/enriquegrodrigo/spark-crowd.svg)](https://opensource.org/licenses/MIT)
+
 # spark-crowd
 
 A package for dealing with crowdsourced big data. 
@@ -55,8 +56,20 @@ project:
     libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1"
 ```
 
-
 ## Usage 
+
+### Running the examples
+
+[![Docker Automated buil](https://img.shields.io/docker/automated/enriquegrodrigo/docker-pydata.svg)](https://hub.docker.com/r/enriquegrodrigo/docker-pydata/)
+[![Docker Build Statu](https://img.shields.io/docker/build/enriquegrodrigo/docker-pydata.svg)](https://hub.docker.com/r/enriquegrodrigo/docker-pydata/)
+
+For running the examples of this package one can use our docker image with the latest version of spark-crowd. Let's see how to run the DawidSkeneExample.scala file:
+
+	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/docker-spark-crowd DawidSkeneExample.scala
+
+For running a spark-shell with the library pre-loaded, one can use: 
+
+	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/docker-spark-crowd 
 
 ### Types
 
