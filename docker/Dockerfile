@@ -1,4 +1,4 @@
-FROM enriquegrodrigo/sparkdev
+FROM enriquegrodrigo/docker-sparkdev
 
 #VOLUME /home/work/project
 
