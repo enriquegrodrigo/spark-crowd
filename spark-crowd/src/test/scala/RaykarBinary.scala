@@ -58,7 +58,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarBinary(data, annotations)
     val fis = mode.getMu().filter(_.example == 5).collect()(0).value
-    assert(fis ===  0.01245) 
+    assert(fis ===  0.00068) 
   }
 
   it should "obtain the expected result in the first annotator alpha" in { f => 
@@ -73,7 +73,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarBinary(data, annotations)
     val fis = mode.getAnnotatorPrecision()._1(0)
-    assert(fis ===  0.7915) 
+    assert(fis ===  0.87331) 
   }
 
   it should "obtain the expected result in the first annotator beta" in { f => 
@@ -88,7 +88,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarBinary(data, annotations)
     val fis = mode.getAnnotatorPrecision()._2(0)
-    assert(fis ===  0.7855) 
+    assert(fis ===  0.87815) 
   }
 
 
@@ -104,7 +104,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarBinary(data, annotations)
     val fis = mode.getLogLikelihood()
-    assert(fis ===  517273.5181) 
+    assert(fis ===  508373.784685) 
   }
 
   it should "obtain the expected result in model weights" in { f => 
@@ -119,7 +119,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarBinary(data, annotations)
     val fis = mode.getModelWeights()(1)
-    assert(fis ===  0.20628) 
+    assert(fis ===  0.208398) 
   }
 
 

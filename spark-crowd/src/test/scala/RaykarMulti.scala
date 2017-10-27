@@ -31,7 +31,7 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
       }
   }
 
-  "RaykarMulti" should "obtain the expected result in the first example" in { f => 
+  "RaykarMulti" should "obtain the expected result on test data" in { f => 
     val spark = f.spark
     val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
     val dataFile = getClass.getResource("/multi-data.parquet").getPath
@@ -43,82 +43,97 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarMulti(data, annotations)
     val fis = mode.getMu().filter( x => x.example == 0 && x.clas == 0 ).collect()(0).prob
-    assert(fis ===  1.0) 
+    assert(fis ===  1.0, "Result on the first example") 
+
+    val fis2 = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
+    assert(fis2 ===  0.9827296, "Result on the second example") 
+
+    val fis3 = mode.getMu().filter( x => x.example == 4 && x.clas == 2 ).collect()(0).prob
+    assert(fis3 ===  1.0, "Result on the fifth example") 
+
+    val fis4 = mode.getLogLikelihood()
+    assert(fis4 ===  -7310.392087, "LogLikelihood") 
+
+    val fis5 = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
+    assert(fis5 ===  0.6881, "AnnotatorPrecision") 
+
+    val fis6 = mode.getModelWeights(0)(1)
+    assert(fis6 ===  -0.064467, "First model weight") 
   }
 
-  it should "obtain the expected result in the second example" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
-    val dataFile = getClass.getResource("/multi-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarMulti(data, annotations)
-    val fis = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
-    assert(fis ===  0.9827296) 
-  }
-
-  it should "obtain the expected result in the fifth example" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
-    val dataFile = getClass.getResource("/multi-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarMulti(data, annotations)
-    val fis = mode.getMu().filter( x => x.example == 4 && x.clas == 2 ).collect()(0).prob
-    assert(fis ===  1.0) 
-  }
-
-  it should "obtain the expected result in the likelihood" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
-    val dataFile = getClass.getResource("/multi-data.parquet").getPath
-    
-    implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-1f)
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarMulti(data, annotations)
-    val fis = mode.getLogLikelihood()
-    assert(fis ===  -7310.392087) 
-  }
-
-  it should "obtain the expected result in first annotator precision" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
-    val dataFile = getClass.getResource("/multi-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarMulti(data, annotations)
-    val fis = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
-    assert(fis ===  0.6881) 
-  }
-
-  it should "obtain the expected result in weights vector" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
-    val dataFile = getClass.getResource("/multi-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarMulti(data, annotations)
-    val fis = mode.getModelWeights(0)(1)
-    assert(fis ===  -0.064467) 
-  }
+//  it should "obtain the expected result in the second example" in { f => 
+//    val spark = f.spark
+//    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+//    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+//    
+//    import spark.implicits._
+//
+//    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+//    val data = spark.read.parquet(dataFile) 
+//    val sc = spark.sparkContext
+//    val mode = RaykarMulti(data, annotations)
+//    val fis = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
+//    assert(fis ===  0.9827296) 
+//  }
+//
+//  it should "obtain the expected result in the fifth example" in { f => 
+//    val spark = f.spark
+//    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+//    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+//    
+//    import spark.implicits._
+//
+//    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+//    val data = spark.read.parquet(dataFile) 
+//    val sc = spark.sparkContext
+//    val mode = RaykarMulti(data, annotations)
+//    val fis = mode.getMu().filter( x => x.example == 4 && x.clas == 2 ).collect()(0).prob
+//    assert(fis ===  1.0) 
+//  }
+//
+//  it should "obtain the expected result in the likelihood" in { f => 
+//    val spark = f.spark
+//    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+//    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+//    
+//    implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-1f)
+//    import spark.implicits._
+//
+//    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+//    val data = spark.read.parquet(dataFile) 
+//    val sc = spark.sparkContext
+//    val mode = RaykarMulti(data, annotations)
+//    val fis = mode.getLogLikelihood()
+//    assert(fis ===  -7310.392087) 
+//  }
+//
+//  it should "obtain the expected result in first annotator precision" in { f => 
+//    val spark = f.spark
+//    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+//    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+//    
+//    import spark.implicits._
+//
+//    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+//    val data = spark.read.parquet(dataFile) 
+//    val sc = spark.sparkContext
+//    val mode = RaykarMulti(data, annotations)
+//    val fis = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
+//    assert(fis ===  0.6881) 
+//  }
+//
+//  it should "obtain the expected result in weights vector" in { f => 
+//    val spark = f.spark
+//    val annotationsFile = getClass.getResource("/multi-ann.parquet").getPath
+//    val dataFile = getClass.getResource("/multi-data.parquet").getPath
+//    
+//    import spark.implicits._
+//
+//    val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
+//    val data = spark.read.parquet(dataFile) 
+//    val sc = spark.sparkContext
+//    val mode = RaykarMulti(data, annotations)
+//    val fis = mode.getModelWeights(0)(1)
+//    assert(fis ===  -0.064467) 
+//  }
 }
