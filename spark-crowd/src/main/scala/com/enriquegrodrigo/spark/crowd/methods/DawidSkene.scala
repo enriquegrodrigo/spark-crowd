@@ -230,7 +230,7 @@ object DawidSkene {
                                       .agg(aggregator.toColumn)
                                       .map(x => MulticlassLabel(x._1, x._2))
     //Adds the prediction to the annotation dataset
-    val nData= model.dataset.joinWith(newPrediction, model.dataset.col("example") === newPrediction.col("example"))
+    val nData= model.dataset.alias("d").joinWith(newPrediction.alias("p"), $"d.example" === $"p.example")
                                .as[(MulticlassAnnotation,MulticlassLabel)]
                                .map(x => DawidSkenePartial(x._1.example, x._1.annotator, x._1.value, x._2.value))
                                .as[DawidSkenePartial]
@@ -261,13 +261,13 @@ object DawidSkene {
                      .agg(count("example") as "denom")
     val nums = data.groupBy(col("annotator"), col("est"), col("value"))
                    .agg(count("example") as "num")
-    val pis = nums.as("n").join(denoms.as("d"), 
-                      nums.col("annotator") === denoms.col("annotator") &&  
-                        nums.col("est") === denoms.col("est"))
-        .select(col("n.annotator"), col("n.est") as "j", col("n.value") as "l", 
-                    (col("num") + 1)/(col("denom") + nClasses) as "pi")
-        .as[PiValue]
-        .collect
+    val pisd= nums.as("n").join(denoms.as("d"), 
+                        ($"n.annotator" === $"d.annotator") &&  
+                        ($"n.est" === $"d.est"))
+                  .select(col("n.annotator"), col("n.est") as "j", col("n.value") as "l", 
+                          (col("n.num") + 1)/(col("d.denom") + nClasses) as "pi")
+                  .as[PiValue]
+    val pis = pisd.collect
 
     //Assigns the value to the annotator matrix (not distributed) Size: O(A*C^2)
     pis.foreach((pv: PiValue) => pi(pv.annotator.toInt)(pv.j)(pv.l) = pv.pi)
@@ -348,7 +348,7 @@ object DawidSkene {
     val anns = MajorityVoting.transformMulticlass(datasetCached)
     
     //Adds the class estimation to the annotations 
-    val joinedDataset = datasetCached.joinWith(anns, datasetCached.col("example") === anns.col("example"))
+    val joinedDataset = datasetCached.alias("dc").joinWith(anns.alias("an"), $"dc.example" === $"an.example")
                                .as[(MulticlassAnnotation,MulticlassLabel)]
                                .map(x => DawidSkenePartial(x._1.example, x._1.annotator, x._1.value, x._2.value))
                                .as[DawidSkenePartial]

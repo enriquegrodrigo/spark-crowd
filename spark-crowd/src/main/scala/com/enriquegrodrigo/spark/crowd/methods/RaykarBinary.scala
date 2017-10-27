@@ -402,7 +402,7 @@ object RaykarBinary {
     val numsalpha = joinedData.groupBy(col("annotator"))
                    .agg(sum(col("mu") * col("value")) as "num")
     val alphad = numsalpha.as("n").join(denomsalpha.as("d"), 
-                      numsalpha.col("annotator") === denomsalpha.col("annotator"))
+                      $"n.annotator" === $"d.annotator")
                   .select(col("n.annotator") as "annotator", col("num"), col("denom"))
                   .as[ParamCalc]
                   .map{case ParamCalc(ann,num,denom) => ParamValue(ann, (num + p.value.a(ann.toInt)(0) - 1)/(denom + p.value.a(ann.toInt).sum - 2)) }
@@ -415,7 +415,7 @@ object RaykarBinary {
     val numsbeta = joinedData.groupBy(col("annotator"))
                    .agg(sum((lit(1)-col("mu")) *(lit(1)-col("value"))) as "num")
     val betad = numsbeta.as("n").join(denomsbeta.as("d"), 
-                      numsbeta.col("annotator") === denomsbeta.col("annotator"))
+                      $"n.annotator" === $"d.annotator")
                   .select(col("n.annotator") as "annotator", col("num"), col("denom"))
                   .as[ParamCalc]
                   .map{case ParamCalc(ann,num,denom) => ParamValue(ann,(num + p.value.b(ann.toInt)(0) - 1)/(denom + p.value.b(ann.toInt).sum - 2))}

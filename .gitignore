@@ -7,3 +7,4 @@ project/target
 checkpoint/
 .ivy
 metastore_db/
+*.jar
