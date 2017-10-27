@@ -291,7 +291,7 @@ object Glad {
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
     val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct()
-    val difficulties = l.dataset.select($"example", $"beta").as[GladInstanceDifficulty]
+    val difficulties = l.dataset.select($"example", $"beta").as[GladInstanceDifficulty].distinct
     new GladModel(preparedDataset.as[BinarySoftLabel], //Ground truth estimate
                         l.params.value.alpha, //Model parameters 
                         difficulties, //Difficulty for each example 

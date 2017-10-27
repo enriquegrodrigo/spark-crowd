@@ -11,10 +11,13 @@ val annData = spark.read.parquet(annFile).as[BinaryAnnotation]
 val mode = Glad(annData)
 
 //Get MulticlassLabel with the class predictions
-val pred = mode.getMu().as[BinarySoftProb] 
+val pred = mode.getMu().as[BinarySoftLabel] 
 
 //Annotator precision matrices
 val annprec = mode.getAnnotatorPrecision()
+
+//Annotator precision matrices
+val annprec = mode.getInstanceDifficulty()
 
 //Annotator likelihood 
 val like = mode.getLogLikelihood()
