@@ -30,7 +30,7 @@ class GladTest extends fixture.FlatSpec with Matchers {
       }
   }
 
-  "Glad" should "obtain the expected result in the first example" in { f => 
+  "Glad" should "obtain the expected result in the binary data" in { f => 
     val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
     val spark = f.spark
     import spark.implicits._
@@ -38,77 +38,19 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = Glad(exampleData)
     val fis = mode.getMu().filter(_.example == 0).collect()(0).value
-    assert(fis ===  1.0) 
+    assert(fis ===  1.0, "First example") 
+    val fis2 = mode.getMu().filter(_.example == 1).collect()(0).value 
+    assert(fis2 ===  1.0, "Second example") 
+    val fis3 = mode.getMu().filter(_.example == 10).collect()(0).value
+    assert(fis3 ===  0.0, "Eleventh example") 
+    val fis4 = mode.getMu().filter(_.example == 2).collect()(0).value
+    assert(fis4 ===  1.0, "Third example") 
+    val fis5 = mode.getAnnotatorPrecision()(0)
+    assert(fis5 ===  58.6114, "First annotator") 
+    val fis6 = mode.getLogLikelihood()
+    assert(fis6 ===  1386031.2049, "LogLikelihood") 
+    val fis7 = mode.getInstanceDifficulty().filter(_.example==1).collect()(0).beta
+    assert(fis7 ===  1.2689, "First example difficulty") 
   }
-
-  it should "obtain the expected result in the second example" in { f => 
-    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
-    val spark = f.spark
-    import spark.implicits._
-    val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = Glad(exampleData)
-    val fis = mode.getMu().filter(_.example == 1).collect()(0).value 
-    assert(fis ===  1.0) 
-  }
-
-  it should "obtain the expected result in the eleventh example" in { f => 
-    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
-    val spark = f.spark
-    import spark.implicits._
-    val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = Glad(exampleData)
-    val fis = mode.getMu().filter(_.example == 10).collect()(0).value
-    assert(fis ===  0.0) 
-  }
-
-  it should "obtain the expected result in the third example" in { f => 
-    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
-    val spark = f.spark
-    import spark.implicits._
-    val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = Glad(exampleData)
-    val fis = mode.getMu().filter(_.example == 2).collect()(0).value
-    assert(fis ===  1.0) 
-  }
-
-  it should "obtain the expected result in the first annotator" in { f => 
-    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
-    val spark = f.spark
-    import spark.implicits._
-    val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = Glad(exampleData)
-    val fis = mode.getAnnotatorPrecision()(0)
-    assert(fis ===  58.6114) 
-  }
-
-  it should "obtain the expected result in logLikelihood" in { f => 
-    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
-    val spark = f.spark
-    import spark.implicits._
-    val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = Glad(exampleData)
-    val fis = mode.getLogLikelihood()
-    assert(fis ===  1386031.2049) 
-  }
-
-  it should "obtain the expected result in first example difficulty" in { f => 
-    val exampleFile = getClass.getResource("/binary-ann.parquet").getPath
-    val spark = f.spark
-    import spark.implicits._
-    val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = Glad(exampleData)
-    val fis = mode.getInstanceDifficulty().filter(_.example==1).collect()(0).beta
-    assert(fis ===  1.2689) 
-  }
-
-
-
-
 
 }

@@ -43,95 +43,18 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarBinary(data, annotations)
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value
-    assert(fis ===  1.0) 
+    assert(fis ===  1.0, "Second example") 
+    val fis2 = mode.getMu().filter(_.example == 5).collect()(0).value
+    assert(fis2 ===  0.00068, "Sixth example") 
+    val fis3 = mode.getAnnotatorPrecision()._1(0)
+    assert(fis3 ===  0.87331, "First annotator alpha") 
+    val fis4 = mode.getAnnotatorPrecision()._2(0)
+    assert(fis4 ===  0.87815, "First annotator beta") 
+    val fis5 = mode.getLogLikelihood()
+    assert(fis5 ===  508373.784685, "LogLikelihood") 
+    val fis6 = mode.getModelWeights()(1)
+    assert(fis6 ===  0.208398, "Model weights") 
   }
-
-  it should "obtain the expected result in the sixth example" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/binary-ann.parquet").getPath
-    val dataFile = getClass.getResource("/binary-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[BinaryAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarBinary(data, annotations)
-    val fis = mode.getMu().filter(_.example == 5).collect()(0).value
-    assert(fis ===  0.00068) 
-  }
-
-  it should "obtain the expected result in the first annotator alpha" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/binary-ann.parquet").getPath
-    val dataFile = getClass.getResource("/binary-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[BinaryAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarBinary(data, annotations)
-    val fis = mode.getAnnotatorPrecision()._1(0)
-    assert(fis ===  0.87331) 
-  }
-
-  it should "obtain the expected result in the first annotator beta" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/binary-ann.parquet").getPath
-    val dataFile = getClass.getResource("/binary-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[BinaryAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarBinary(data, annotations)
-    val fis = mode.getAnnotatorPrecision()._2(0)
-    assert(fis ===  0.87815) 
-  }
-
-
-  it should "obtain the expected result in likelihood" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/binary-ann.parquet").getPath
-    val dataFile = getClass.getResource("/binary-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[BinaryAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarBinary(data, annotations)
-    val fis = mode.getLogLikelihood()
-    assert(fis ===  508373.784685) 
-  }
-
-  it should "obtain the expected result in model weights" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/binary-ann.parquet").getPath
-    val dataFile = getClass.getResource("/binary-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[BinaryAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarBinary(data, annotations)
-    val fis = mode.getModelWeights()(1)
-    assert(fis ===  0.208398) 
-  }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

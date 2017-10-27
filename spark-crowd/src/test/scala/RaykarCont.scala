@@ -42,70 +42,15 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarCont(data, annotations)
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value
-    assert(fis ===  20.7012) 
+    assert(fis ===  20.7012, "Second example") 
+    val fis2 = mode.getMu().filter(_.example == 5).collect()(0).value
+    assert(fis2 ===  0.00845, "Sixth example") 
+    val fis3 = mode.getLogLikelihood()
+    assert(fis3 ===  1.5613, "Square error") 
+    val fis4 = mode.getAnnotatorPrecision().filter(_.example == 0).collect()(0).value
+    assert(fis4 ===  0.2806, "First annotator precision") 
+    val fis5 = mode.getModelWeights()(0)
+    assert(fis5 ===  0.45575, "Model weights") 
   }
-
-  it should "obtain the expected result in the sixth example" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
-    val dataFile = getClass.getResource("/cont-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarCont(data, annotations)
-    val fis = mode.getMu().filter(_.example == 5).collect()(0).value
-    assert(fis ===  0.00845) 
-  }
-
-  it should "obtain the expected result in mean square error" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
-    val dataFile = getClass.getResource("/cont-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarCont(data, annotations)
-    val fis = mode.getLogLikelihood()
-    assert(fis ===  1.5613) 
-  }
-
-  it should "obtain the expected result in first annotator precision" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
-    val dataFile = getClass.getResource("/cont-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarCont(data, annotations)
-    val fis = mode.getAnnotatorPrecision().filter(_.example == 0).collect()(0).value
-    assert(fis ===  0.2806) 
-  }
-
-  it should "obtain the expected result in model weights" in { f => 
-    val spark = f.spark
-    val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
-    val dataFile = getClass.getResource("/cont-data.parquet").getPath
-    
-    import spark.implicits._
-
-    val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
-    val data = spark.read.parquet(dataFile) 
-    val sc = spark.sparkContext
-    val mode = RaykarCont(data, annotations)
-    val fis = mode.getModelWeights()(0)
-    assert(fis ===  0.45575) 
-  }
-
-
-
 
 }
