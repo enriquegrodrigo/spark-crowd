@@ -47,7 +47,7 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     assert(fis2 ===  0.00845, "Sixth example") 
     val fis3 = mode.getLogLikelihood()
     assert(fis3 ===  1.5613, "Square error") 
-    val fis4 = mode.getAnnotatorPrecision().filter(_.example == 0).collect()(0).value
+    val fis4 = mode.getAnnotatorPrecision().filter(_.annotator == 0).collect()(0).lambda
     assert(fis4 ===  0.2806, "First annotator precision") 
     val fis5 = mode.getModelWeights()(0)
     assert(fis5 ===  0.45575, "Model weights") 

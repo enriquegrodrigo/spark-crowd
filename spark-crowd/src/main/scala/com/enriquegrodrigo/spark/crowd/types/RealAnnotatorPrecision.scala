@@ -11,4 +11,4 @@ package com.enriquegrodrigo.spark.crowd.types
 *  @author enrique.grodrigo
 *  @version 0.1 
 */
-case class RealAnnotatorPrecision(annotator: Long, lambda: Int)
+case class RealAnnotatorPrecision(annotator: Long, lambda: Double)
