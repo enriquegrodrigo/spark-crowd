@@ -27,14 +27,14 @@ object RaykarCont {
    *  @version 0.1 
    */
   case class RaykarContPartialModel(dataset: DataFrame, annotatorData: Dataset[RealAnnotation], 
-                                    mu: Dataset[RealLabel], lambda: Dataset[RealLabel], 
+                                    mu: Dataset[RealLabel], lambda: Dataset[RealAnnotatorPrecision], 
                                     weights: Broadcast[Array[Double]], logLikelihood: Double, 
                                     improvement: Double, nAnnotators: Int, nFeatures: Int) {
 
     def modify(nDataset: DataFrame =dataset, 
         nAnnotatorData: Dataset[RealAnnotation] =annotatorData, 
         nMu: Dataset[RealLabel] =mu, 
-        nLambdas: Dataset[RealLabel] =lambda, 
+        nLambdas: Dataset[RealAnnotatorPrecision] =lambda, 
         nWeights: Broadcast[Array[Double]] =weights, 
         nLogLikelihood: Double =logLikelihood, 
         nImprovement: Double =improvement, 
@@ -192,7 +192,7 @@ object RaykarCont {
     val nAnnotators = annCached.select($"annotator").distinct().count().toInt
 
     val mu = MajorityVoting.transformReal(annCached)
-    val placeholderLambda = Seq(RealLabel(0,0.0)).toDS()
+    val placeholderLambda = Seq(RealAnnotatorPrecision(0,0.0)).toDS()
     RaykarContPartialModel(dataset, annotatorData, mu, 
                                 placeholderLambda, 
                                 sc.broadcast(Array.fill(nFeatures)(0.0)), 
@@ -218,12 +218,12 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def computeLambda(joined: Dataset[AnnotationsWithPredictions]): Dataset[AnnotatorLambda] = {
+  def computeLambda(joined: Dataset[AnnotationsWithPredictions]): Dataset[RealAnnotatorPrecision] = {
     import joined.sparkSession.implicits._
     joined.groupByKey(_.annotator).agg((new LambdaAggregator()).toColumn)
                                   .as[(Long,Double)]
-                                  .map{ case (annotator, lambda) => AnnotatorLambda(annotator, lambda) }
-                                  .as[AnnotatorLambda]
+                                  .map{ case (annotator, lambda) => RealAnnotatorPrecision(annotator, lambda) }
+                                  .as[RealAnnotatorPrecision]
   }
 
  /**
@@ -232,11 +232,11 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def computeYPred(annotations: Dataset[RealAnnotation], lambdas: Dataset[AnnotatorLambda]) = {
+  def computeYPred(annotations: Dataset[RealAnnotation], lambdas: Dataset[RealAnnotatorPrecision]) = {
     import annotations.sparkSession.implicits._
     annotations.joinWith(lambdas, annotations.col("annotator") === lambdas.col("annotator"))
-               .as[(RealAnnotation, AnnotatorLambda)]
-               .map{case (RealAnnotation(example, annotator, value), AnnotatorLambda(_,lambda)) => 
+               .as[(RealAnnotation, RealAnnotatorPrecision)]
+               .map{case (RealAnnotation(example, annotator, value), RealAnnotatorPrecision(_,lambda)) => 
                               AnnotationsWithLambda(example,annotator,value,lambda)}
                .as[AnnotationsWithLambda]
                .groupByKey(_.example)
@@ -305,7 +305,7 @@ object RaykarCont {
                                                                 x._1.value, 
                                                                 x._2.value))
 
-    val lambdas: Dataset[AnnotatorLambda] = computeLambda(joined)
+    val lambdas: Dataset[RealAnnotatorPrecision] = computeLambda(joined)
 
     val mu: Dataset[MuEstimation] = computeYPred(model.annotatorData, lambdas)
     
@@ -323,9 +323,9 @@ object RaykarCont {
     val weights = model.mu.sparkSession.sparkContext.broadcast(optWeights)
     val pred = preparedData.map(r => RealLabel(r.getLong(1), computePred(weights, r))) 
     val like = pred.joinWith(mu, pred.col("example") === mu.col("example")).map(x => computeLikeInstance(x._2.mu, x._1.value)).reduce(_+_) / model.dataset.count()
-    val lambdasFix = lambdas.map{ case AnnotatorLambda(annotator, lambda) => RealLabel(annotator, lambda) }
+    //val lambdasFix = lambdas.map{ case RealAnnotatorPrecision(annotator, lambda) => RealLabel(annotator, lambda) }
     val muFix = mu.map{ case MuEstimation(annotator, mu) => RealLabel(annotator, mu) }
-    model.modify(nMu=muFix, nWeights=weights, nLambdas = lambdasFix, nLogLikelihood = like, nImprovement = model.logLikelihood-like)
+    model.modify(nMu=muFix.cache(), nWeights=weights, nLambdas = lambdas, nLogLikelihood = like, nImprovement = model.logLikelihood-like)
   }
 
 }

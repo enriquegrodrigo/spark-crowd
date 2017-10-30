@@ -33,6 +33,15 @@ import scala.math._
  */
 object RaykarMulti {
 
+  def time[R] (block: => R) : R = {
+    val t0 = System.nanoTime()
+    val result = block
+    val t1 = System.nanoTime()
+    val t = (t1-t0)/1000000000
+    println(s"Time in block: $t")
+    result
+  }
+
   /****************************************************/
   /****************** CASE CLASSES ********************/
   /****************************************************/
@@ -397,9 +406,12 @@ object RaykarMulti {
   def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarMultiPartialModel, 
                             i: Int): RaykarMultiPartialModel = {
     import model.dataset.sparkSession.implicits._ 
-    val m = mStep(model, gradIters, gradThreshold, gradLearning)
-    val e = eStep(m)
-    val result = logLikelihood(e)
+    println("MStep")
+    val m = time(mStep(model, gradIters, gradThreshold, gradLearning))
+    println("EStep")
+    val e = time(eStep(m))
+    println("Likelihood")
+    val result = time(logLikelihood(e))
     result(mu=result.mu.checkpoint)
   }
   
@@ -458,7 +470,7 @@ object RaykarMulti {
                             weightsPrior.map(x => sc.broadcast(x)), 
                             -1,
                             -1,
-                            combinations,
+                            combinations.cache(),
                             nFeatures, 
                             nClasses,
                             nAnnotators
@@ -604,7 +616,6 @@ object RaykarMulti {
         val preparedRDD = prepareDataLogisticGradient(params, muFixed) 
        
         //Obtains optmized logistic regression
-        //TODO: Añadir priors
         val grad = new RaykarMultiGradient()
         val updater = new RaykarMultiUpdater(model.weightsPriorMatrix(c))
         val rand = new Random(0) //First weight estimation is random
@@ -618,42 +629,50 @@ object RaykarMulti {
       }
 
       //Prepare logistic prediction results and logistic weights matrix.
-      val fullUnnormalizedPredictions = predictions.reduce(_ union _).as[LogisticMultiPrediction]
+      val fullUnnormalizedPredictions = predictions.reduce(_ union _).as[LogisticMultiPrediction].cache()
       val normalizer = fullUnnormalizedPredictions.groupByKey(_.example).agg(sum(col("prob")).as[Double]).as[(Long,Double)].map(x => Normalizer(x._1, x._2))
       val normalizedPredictions = fullUnnormalizedPredictions
                                     .joinWith(normalizer,  fullUnnormalizedPredictions.col("example") === normalizer.col("example"))
                                     .as[(LogisticMultiPrediction, (Long, Double))]
                                     .map(x => LogisticMultiPrediction(x._1.example, x._1.clas, x._1.prob/x._2._2))
                                     .as[LogisticMultiPrediction]
+                                    .cache()
       (logisticWeights, normalizedPredictions)
     }
 
 
 
     //Obtains annotator frequency matrix. Combines with exploded (annotator,class,class) so that all combinations are computed. 
-    val annotationsWithClassProbs = model.mu.alias("mu").joinWith(model.annotations.alias("ann"), 
+    println("AnnotationsWithClassProbs")
+    val annotationsWithClassProbs = time(model.mu.alias("mu").joinWith(model.annotations.alias("ann"), 
                                                   $"mu.example" === $"ann.example")
                                             .as[(MulticlassSoftProb, MulticlassAnnotation)]
                                             .map(x => AnnotationWithClassProb(x._1.example, x._1.clas, x._1.prob, 
                                                                               x._2.annotator, x._2.value))
-                                            .as[AnnotationWithClassProb]
-    val fullCombination = model.annotatorClassCombination.alias("A").joinWith(annotationsWithClassProbs.alias("B"), 
+                                            .as[AnnotationWithClassProb])
+    println("FullCombination")
+    val fullCombination = time(model.annotatorClassCombination.alias("A").joinWith(annotationsWithClassProbs.alias("B"), 
                                                                     $"A.annotator" === $"B.annotator" && 
                                                                     $"A.clas" === $"B.clas" &&
                                                                     $"A.k" === $"B.annotation", 
                                                                     "left_outer")
                                                                 .as[(AnnotatorClassCombination, AnnotationWithClassProb)]
-                                                                .cache()
+                                                                .cache())
 
     //TODO: Priors
-    val freqMatrix = annotatorFrequency(fullCombination)
-    val freqClasMatrix = annotatorClasFrequency(fullCombination)
+    println("AnnotatorFrequency")
+    val freqMatrix = time(annotatorFrequency(fullCombination).cache())
+    println("AnnotatorClassFrequency")
+    val freqClasMatrix = time(annotatorClasFrequency(fullCombination).cache())
 
     //Obtains annotator precision matrix
-    val annotatorPrec = annotatorPrecision(freqMatrix, freqClasMatrix)
+    println("AnnotatorPrecision")
+    val annotatorPrec = time(annotatorPrecision(freqMatrix, freqClasMatrix))
 
     //Obtains logistic regression via the one vs all approach
-    val (logWeights, prediction) = logisticRegression( freqMatrix, freqClasMatrix ) 
+    println("LogisticRegression")
+    val (logWeights, prediction) = time(logisticRegression( freqMatrix, freqClasMatrix ) )
+    println("End")
 
     //Saving results
     model(annotatorPrecision=annotatorPrec.cache(), logisticWeights = logWeights, logisticPrediction = prediction.cache())   
@@ -689,6 +708,7 @@ object RaykarMulti {
                              .as[Tuple2[Tuple2[Long,Int],Double]]
                              .map(x => MulticlassSoftProb(x._1._1, x._1._2, x._2))
                              .as[MulticlassSoftProb]
+                             .cache()
 
     val denominator = numerator.groupByKey(_.example) 
                                .agg(sum(col("prob")).as[Double])
@@ -703,7 +723,7 @@ object RaykarMulti {
     
 
     //Save results
-    model(mu=estimation.cache(), annotationsLikelihood=numerator.cache())
+    model(mu=estimation.cache(), annotationsLikelihood=numerator)
   }
 
  /**
