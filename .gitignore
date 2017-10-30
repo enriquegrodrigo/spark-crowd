@@ -8,3 +8,4 @@ checkpoint/
 .ivy
 metastore_db/
 *.jar
+old-*
