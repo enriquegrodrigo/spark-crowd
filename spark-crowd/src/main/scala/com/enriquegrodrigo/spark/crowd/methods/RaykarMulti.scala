@@ -33,15 +33,6 @@ import scala.math._
  */
 object RaykarMulti {
 
-  def time[R] (block: => R) : R = {
-    val t0 = System.nanoTime()
-    val result = block
-    val t1 = System.nanoTime()
-    val t = (t1-t0)/1000000000
-    println(s"Time in block: $t")
-    result
-  }
-
   /****************************************************/
   /****************** CASE CLASSES ********************/
   /****************************************************/
@@ -406,12 +397,9 @@ object RaykarMulti {
   def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarMultiPartialModel, 
                             i: Int): RaykarMultiPartialModel = {
     import model.dataset.sparkSession.implicits._ 
-    println("MStep")
-    val m = time(mStep(model, gradIters, gradThreshold, gradLearning))
-    println("EStep")
-    val e = time(eStep(m))
-    println("Likelihood")
-    val result = time(logLikelihood(e))
+    val m = mStep(model, gradIters, gradThreshold, gradLearning)
+    val e = eStep(m)
+    val result = logLikelihood(e)
     result(mu=result.mu.checkpoint)
   }
   
@@ -643,36 +631,29 @@ object RaykarMulti {
 
 
     //Obtains annotator frequency matrix. Combines with exploded (annotator,class,class) so that all combinations are computed. 
-    println("AnnotationsWithClassProbs")
-    val annotationsWithClassProbs = time(model.mu.alias("mu").joinWith(model.annotations.alias("ann"), 
+    val annotationsWithClassProbs = model.mu.alias("mu").joinWith(model.annotations.alias("ann"), 
                                                   $"mu.example" === $"ann.example")
                                             .as[(MulticlassSoftProb, MulticlassAnnotation)]
                                             .map(x => AnnotationWithClassProb(x._1.example, x._1.clas, x._1.prob, 
                                                                               x._2.annotator, x._2.value))
-                                            .as[AnnotationWithClassProb])
-    println("FullCombination")
-    val fullCombination = time(model.annotatorClassCombination.alias("A").joinWith(annotationsWithClassProbs.alias("B"), 
+                                            .as[AnnotationWithClassProb]
+    val fullCombination = model.annotatorClassCombination.alias("A").joinWith(annotationsWithClassProbs.alias("B"), 
                                                                     $"A.annotator" === $"B.annotator" && 
                                                                     $"A.clas" === $"B.clas" &&
                                                                     $"A.k" === $"B.annotation", 
                                                                     "left_outer")
                                                                 .as[(AnnotatorClassCombination, AnnotationWithClassProb)]
-                                                                .cache())
+                                                                .cache()
 
     //TODO: Priors
-    println("AnnotatorFrequency")
-    val freqMatrix = time(annotatorFrequency(fullCombination).cache())
-    println("AnnotatorClassFrequency")
-    val freqClasMatrix = time(annotatorClasFrequency(fullCombination).cache())
+    val freqMatrix = annotatorFrequency(fullCombination).cache()
+    val freqClasMatrix = annotatorClasFrequency(fullCombination).cache()
 
     //Obtains annotator precision matrix
-    println("AnnotatorPrecision")
-    val annotatorPrec = time(annotatorPrecision(freqMatrix, freqClasMatrix))
+    val annotatorPrec = annotatorPrecision(freqMatrix, freqClasMatrix)
 
     //Obtains logistic regression via the one vs all approach
-    println("LogisticRegression")
-    val (logWeights, prediction) = time(logisticRegression( freqMatrix, freqClasMatrix ) )
-    println("End")
+    val (logWeights, prediction) = logisticRegression( freqMatrix, freqClasMatrix ) 
 
     //Saving results
     model(annotatorPrecision=annotatorPrec.cache(), logisticWeights = logWeights, logisticPrediction = prediction.cache())   
