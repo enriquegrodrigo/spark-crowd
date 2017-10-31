@@ -10,7 +10,12 @@ val exampleDataMulti = spark.read.parquet(exampleFileMulti).as[MulticlassAnnotat
 val exampleDataCont = spark.read.parquet(exampleFileCont).as[RealAnnotation] 
 
 //Applying the learning algorithm
+//Binary class
 val muBinary = MajorityVoting.transformBinary(exampleDataBinary)
+val muBinaryProb = MajorityVoting.transformSoftBinary(exampleDataBinary)
+//Multiclass
 val muMulticlass = MajorityVoting.transformMulticlass(exampleDataMulti)
+val muMulticlassProb = MajorityVoting.transformSoftMulti(exampleDataMulti)
+//Continuous case
 val muCont = MajorityVoting.transformReal(exampleDataCont)
 

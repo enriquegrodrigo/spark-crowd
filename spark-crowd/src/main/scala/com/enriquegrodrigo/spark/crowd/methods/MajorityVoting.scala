@@ -14,23 +14,45 @@ import org.apache.spark.sql.functions.{count,lit,sum,col, explode, array}
  *  a standard label dataset using the majority voting approach
  *  
  *  This object provides several functions for using majority voting style
- *  algorithms over annotations datasets (spark datasets with types [[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]], 
- *  [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]], or [[com.enriquegrodrigo.spark.crowd.types.RealAnnotation]]). For discrete types 
- *  ([[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]], [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]]) the method uses the '''most 
+ *  algorithms over annotations datasets (spark datasets with types [[types.BinaryAnnotation]], 
+ *  [[types.MulticlassAnnotation]], or [[types.RealAnnotation]]). For discrete types 
+ *  ([[types.BinaryAnnotation]], [[types.MulticlassAnnotation]]) the method uses the '''most 
  *  frequent''' class. For continuous types, the '''mean''' is used. 
  *
  *  The object also provides methods for estimating the probability of a class
- *  for the discrete type, computing, for the binary case, the mean of the 
- *  positive class and, for the multiclass case, the one vs all mean of a
- *  class against the others. 
+ *  for the discrete type, computing, for the binary case, the proportion of the 
+ *  positive class and, for the multiclass case, the proportion of each of the classes.
+ *
+ *  The next example can be found in the examples folder of the project. 
  *
  *  @example
  *  {{{
- *    result: Dataset[BinaryLabel] = MajorityVoting.transformBinary(dataset)
+ *  
+ *  import com.enriquegrodrigo.spark.crowd.methods.MajorityVoting
+ *  import com.enriquegrodrigo.spark.crowd.types._
+ *  
+ *  val exampleFile = "data/binary-ann.parquet"
+ *  val exampleFileMulti = "data/multi-ann.parquet"
+ *  val exampleFileCont = "data/cont-ann.parquet"
+ *  
+ *  val exampleDataBinary = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
+ *  val exampleDataMulti = spark.read.parquet(exampleFileMulti).as[MulticlassAnnotation] 
+ *  val exampleDataCont = spark.read.parquet(exampleFileCont).as[RealAnnotation] 
+ *  
+ *  //Applying the learning algorithm
+ *  //Binary class
+ *  val muBinary = MajorityVoting.transformBinary(exampleDataBinary)
+ *  val muBinaryProb = MajorityVoting.transformSoftBinary(exampleDataBinary)
+ *  //Multiclass
+ *  val muMulticlass = MajorityVoting.transformMulticlass(exampleDataMulti)
+ *  val muMulticlassProb = MajorityVoting.transformSoftMulti(exampleDataMulti)
+ *  //Continuous case
+ *  val muCont = MajorityVoting.transformReal(exampleDataCont)
+ *
  *  }}}
  *
  *  @author enrique.grodrigo
- *  @version 0.1 
+ *  @version 0.1.2 
  */
 object MajorityVoting {
   
@@ -88,8 +110,9 @@ object MajorityVoting {
   /****************************************************/
 
   /**
-   * Obtains the most frequent class for BinaryAnnotation datasets
-   * @param dataset The annotations dataset to be aggregated
+   * Obtains the most frequent class (0 or 1) for [[types.BinaryAnnotation]] datasets
+   * @param dataset The annotations dataset (spark Dataset of type [[types.BinaryAnnotation]]) 
+   *    to be aggregated
    */
   def transformBinary(dataset: Dataset[BinaryAnnotation]): Dataset[BinaryLabel] = {
     import dataset.sparkSession.implicits._
@@ -100,8 +123,9 @@ object MajorityVoting {
   }
   
   /**
-   * Obtains probability of the class being positive for BinaryAnnotation datasets
-   * @param dataset The annotations dataset to be aggregated
+   * Obtains probability of the class being positive for [[types.BinaryAnnotation]] datasets
+   * @param dataset The annotations dataset (spark Dataset of type [[types.BinaryAnnotation]]) 
+   *    to be aggregated
    */
   def transformSoftBinary(dataset: Dataset[BinaryAnnotation]): Dataset[BinarySoftLabel] = {
     import dataset.sparkSession.implicits._
@@ -112,8 +136,9 @@ object MajorityVoting {
   }
 
   /**
-   * Obtain the mean of the annotations for a given example.
-   * @param dataset The annotations dataset to be aggregated
+   * Obtain the mean of the annotations for each example from a [[types.RealAnnotation]].
+   * @param dataset The annotations dataset (spark Dataset of type [[types.RealAnnotation]]) 
+   *  to be aggregated
    */
   def transformReal(dataset: Dataset[RealAnnotation]): Dataset[RealLabel] = {
     import dataset.sparkSession.implicits._
@@ -122,8 +147,9 @@ object MajorityVoting {
   }
 
   /**
-   * Obtain the most frequent class for all examples in the annotation dataset. 
-   * @param dataset The annotations dataset to be aggregated
+   * Obtain the most frequent class for each example of the a [[types.MulticlassAnnotation]] dataset. 
+   * @param dataset The annotations dataset (spark Dataset of type [[types.MulticlassAnnotation]]) 
+   *  to be aggregated
    */
   def transformMulticlass(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassLabel] = {
     import dataset.sparkSession.implicits._
@@ -134,8 +160,13 @@ object MajorityVoting {
   
   /**
    * Obtain a list of datasets resulting of applying [[transformSoftBinary]] to
-   * each class against the others
-   * @param dataset The annotations dataset to be aggregated
+   * each class against the others (One vs All) on a  [[types.MulticlassAnnotation]] dataset. 
+   *
+   * It supposes classes go from 0 to nClasses. For example, for a three class problem, there
+   * should be classes {0,1,2}. 
+   *
+   * @param dataset The annotations dataset (spark Dataset of type [[types.MulticlassAnnotation]]) 
+   *  to be aggregated
    */
   def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassSoftProb] = {
     import dataset.sparkSession.implicits._
