@@ -26,7 +26,7 @@ object RaykarCont {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class RaykarContPartialModel(dataset: DataFrame, annotatorData: Dataset[RealAnnotation], 
+  private[crowd] case class RaykarContPartialModel(dataset: DataFrame, annotatorData: Dataset[RealAnnotation], 
                                     mu: Dataset[RealLabel], lambda: Dataset[RealAnnotatorPrecision], 
                                     weights: Broadcast[Array[Double]], logLikelihood: Double, 
                                     improvement: Double, nAnnotators: Int, nFeatures: Int) {
@@ -49,35 +49,35 @@ object RaykarCont {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class MuEstimation(example: Long, mu:Double) 
+  private[crowd] case class MuEstimation(example: Long, mu:Double) 
   
   /**
   *  Linear regresion prediction for an example
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class LinearPrediction(example: Long, mu:Double) 
+  private[crowd] case class LinearPrediction(example: Long, mu:Double) 
 
   /**
   *  Lambda estimation for each annotator
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class AnnotatorLambda(annotator: Long, lambda:Double) 
+  private[crowd] case class AnnotatorLambda(annotator: Long, lambda:Double) 
 
   /**
   *  Annotation with prediction information for the example 
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class AnnotationsWithPredictions(example: Long, annotator: Long, value:Double, prediction:Double) 
+  private[crowd] case class AnnotationsWithPredictions(example: Long, annotator: Long, value:Double, prediction:Double) 
 
   /**
   *  Annotation with lambda information of the annotator
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class AnnotationsWithLambda(example: Long, annotator: Long, value:Double, lambda:Double) 
+  private[crowd] case class AnnotationsWithLambda(example: Long, annotator: Long, value:Double, lambda:Double) 
 
   /****************************************************/
   /****************** AGGREGATORS ********************/
@@ -88,7 +88,7 @@ object RaykarCont {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class LambdaAggregator() extends Aggregator[AnnotationsWithPredictions, (Double,Double), Double] {
+  private[crowd] class LambdaAggregator() extends Aggregator[AnnotationsWithPredictions, (Double,Double), Double] {
     def zero: (Double,Double)= (0.0,0.0)
     def reduce(b: (Double, Double), a: AnnotationsWithPredictions) : (Double,Double) = (b._1 + powMath((a.value - a.prediction),2), b._2 + 1) 
     def merge(b1: (Double,Double), b2: (Double,Double)) : (Double,Double) = (b1._1 + b2._1, b1._2 + b2._2)
@@ -102,7 +102,7 @@ object RaykarCont {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class MuAggregator() extends Aggregator[AnnotationsWithLambda, (Double,Double), Double] {
+  private[crowd] class MuAggregator() extends Aggregator[AnnotationsWithLambda, (Double,Double), Double] {
     def zero: (Double,Double)= (0.0,0.0)
     def reduce(b: (Double, Double), a: AnnotationsWithLambda) : (Double,Double) = (b._1 + (a.lambda * a.value) , b._2 + a.lambda) 
     def merge(b1: (Double,Double), b2: (Double,Double)) : (Double,Double) = (b1._1 + b2._1, b1._2 + b2._2)
@@ -120,14 +120,14 @@ object RaykarCont {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  def computeLikeInstance(mui: Double, predi: Double) = powMath(mui-predi,2) 
+  private[crowd] def computeLikeInstance(mui: Double, predi: Double) = powMath(mui-predi,2) 
 
   /**
    *  Gradient descent method for the linear regresion part of the model 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class RaykarContGradient() extends Gradient {
+  private[crowd] class RaykarContGradient() extends Gradient {
 
     override def compute(data: Vector, label: Double, weights: Vector, cumGradient:Vector): Double = {
       val w = weights.toArray 
@@ -183,7 +183,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def initialization(dataset: DataFrame, annotatorData: Dataset[RealAnnotation]): RaykarContPartialModel = {
+  private[crowd] def initialization(dataset: DataFrame, annotatorData: Dataset[RealAnnotation]): RaykarContPartialModel = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val annCached = annotatorData.cache() 
@@ -205,7 +205,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def computePred(weights: Broadcast[Array[Double]], featureVector: Row) = {
+  private[crowd] def computePred(weights: Broadcast[Array[Double]], featureVector: Row) = {
     val x: Seq[Double] = featureVector.toSeq.tail.tail.map(castRowMember)   //example and mu
     val w = weights.value
     val xw = (for { (value,i) <- x.zipWithIndex } yield value*w(i)).sum 
@@ -218,7 +218,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def computeLambda(joined: Dataset[AnnotationsWithPredictions]): Dataset[RealAnnotatorPrecision] = {
+  private[crowd] def computeLambda(joined: Dataset[AnnotationsWithPredictions]): Dataset[RealAnnotatorPrecision] = {
     import joined.sparkSession.implicits._
     joined.groupByKey(_.annotator).agg((new LambdaAggregator()).toColumn)
                                   .as[(Long,Double)]
@@ -232,7 +232,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def computeYPred(annotations: Dataset[RealAnnotation], lambdas: Dataset[RealAnnotatorPrecision]) = {
+  private[crowd] def computeYPred(annotations: Dataset[RealAnnotation], lambdas: Dataset[RealAnnotatorPrecision]) = {
     import annotations.sparkSession.implicits._
     annotations.joinWith(lambdas, annotations.col("annotator") === lambdas.col("annotator"))
                .as[(RealAnnotation, RealAnnotatorPrecision)]
@@ -252,7 +252,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def castRowMember(m: Any) : Double = m match {
+  private[crowd] def castRowMember(m: Any) : Double = m match {
             case m: Double => m 
             case m: Int => m.toDouble
   }
@@ -263,7 +263,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def prepareDataGradient(data: DataFrame, mu: Dataset[MuEstimation]) : 
+  private[crowd] def prepareDataGradient(data: DataFrame, mu: Dataset[MuEstimation]) : 
           DataFrame = {
 
       val muFixed = mu.withColumnRenamed("mu", "comenriquegrodrigotempmu") 
@@ -282,7 +282,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def gradientDataToRDD(data: DataFrame) : RDD[(Double, Vector)] = {
+  private[crowd] def gradientDataToRDD(data: DataFrame) : RDD[(Double, Vector)] = {
    data.rdd.map((x: Row) => 
            (x.getDouble(0), 
              Vectors.dense(Array.range(2,x.size).map(i => castRowMember(x.get(i))))))
@@ -294,7 +294,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarContPartialModel, i: Int): RaykarContPartialModel = {
+  private[crowd] def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarContPartialModel, i: Int): RaykarContPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val joined: Dataset[AnnotationsWithPredictions] = 
       model.annotatorData.joinWith(model.mu, 

@@ -43,21 +43,21 @@ object MajorityVoting {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class ExampleClassCombination(example: Long, clas: Int)
+  private[spark] case class ExampleClassCombination(example: Long, clas: Int)
 
   /**
    *  Frequency of a concrete class for example  
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class ExampleClassFrequency(example: Long, clas: Int, freq: Double)
+  private[spark] case class ExampleClassFrequency(example: Long, clas: Int, freq: Double)
 
   /**
    *  Number of labels for an example 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class ExampleFrequency(example: Long, freq: Double)
+  private[spark] case class ExampleFrequency(example: Long, freq: Double)
 
 
 
@@ -70,7 +70,7 @@ object MajorityVoting {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class MulticlassMajorityEstimation() extends Aggregator[(ExampleClassCombination, MulticlassAnnotation), Double, Double] {
+  private[spark] class MulticlassMajorityEstimation() extends Aggregator[(ExampleClassCombination, MulticlassAnnotation), Double, Double] {
     def zero: Double = 0.0 
     def reduce(b: Double, a: (ExampleClassCombination,MulticlassAnnotation)) : Double =  a match {
       case (_,null) => b

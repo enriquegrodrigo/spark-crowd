@@ -31,7 +31,7 @@ object Glad {
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  case class GladPartialModel(dataset: Dataset[GladPartial], params: Broadcast[GladParams], 
+  private[spark] case class GladPartialModel(dataset: Dataset[GladPartial], params: Broadcast[GladParams], 
                                   logLikelihood: Double, improvement: Double, 
                                   nAnnotators: Int) {
 
@@ -52,7 +52,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladAlphas(annotator: Long, alpha: Double)
+  private[spark] case class GladAlphas(annotator: Long, alpha: Double)
 
   /**
   *  Glad Annotator precision estimation 
@@ -60,7 +60,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladAnnotatorPrecision(annotator: Long, alpha: Int)
+  private[spark] case class GladAnnotatorPrecision(annotator: Long, alpha: Int)
 
   /**
   *  Case class for storing Glad model parameters
@@ -68,7 +68,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladParams(alpha: Array[Double], w: Array[Double])
+  private[spark] case class GladParams(alpha: Array[Double], w: Array[Double])
 
   /**
   *  Case class for storing annotations with class estimations and beta  
@@ -76,7 +76,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladPartial(example: Long, annotator: Int, value: Int, est: Double, beta: Double)
+  private[spark] case class GladPartial(example: Long, annotator: Int, value: Int, est: Double, beta: Double)
 
   /**
   *  Buffer for the alpha aggregator 
@@ -84,7 +84,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladAlphaAggregatorBuffer(agg: Double, alpha: Double)
+  private[spark] case class GladAlphaAggregatorBuffer(agg: Double, alpha: Double)
 
   /**
   *  Buffer for the beta aggregator 
@@ -92,7 +92,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladBetaAggregatorBuffer(agg: Double, beta: Double)
+  private[spark] case class GladBetaAggregatorBuffer(agg: Double, beta: Double)
 
   /**
   *  Buffer for the E step aggregator 
@@ -100,7 +100,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladEAggregatorBuffer(aggVect: scala.collection.Seq[Double])
+  private[spark] case class GladEAggregatorBuffer(aggVect: scala.collection.Seq[Double])
 
   /**
   *  Buffer for the likelihood aggregator 
@@ -108,7 +108,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  case class GladLogLikelihoodAggregatorBuffer(agg: Double, classProb: Double)
+  private[spark] case class GladLogLikelihoodAggregatorBuffer(agg: Double, classProb: Double)
 
   /****************************************************/
   /****************** AGGREGATORS ********************/
@@ -120,7 +120,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  class GladAlphaAggregator(params: Broadcast[GladParams], learningRate: Double) 
+  private[spark] class GladAlphaAggregator(params: Broadcast[GladParams], learningRate: Double) 
     extends Aggregator[GladPartial, GladAlphaAggregatorBuffer, Double] {
 
     def zero: GladAlphaAggregatorBuffer = GladAlphaAggregatorBuffer(0,-1) 
@@ -155,7 +155,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  class GladBetaAggregator(params: Broadcast[GladParams], learningRate: Double) 
+  private[spark] class GladBetaAggregator(params: Broadcast[GladParams], learningRate: Double) 
     extends Aggregator[GladPartial, GladBetaAggregatorBuffer, Double]{
 
     def zero: GladBetaAggregatorBuffer = GladBetaAggregatorBuffer(0,-1) 
@@ -190,7 +190,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  class GladEAggregator(params: Broadcast[GladParams]) 
+  private[spark] class GladEAggregator(params: Broadcast[GladParams]) 
     extends Aggregator[GladPartial, GladEAggregatorBuffer, Double]{
   
     def zero: GladEAggregatorBuffer = GladEAggregatorBuffer(Vector.fill(2)(1)) //Binary
@@ -226,7 +226,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  class GladLogLikelihoodAggregator(params: Broadcast[GladParams]) 
+  private[spark] class GladLogLikelihoodAggregator(params: Broadcast[GladParams]) 
     extends Aggregator[GladPartial, GladLogLikelihoodAggregatorBuffer, Double]{
 
     def zero: GladLogLikelihoodAggregatorBuffer = GladLogLikelihoodAggregatorBuffer(0,-1)
@@ -304,7 +304,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def eStep(model: GladPartialModel): GladPartialModel = {
+  private[spark] def eStep(model: GladPartialModel): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
 
     //Label estimation
@@ -328,7 +328,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def mStep(model: GladPartialModel, maxGradIters: Int, thresholdGrad: Double, learningRate: Double): GladPartialModel = {
+  private[spark] def mStep(model: GladPartialModel, maxGradIters: Int, thresholdGrad: Double, learningRate: Double): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val sc = model.dataset.sparkSession.sparkContext
 
@@ -421,7 +421,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def step(maxGradIters: Int, thresholdGrad: Double, learningRate: Double)(model: GladPartialModel, i: Int): GladPartialModel = {
+  private[spark] def step(maxGradIters: Int, thresholdGrad: Double, learningRate: Double)(model: GladPartialModel, i: Int): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate)
     val e = eStep(m)
@@ -435,7 +435,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def logLikelihood(model: GladPartialModel): GladPartialModel = {
+  private[spark] def logLikelihood(model: GladPartialModel): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val aggregator = new GladLogLikelihoodAggregator(model.params)
     val logLikelihood = model.dataset.groupByKey(_.example).agg(aggregator.toColumn).reduce((x,y) => (x._1, x._2 + y._2))._2
@@ -449,7 +449,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double): GladPartialModel = {
+  private[spark] def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double): GladPartialModel = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val datasetCached = dataset.cache() 
