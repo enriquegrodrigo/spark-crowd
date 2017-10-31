@@ -162,7 +162,7 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def apply(dataset: DataFrame, annDataset: Dataset[RealAnnotation], eMIters: Int = 1, 
+  def apply(dataset: DataFrame, annDataset: Dataset[RealAnnotation], eMIters: Int = 5, 
             eMThreshold: Double = 0.001, gradIters: Int = 100, gradThreshold: Double = 0.1, 
             gradLearning: Double=0.1): RaykarContModel = {
     import dataset.sparkSession.implicits._

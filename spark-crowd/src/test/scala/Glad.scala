@@ -37,16 +37,12 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = Glad(exampleData)
-    exampleData.filter(_.example == 0).show
     val fis = mode.getMu().filter(_.example == 0).collect()(0).value
     assert(fis ===  1.0, "First example") 
-    exampleData.filter(_.example == 1).show
     val fis2 = mode.getMu().filter(_.example == 1).collect()(0).value 
     assert(fis2 ===  1.0, "Second example") 
-    exampleData.filter(_.example == 10).show
     val fis3 = mode.getMu().filter(_.example == 10).collect()(0).value
     assert(fis3 ===  0.0, "Eleventh example") 
-    exampleData.filter(_.example == 2).show
     val fis4 = mode.getMu().filter(_.example == 2).collect()(0).value
     assert(fis4 ===  1.0, "Third example") 
     val fis5 = mode.getAnnotatorPrecision()(0)

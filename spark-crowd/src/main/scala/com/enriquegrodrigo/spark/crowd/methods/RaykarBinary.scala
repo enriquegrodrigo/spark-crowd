@@ -281,7 +281,7 @@ object RaykarBinary {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def apply(dataset: DataFrame, annDataset: Dataset[BinaryAnnotation], eMIters: Int = 3, 
+  def apply(dataset: DataFrame, annDataset: Dataset[BinaryAnnotation], eMIters: Int = 5, 
             eMThreshold: Double = 0.001,  gradIters: Int = 100, 
             gradThreshold: Double = 0.1, gradLearning: Double = 0.1, 
             a_prior: Option[Array[Array[Double]]]= None, 
