@@ -13,13 +13,39 @@ import scala.math.{sqrt, exp}
 
 /**
  *  Provides functions for transforming an annotation dataset into 
- *  a standard label dataset using the Glad algorithm 
+ *  a standard label dataset using the Glad algorithm.
  *
- *  This algorithm only works with [[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]] datasets
+ *  This algorithm only works with [[types.BinaryAnnotation]] datasets.
+ *
+ *  The algorithm returns a [[types.GladModel]], with information about 
+ *  the class true label estimation, the annotator precision, the 
+ *  instances difficulty and the log-likilihood of the model.
  *
  *  @example
  *  {{{
- *    result: GladModel = Glad(dataset)
+ *   import com.enriquegrodrigo.spark.crowd.methods.Glad
+ *   import com.enriquegrodrigo.spark.crowd.types._
+ *   
+ *   sc.setCheckpointDir("checkpoint")
+ *   
+ *   val annFile = "data/binary-ann.parquet"
+ *   
+ *   val annData = spark.read.parquet(annFile).as[BinaryAnnotation] 
+ *   
+ *   //Applying the learning algorithm
+ *   val mode = Glad(annData)
+ *   
+ *   //Get MulticlassLabel with the class predictions
+ *   val pred = mode.getMu().as[BinarySoftLabel] 
+ *   
+ *   //Annotator precision matrices
+ *   val annprec = mode.getAnnotatorPrecision()
+ *   
+ *   //Annotator precision matrices
+ *   val annprec = mode.getInstanceDifficulty()
+ *   
+ *   //Annotator likelihood 
+ *   val like = mode.getLogLikelihood()
  *  }}}
  *  @see Whitehill, Jacob, et al. "Whose vote should count more: Optimal
  *  integration of labels from labelers of unknown expertise." Advances in
@@ -269,7 +295,7 @@ object Glad {
   /**
   *  Apply the Glad Algorithm.
   *
-  *  @param dataset The dataset over which the algorithm will execute.
+  *  @param dataset The dataset (spark Dataset of type [[types.BinaryAnnotation]] over which the algorithm will execute.
   *  @param eMIters Number of iterations for the EM algorithm
   *  @param eMThreshold LogLikelihood variability threshold for the EM algorithm
   *  @param gradIters Maximum number of iterations for the GradientDescent algorithm
