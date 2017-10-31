@@ -13,16 +13,37 @@ import scala.math.{log => mathLog}
 
 /**
  *  Provides functions for transforming an annotation dataset into 
- *  a standard label dataset using the DawidSkene algorithm 
+ *  a standard label dataset using the DawidSkene algorithm.
  *
- *  This algorithm only works with [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]] datasets
+ *  This algorithm only works with [[types.MulticlassAnnotation]] datasets although one
+ *  can easily use it for [[types.BinaryAnnotation]] through Spark Dataset ``as`` method
+ *
+ *  It returns a [[types.DawidSkeneModel]] with information about the estimation of the 
+ *  true class, as well as the annotator quality and the log-likelihood obtained by the model.
  *
  *  @example
  *  {{{
- *    result: DawidSkeneModel = DawidSkene(dataset)
+ *    import com.enriquegrodrigo.spark.crowd.methods.DawidSkene
+ *    import com.enriquegrodrigo.spark.crowd.types._
+ *    
+ *    val exampleFile = "data/multi-ann.parquet"
+ *    
+ *    val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation] 
+ *    
+ *    //Applying the learning algorithm
+ *    val mode = DawidSkene(exampleData)
+ *    
+ *    //Get MulticlassLabel with the class predictions
+ *    val pred = mode.getMu().as[MulticlassLabel] 
+ *    
+ *    //Annotator precision matrices
+ *    val annprec = mode.getAnnotatorPrecision()
+ *    
+ *    //Annotator likelihood 
+ *    val like = mode.getLogLikelihood()
  *  }}}
  *  @author enrique.grodrigo
- *  @version 0.1 
+ *  @version 0.1.3
  *  @see Dawid, Alexander Philip, and Allan M. Skene. "Maximum likelihood
  *  estimation of observer error-rates using the EM algorithm." Applied
  *  statistics (1979): 20-28.
@@ -186,13 +207,13 @@ object DawidSkene {
   /**
    *  Applies learning algorithm.
    *
-   *  @param dataset The dataset over which the algorithm will execute
-   *  @param eMIters Number of iterations for the EM algorithm
+   *  @param dataset The dataset over which the algorithm will execute (spark Dataset of type [[types.MulticlassAnnotation]]
+   *  @param eMIters Number of iterations for the EM algorith
    *  @param eMThreshold LogLikelihood variability threshold for the EM algorithm
-   *  @return [[com.enriquegrodrigo.spark.crowd.types.DawidSkeneModel]]
+   *  @return [[types.DawidSkeneModel]]
    *
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   def apply(dataset: Dataset[MulticlassAnnotation], eMIters: Int = 10, eMThreshold: Double = 0.001): 
       DawidSkeneModel = {
