@@ -181,6 +181,7 @@ object RaykarBinary {
     def zero: RaykarBinaryStatisticsAggregatorBuffer = RaykarBinaryStatisticsAggregatorBuffer(1,1) //Binary
     
     def reduce(b: RaykarBinaryStatisticsAggregatorBuffer, a: RaykarBinaryPartial) : RaykarBinaryStatisticsAggregatorBuffer = {
+      //Likelihood of an annotation
       val alphaValue = params.value.alpha(a.annotator)
       val alphaTerm = if (a.value == 1) alphaValue else 1-alphaValue
       val betaValue = params.value.beta(a.annotator)
@@ -193,6 +194,7 @@ object RaykarBinary {
     }
   
     def finish(reduction: RaykarBinaryStatisticsAggregatorBuffer) = {
+      //Likelihood of an example annotations given class is 1 or 0
       (reduction.a,reduction.b)
     }
   
@@ -227,7 +229,7 @@ object RaykarBinary {
   }  
 
   /**
-  * Matrix multiplication (TODO: improving using libraries)
+  * Matrix multiplication 
   * @author enrique.grodrigo
   * @version 0.1 
   */
@@ -321,6 +323,7 @@ object RaykarBinary {
     val initialModel = initialization(datasetFixed, annDataset, a_prior, b_prior, w_prior)
     val secondModel = step(gradIters, gradThreshold, gradLearning)(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
+    //Loop until any of the conditions met
     val l = Stream.range(1,eMIters).scanLeft(fixed)(step(gradIters, gradThreshold, gradLearning))
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
@@ -344,6 +347,7 @@ object RaykarBinary {
     val datasetCached = dataset.cache() 
     val nFeatures = datasetCached.take(1)(0).length - 1 //example
     val nAnnotators = annCached.select($"annotator").distinct().count().toInt
+    //Prepare priors. If no prior is provided, suppose a uniform prior for annotators
     val ap = a_prior match {
       case Some(arr) => arr 
       case None => Array.fill(nAnnotators,2)(2.0) 
@@ -352,9 +356,10 @@ object RaykarBinary {
       case Some(arr) => arr 
       case None => Array.fill(nAnnotators,2)(2.0) 
     }
+    //For weights, suppose a diagonal matrix as prior (for all but the independent term) 
     val wp: Array[Array[Double]] = w_prior match {
       case Some(arr) => arr 
-      case None => Array.tabulate(nFeatures,nFeatures){ case (x,y) => if (x == y) (if (x==0) 1 else 0) else 0 } 
+      case None => Array.tabulate(nFeatures,nFeatures){ case (x,y) => if (x == y) (if (x==0) 0 else 1) else 0 } 
     }
     val mu = MajorityVoting.transformSoftBinary(annCached)
     val placeholderStatistics = Seq(RaykarBinaryStatistics(0,0,0)).toDS()
