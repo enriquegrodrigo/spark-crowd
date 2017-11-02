@@ -42,13 +42,13 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     val sc = spark.sparkContext
     val mode = RaykarCont(data, annotations)
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value
-    assert(fis ===  20.7012, "Second example") 
+    assert(fis ===  20.707865, "Second example") 
     val fis2 = mode.getMu().filter(_.example == 5).collect()(0).value
-    assert(fis2 ===  0.00845, "Sixth example") 
+    assert(fis2 ===  0.017859, "Sixth example") 
     val fis3 = mode.getLogLikelihood()
-    assert(fis3 ===  1.5613, "Square error") 
+    assert(fis3 ===  1.560777, "Square error") 
     val fis4 = mode.getAnnotatorPrecision().filter(_.annotator == 0).collect()(0).lambda
-    assert(fis4 ===  0.2806, "First annotator precision") 
+    assert(fis4 ===  0.1944688, "First annotator precision") 
     val fis5 = mode.getModelWeights()(0)
     assert(fis5 ===  0.45575, "Model weights") 
   }

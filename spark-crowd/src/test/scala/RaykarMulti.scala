@@ -46,19 +46,19 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     assert(fis ===  1.0, "Result on the first example") 
 
     val fis2 = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
-    assert(fis2 ===  0.982154, "Result on the second example") 
+    assert(fis2 ===  0.982296, "Result on the second example") 
 
     val fis3 = mode.getMu().filter( x => x.example == 4 && x.clas == 2 ).collect()(0).prob
     assert(fis3 ===  1.0, "Result on the fifth example") 
 
     val fis4 = mode.getLogLikelihood()
-    assert(fis4 ===  -7309.94532, "LogLikelihood") 
+    assert(fis4 ===  -7307.722439, "LogLikelihood") 
 
     val fis5 = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
     assert(fis5 ===  0.68751, "AnnotatorPrecision") 
 
     val fis6 = mode.getModelWeights(0)(1)
-    assert(fis6 ===  -0.06403979, "First model weight") 
+    assert(fis6 ===  -0.066726, "First model weight") 
   }
 
 }

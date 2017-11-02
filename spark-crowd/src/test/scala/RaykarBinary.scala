@@ -45,15 +45,15 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value
     assert(fis ===  1.0, "Second example") 
     val fis2 = mode.getMu().filter(_.example == 5).collect()(0).value
-    assert(fis2 ===  0.00068, "Sixth example") 
+    assert(fis2 ===  0.0003997, "Sixth example") 
     val fis3 = mode.getAnnotatorPrecision()._1(0)
-    assert(fis3 ===  0.8749, "First annotator alpha") 
+    assert(fis3 ===  0.8763, "First annotator alpha") 
     val fis4 = mode.getAnnotatorPrecision()._2(0)
-    assert(fis4 ===  0.87752, "First annotator beta") 
+    assert(fis4 ===  0.877087, "First annotator beta") 
     val fis5 = mode.getLogLikelihood()
-    assert(fis5 ===  508152.016287, "LogLikelihood") 
+    assert(fis5 ===  507055.4341518, "LogLikelihood") 
     val fis6 = mode.getModelWeights()(1)
-    assert(fis6 ===  0.2082767, "Model weights") 
+    assert(fis6 ===  0.17042161, "Model weights") 
   }
 
 
