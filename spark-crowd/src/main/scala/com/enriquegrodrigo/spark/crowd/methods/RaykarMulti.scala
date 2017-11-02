@@ -413,7 +413,7 @@ object RaykarMulti {
                                     .last
     //Real model result
     return new RaykarMultiModel(l.mu, 
-                                  l.annotatorPrecision, 
+                                  l.annotatorPrecision,  
                                   l.logisticWeights, 
                                   l.likelihood)
   }
@@ -454,7 +454,7 @@ object RaykarMulti {
     val nAnnotators = annCached.select($"annotator").distinct().count().toInt
     val nClasses = annCached.select($"value").distinct().count().toInt
 
-    //Processing priors
+    //Processing priors (adds uniform prior if user does not provide any)
     val annotatorPrior = k_prior match {
       case Some(arr) => arr 
       case None => Array.fill(nAnnotators,nClasses,nClasses)(2.0) 
@@ -508,6 +508,10 @@ object RaykarMulti {
     val sc = model.dataset.sparkSession.sparkContext
 
 
+    /*
+     * Obtains frequencies for the combination (annotator, c, k), being c the given class and k the class the annotator
+     * annotates.
+     */
     def annotatorFrequency( annWithClassProb: Dataset[(AnnotatorClassCombination, AnnotationWithClassProb)] ) : 
           Dataset[AnnotatorFrequency] = {
 
@@ -517,7 +521,9 @@ object RaykarMulti {
                       .as[AnnotatorFrequency]
     }
 
-
+    /*
+     *  Obtains frequencies of combinations of (annotator, c), being c the given class for an example
+     */
     def annotatorClasFrequency( annWithClassProb: Dataset[(AnnotatorClassCombination, AnnotationWithClassProb)] ) : 
           Dataset[AnnotatorClassFrequency] = {
 
@@ -529,6 +535,9 @@ object RaykarMulti {
     }
 
 
+    /**
+     * Obtains prediction for the annotator precision (confusion matrix)
+     */
     def annotatorPrecision( frequencies: Dataset[AnnotatorFrequency], 
         classFreq: Dataset[AnnotatorClassFrequency] ) : Dataset[DiscreteAnnotatorPrecision] = {
           def getPrecisionWithPrior(annotator: Int, clas: Int, k: Int, num: Double, denom: Double) = {
@@ -551,6 +560,9 @@ object RaykarMulti {
     }
     
 
+    /*
+     * Obtains params a, b for the one vs all logistic regression
+     */
     def logisticRegressionParams( c: Int, frequencies: Dataset[AnnotatorFrequency], classFrequencies: Dataset[AnnotatorClassFrequency])
       : Dataset[LogisticParams] = {
 
@@ -581,11 +593,17 @@ object RaykarMulti {
                          .map(x => LogisticParams(x._1, x._2.a, x._2.b))
     }
 
+    /**
+     * Casting for spark Row members
+     */
     def castRowMember(m: Any) = m match {
             case m: Double => m 
             case m: Int => m.toDouble
     }
 
+    /**
+     * Prepares data for MLlib gradient descent
+     */
     def prepareDataLogisticGradient(logParams: Dataset[LogisticParams], mu: Dataset[BinarySoftLabel]) : 
           RDD[(Double, Vector)] = {
 
@@ -611,11 +629,17 @@ object RaykarMulti {
  
     }
 
+    /**
+     * Apply weights of a model to obtain the class prediction
+     */
     def applyModel(weights: Array[Double]) : Dataset[LogisticPrediction] = {
       model.dataset.select((Array(col("example"),col("comenriquegrodrigotempindependent")) ++ model.dataset.columns.tail.tail.map(col)):_*) 
                    .map((r : Row) => LogisticPrediction(r.getLong(0),Functions.sigmoid(Array.range(1,r.size).map(i => castRowMember(r.get(i))).zip(weights).foldLeft(0.0)((x,y) => x + y._1 * y._2 )))) 
     }
 
+    /**
+     * Obtains the logistic regression models
+     */
     def logisticRegression( frequencies: Dataset[AnnotatorFrequency], 
       classFrequencies: Dataset[AnnotatorClassFrequency] ) : (Array[Array[Double]], Dataset[LogisticMultiPrediction]) = {
       
@@ -675,7 +699,6 @@ object RaykarMulti {
                                                                 .as[(AnnotatorClassCombination, AnnotationWithClassProb)]
                                                                 .cache()
 
-    //TODO: Priors
     val freqMatrix = annotatorFrequency(fullCombination).cache()
     val freqClasMatrix = annotatorClasFrequency(fullCombination).cache()
 
@@ -713,7 +736,7 @@ object RaykarMulti {
                                .as[EStepEstimationPoint]
 
     
-    //Computes ground truth estimation of each example
+    //Computes ground truth estimation of each example, returning a probability for each class.
     val numerator = eStepData.groupByKey(x => (x.example, x.clas))
                              .agg((new AnnotationsLikelihoodAggregator()).toColumn)
                              .as[Tuple2[Tuple2[Long,Int],Double]]
