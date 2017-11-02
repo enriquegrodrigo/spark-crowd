@@ -274,7 +274,7 @@ object DawidSkene {
     val data = model.dataset
     val nClasses = model.nClasses
     val nAnnotators = model.nAnnotators
-    val pi = Array.ofDim[Double](nAnnotators.toInt,nClasses,nClasses)
+    val pi = Array.fill[Double](nAnnotators.toInt,nClasses,nClasses)(1/nClasses) //Case where annotator never classfied as a class
     val w = Array.ofDim[Double](nClasses)
 
     //Estimation of annotator confusión matrices
@@ -284,9 +284,11 @@ object DawidSkene {
                    .agg(count("example") as "num")
     val pisd= nums.as("n").join(denoms.as("d"), 
                         ($"n.annotator" === $"d.annotator") &&  
-                        ($"n.est" === $"d.est"))
+                        ($"n.est" === $"d.est"), "right_outer")
                   .select(col("n.annotator"), col("n.est") as "j", col("n.value") as "l", 
-                          (col("n.num") + 1)/(col("d.denom") + nClasses) as "pi")
+                            when(col("n.num").isNull, lit(1)/(col("d.denom") + nClasses))
+                              .otherwise((col("n.num") + 1)/(col("d.denom") + nClasses)) 
+                              as "pi")
                   .as[PiValue]
     val pis = pisd.collect
 
