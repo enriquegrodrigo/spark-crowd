@@ -217,6 +217,7 @@ object RaykarCont {
     val initialModel = initialization(datasetFixed, annDataset)
     val secondModel = step(gradIters, gradThreshold, gradLearning)(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
+    //Loop until the conditions are met
     val l = Stream.range(1,eMIters).scanLeft(fixed)(step(gradIters, gradThreshold, gradLearning))
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
@@ -343,34 +344,34 @@ object RaykarCont {
   */
   private[crowd] def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarContPartialModel, i: Int): RaykarContPartialModel = {
     import model.dataset.sparkSession.implicits._ 
-    val joined: Dataset[AnnotationsWithPredictions] = 
-      model.annotatorData.joinWith(model.mu, 
-                                     model.annotatorData.col("example") === model.mu.col("example"))
-                         .as[(RealAnnotation,RealLabel)]
-                         .map(x => AnnotationsWithPredictions(x._1.example, 
-                                                                x._1.annotator, 
-                                                                x._1.value, 
-                                                                x._2.value))
-
-    val lambdas: Dataset[RealAnnotatorPrecision] = computeLambda(joined)
-
-    val mu: Dataset[MuEstimation] = computeYPred(model.annotatorData, lambdas)
     
-    val preparedData: DataFrame = prepareDataGradient(model.dataset, mu)
-
+    //Linear regression optimization
+    val preparedData: DataFrame = prepareDataGradient(model.dataset, model.mu)
     val preparedRDD: RDD[(Double, Vector)] =  gradientDataToRDD(preparedData)
-
     val grad = new RaykarContGradient()
     val updater = new SimpleUpdater()
     val rand = new Random(0) //First weight estimation is random
     val initialWeights = Vectors.dense(Array.tabulate(model.nFeatures)(x => rand.nextDouble())) 
     val opt = GradientDescent.runMiniBatchSGD(preparedRDD,grad,updater,gradLearning,gradIters,0,1,initialWeights,gradThreshold)._1
     val optWeights = opt.toArray
-
     val weights = model.mu.sparkSession.sparkContext.broadcast(optWeights)
     val pred = preparedData.map(r => RealLabel(r.getLong(1), computePred(weights, r))) 
     val like = pred.joinWith(mu, pred.col("example") === mu.col("example")).map(x => computeLikeInstance(x._2.mu, x._1.value)).reduce(_+_) / model.dataset.count()
-    //val lambdasFix = lambdas.map{ case RealAnnotatorPrecision(annotator, lambda) => RealLabel(annotator, lambda) }
+    
+    val joined: Dataset[AnnotationsWithPredictions] = 
+      model.annotatorData.joinWith(pred, 
+                                     model.annotatorData.col("example") === model.mu.col("example"))
+                         .as[(RealAnnotation,RealLabel)]
+                         .map(x => AnnotationsWithPredictions(x._1.example, 
+                                                                x._1.annotator, 
+                                                                x._1.value, 
+                                                                x._2.value))
+    //Estimation of annotator precision
+    val lambdas: Dataset[RealAnnotatorPrecision] = computeLambda(joined)
+
+   
+    //Estimation of ground truth EStep
+    val mu: Dataset[MuEstimation] = computeYPred(model.annotatorData, lambdas)
     val muFix = mu.map{ case MuEstimation(annotator, mu) => RealLabel(annotator, mu) }
     model.modify(nMu=muFix.cache(), nWeights=weights, nLambdas = lambdas, nLogLikelihood = like, nImprovement = model.logLikelihood-like)
   }
