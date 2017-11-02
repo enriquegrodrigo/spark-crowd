@@ -58,7 +58,7 @@ object DawidSkene {
   *  Partial model shared through EM iterations 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
   private[crowd] case class DawidSkenePartialModel(dataset: Dataset[DawidSkenePartial], params: Broadcast[DawidSkeneParams], 
                                   logLikelihood: Double, improvement: Double, nClasses: Int, 
@@ -81,7 +81,7 @@ object DawidSkene {
   * Case class storing the annotator precision and the class weights 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3
   */
   private[crowd] case class DawidSkeneParams(pi: Array[Array[Array[Double]]], w: Array[Double])
 
@@ -89,7 +89,7 @@ object DawidSkene {
   *  Stores examples with class estimation 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
   private[crowd] case class DawidSkenePartial(example: Long, annotator: Long, value: Int, est: Int)
 
@@ -99,7 +99,7 @@ object DawidSkene {
    *  would classify an example of class {{j}} as class {{l}}.
    *
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[crowd] case class PiValue(annotator: Long, j: Integer, l:Integer, pi: Double)
 
@@ -108,7 +108,7 @@ object DawidSkene {
    *  probability of appearance of the class
    *  
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[crowd] case class WValue(c: Integer, p: Double)
 
@@ -117,7 +117,7 @@ object DawidSkene {
   *  
   *  
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
   private[crowd] case class DawidSkeneAggregatorBuffer(aggVect: scala.collection.Seq[Double])
 
@@ -126,7 +126,7 @@ object DawidSkene {
   *  
   *  
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
   private[crowd] case class DawidSkeneLogLikelihoodAggregatorBuffer(agg: Double, predClass: Int)
 
@@ -139,7 +139,7 @@ object DawidSkene {
   *  
   *  
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
   private[crowd] class DawidSkeneEAggregator(params: Broadcast[DawidSkeneParams], nClasses: Int) 
     extends Aggregator[DawidSkenePartial, DawidSkeneAggregatorBuffer, Int]{
@@ -179,7 +179,7 @@ object DawidSkene {
   *  
   *  
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
   private[crowd] class DawidSkeneLogLikelihoodAggregator(params: Broadcast[DawidSkeneParams]) 
     extends Aggregator[DawidSkenePartial, DawidSkeneLogLikelihoodAggregatorBuffer, Double]{
@@ -251,7 +251,7 @@ object DawidSkene {
    *  @param model the partial DawidSkene model (DawidSkenePartialModel)
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[crowd] def eStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
@@ -275,7 +275,7 @@ object DawidSkene {
    *  @param model the partial DawidSkene model (DawidSkenePartialModel)
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[crowd] def mStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._
@@ -334,7 +334,7 @@ object DawidSkene {
    *  @param i step number
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3
    */
   private[crowd] def step(model: DawidSkenePartialModel, i: Int): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
@@ -350,7 +350,7 @@ object DawidSkene {
    *  @param model the partial DawidSkene model (DawidSkenePartialModel)
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[crowd] def logLikelihood(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
@@ -366,7 +366,7 @@ object DawidSkene {
    *  @param dataset the dataset of MulticlassAnnotation
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[crowd] def initialization(dataset: Dataset[MulticlassAnnotation]): DawidSkenePartialModel = {
     val sc = dataset.sparkSession.sparkContext
