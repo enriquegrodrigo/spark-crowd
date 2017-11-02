@@ -19,11 +19,41 @@ import scala.math._
  *  Provides functions for transforming an annotation dataset into 
  *  a standard label dataset using the Raykar algorithm for multiclass
  *
- *  This algorithm only works with [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]] annotation datasets
+ *  This algorithm only works with [[types.MulticlassAnnotation]] datasets. There are versions for the 
+ *  [[types.BinaryAnnotation]] ([[RaykarBinary]]) and [[types.RealAnnotation]] ([[RaykarCont]]).
+ *
+ *  It will return a [[types.RaykarMultiModel]] with information about the estimation of the 
+ *  ground truth for each example (probability for each class), the annotator precision estimation 
+ *  of the model, the weights of the three (one vs all) logistic regression model learned and 
+ *  the log-likelihood of the model. 
+ *
+ *  The next example can be found in the examples folders. In it, the user may also find an example
+ *  of how to add prior confidence on the annotators.
  *
  *  @example
  *  {{{
- *    result: RaykarMultiModel = RaykarMulti(dataset, annotations)
+ *    import com.enriquegrodrigo.spark.crowd.methods.RaykarMulti
+ *    import com.enriquegrodrigo.spark.crowd.types._
+ *    
+ *    sc.setCheckpointDir("checkpoint")
+ *    
+ *    val exampleFile = "data/multi-data.parquet"
+ *    val annFile = "data/multi-ann.parquet"
+ *    
+ *    val exampleData = spark.read.parquet(exampleFile)
+ *    val annData = spark.read.parquet(annFile).as[MulticlassAnnotation] 
+ *    
+ *    //Applying the learning algorithm
+ *    val mode = RaykarMulti(exampleData, annData)
+ *    
+ *    //Get MulticlassLabel with the class predictions
+ *    val pred = mode.getMu().as[MulticlassSoftProb] 
+ *    
+ *    //Annotator precision matrices
+ *    val annprec = mode.getAnnotatorPrecision()
+ *    
+ *    //Annotator likelihood 
+ *    val like = mode.getLogLikelihood()
  *  }}}
  *  @author enrique.grodrigo
  *  @version 0.1 
@@ -42,7 +72,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class RaykarMultiPartialModel(dataset: DataFrame, 
+  private[crowd] case class RaykarMultiPartialModel(dataset: DataFrame, 
                                       annotations: Dataset[MulticlassAnnotation],
                                       mu: Dataset[MulticlassSoftProb],
                                       annotatorPrecision: Dataset[DiscreteAnnotatorPrecision],
@@ -99,7 +129,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class AnnotatorClassCombination(annotator: Long, clas: Int, k: Int)
+  private[crowd] case class AnnotatorClassCombination(annotator: Long, clas: Int, k: Int)
   
   /**
    *  Dataset with both annotations and class probability estimated in the previous step, for obtaining the 
@@ -107,7 +137,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class AnnotationWithClassProb(example: Long, clas: Int, prob: Double, annotator: Long, annotation: Int)
+  private[crowd] case class AnnotationWithClassProb(example: Long, clas: Int, prob: Double, annotator: Long, annotation: Int)
 
   /**
    *  Dataset with soft frequency of (annotator,c,k) in the annotations dataset. 
@@ -116,7 +146,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class AnnotatorFrequency(annotator: Long, clas: Int, k:Int, frequency: Double)
+  private[crowd] case class AnnotatorFrequency(annotator: Long, clas: Int, k:Int, frequency: Double)
 
   /**
    *  Dataset with soft frequency of (annotator,c) in the annotations dataset
@@ -125,7 +155,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class AnnotatorClassFrequency(annotator: Long, clas: Int, frequency: Double)
+  private[crowd] case class AnnotatorClassFrequency(annotator: Long, clas: Int, frequency: Double)
 
   /**
    *  Aggregation of annotator parameters for each example in the one vs all approach for 
@@ -133,42 +163,42 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class LogisticParams(example: Long, a: Double, b: Double)
+  private[crowd] case class LogisticParams(example: Long, a: Double, b: Double)
 
   /**
    *  Mu estimate with logistic params for the example 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class MuWithLogisticParams(example: Long, mu: Double, a: Double, b:Double)
+  private[crowd] case class MuWithLogisticParams(example: Long, mu: Double, a: Double, b:Double)
   
   /**
    *  Logistic Annotator params for the LogisticParams aggregator
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class LogisticAnnotatorParams(a: Double, b:Double)
+  private[crowd] case class LogisticAnnotatorParams(a: Double, b:Double)
 
   /**
    *  Logistic prediction for the one vs all approach  
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class LogisticPrediction(example: Long, prob: Double)
+  private[crowd] case class LogisticPrediction(example: Long, prob: Double)
 
   /**
    *  Logistic prediction for the full multiclass problem 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class LogisticMultiPrediction(example: Long, clas: Int, prob: Double)
+  private[crowd] case class LogisticMultiPrediction(example: Long, clas: Int, prob: Double)
 
   /**
    *  Normalizer for logistic predictions 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class Normalizer(example: Long, norm: Double)
+  private[crowd] case class Normalizer(example: Long, norm: Double)
 
 
   /**
@@ -176,21 +206,21 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class AnnotationsWithLogisticPrediction(example: Long, clas: Int, prediction: Double, annotator: Long, annotation: Int) 
+  private[crowd] case class AnnotationsWithLogisticPrediction(example: Long, clas: Int, prediction: Double, annotator: Long, annotation: Int) 
   
   /**
    *  EStep estimation point with information about annotation probability and the logistic prediction. 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class EStepEstimationPoint(example: Long, clas: Int, prediction: Double, annotator: Long, annotation: Int, annotationProb: Double) 
+  private[crowd] case class EStepEstimationPoint(example: Long, clas: Int, prediction: Double, annotator: Long, annotation: Int, annotationProb: Double) 
 
   /**
    *  Likelihood estimation point with annotation likelihood as well as the true class estimation form E Step 
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  case class LikelihoodPoint(example: Long, clas: Int, mu: Double, annotationsLikelihood: Double) 
+  private[crowd] case class LikelihoodPoint(example: Long, clas: Int, mu: Double, annotationsLikelihood: Double) 
 
 
   /****************************************************/
@@ -202,7 +232,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class AnnotationsLikelihoodAggregator() extends Aggregator[EStepEstimationPoint, (Double,Double), Double] {
+  private[crowd] class AnnotationsLikelihoodAggregator() extends Aggregator[EStepEstimationPoint, (Double,Double), Double] {
     def zero: (Double,Double)= (1.0,-1.0)
     def reduce(b: (Double, Double), a: EStepEstimationPoint) : (Double,Double) =  (a.annotationProb * b._1, a.prediction)
     def merge(b1: (Double,Double), b2: (Double,Double)) : (Double,Double) = (b1._1 * b2._1, if (b1._2 >= 0) b1._2 else b2._2)
@@ -216,7 +246,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class FrequencyAggregator() extends Aggregator[Tuple2[AnnotatorClassCombination,AnnotationWithClassProb], Double, Double] {
+  private[crowd] class FrequencyAggregator() extends Aggregator[Tuple2[AnnotatorClassCombination,AnnotationWithClassProb], Double, Double] {
     def zero: Double = 0
     def reduce(b: Double, a: (AnnotatorClassCombination, AnnotationWithClassProb)) = a match {
       case (_, null) => b
@@ -233,7 +263,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class ClassFrequencyAggregator() extends Aggregator[Tuple2[AnnotatorClassCombination, AnnotationWithClassProb], Double, Double] {
+  private[crowd] class ClassFrequencyAggregator() extends Aggregator[Tuple2[AnnotatorClassCombination, AnnotationWithClassProb], Double, Double] {
     def zero: Double = 0
     def reduce(b: Double, a: Tuple2[AnnotatorClassCombination, AnnotationWithClassProb]) = a match {
       case (_, null) => b
@@ -250,7 +280,7 @@ object RaykarMulti {
    *  @author enrique.grodrigo
    *  @version 0.1 
    */
-  class LogisticParamAggregator() extends Aggregator[Tuple2[MulticlassAnnotation, DiscreteAnnotatorPrecision], LogisticAnnotatorParams, LogisticAnnotatorParams] {
+  private[crowd] class LogisticParamAggregator() extends Aggregator[Tuple2[MulticlassAnnotation, DiscreteAnnotatorPrecision], LogisticAnnotatorParams, LogisticAnnotatorParams] {
     def zero: LogisticAnnotatorParams = LogisticAnnotatorParams(1,1) 
     def reduce(b: LogisticAnnotatorParams, a: Tuple2[MulticlassAnnotation, DiscreteAnnotatorPrecision]) = a match {
       case (_, DiscreteAnnotatorPrecision(_,0,_,prob)) => LogisticAnnotatorParams(b.a, b.b * prob) 
@@ -270,7 +300,7 @@ object RaykarMulti {
   /**
   * Computes the logistic function for a data point 
   */
-  def computeSigmoid(x: Array[Double], w: Array[Double]): Double = {
+  private[crowd] def computeSigmoid(x: Array[Double], w: Array[Double]): Double = {
       val vectMult = x.zip(w).map{case (x,w) =>  x*w}
       Functions.sigmoid(vectMult.sum)
   }
@@ -278,7 +308,7 @@ object RaykarMulti {
   /**
   * Computes the negative likelihood of a point (loss)
   */
-  def computePointLoss(mui: Double, pi: Double, ai: Double, bi: Double): Double = {
+  private[crowd] def computePointLoss(mui: Double, pi: Double, ai: Double, bi: Double): Double = {
     val mulaipi = ai*pi
     val mulbipi = bi*(1-pi)
     -(Functions.prodlog(mui,mulaipi) + Functions.prodlog((1-mui),mulbipi))
@@ -287,14 +317,14 @@ object RaykarMulti {
   /**
   * Matrix multiplication (TODO: improving using libraries)
   */
-  def matMult (mat: Array[Array[Double]], v: Array[Double]): Array[Double] = {
+  private[crowd] def matMult (mat: Array[Array[Double]], v: Array[Double]): Array[Double] = {
     mat.map(mv => mv.zip(v).map{ case (x,y) => x*y }.reduce(_ + _))
   }
 
   /**
   * Computes the gradient for the SGD algorithm 
   */
-  class RaykarMultiGradient() extends Gradient {
+  private[crowd] class RaykarMultiGradient() extends Gradient {
 
     override def compute(data: Vector, label: Double, weights: Vector, cumGradient:Vector): Double = {
       val w = weights.toArray 
@@ -325,7 +355,7 @@ object RaykarMulti {
   * Computes updater for the SGD algorithm.
   * Adds the regularization priors.
   */
-  class RaykarMultiUpdater(weightsPrior: Broadcast[Array[Array[Double]]]) extends Updater {
+  private[crowd] class RaykarMultiUpdater(weightsPrior: Broadcast[Array[Array[Double]]]) extends Updater {
     def compute(weightsOld:Vector, gradient: Vector, stepSize: Double, iter: Int, regParam: Double) = {
 
       val regTerm = matMult(weightsPrior.value, weightsOld.toArray) //Regularization with prior weights
@@ -349,8 +379,8 @@ object RaykarMulti {
   /**
   *  Applies the learning algorithm
   *
-  *  @param dataset the dataset with feature vectors.
-  *  @param annDataset the dataset with the annotations.
+  *  @param dataset the dataset with feature vectors (spark Dataframe).
+  *  @param annDataset the dataset with the annotations (spark Dataset of [[types.MulticlassAnnotation]]).
   *  @param emIters number of iterations for the EM algorithm
   *  @param emThreshold logLikelihood variability threshold for the EM algorithm
   *  @param gradIters maximum number of iterations for the GradientDescent algorithm
@@ -363,7 +393,7 @@ object RaykarMulti {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def apply(dataset: DataFrame, annDataset: Dataset[MulticlassAnnotation], eMIters: Int = 3, 
+  def apply(dataset: DataFrame, annDataset: Dataset[MulticlassAnnotation], eMIters: Int = 5, 
             eMThreshold: Double = 0.001, gradIters: Int = 100, gradThreshold: Double = 0.1, 
             gradLearning: Double=0.1, 
             k_prior: Option[Array[Array[Array[Double]]]]= None, 
@@ -383,7 +413,7 @@ object RaykarMulti {
                                     .last
     //Real model result
     return new RaykarMultiModel(l.mu, 
-                                  l.annotatorPrecision, 
+                                  l.annotatorPrecision,  
                                   l.logisticWeights, 
                                   l.likelihood)
   }
@@ -394,7 +424,7 @@ object RaykarMulti {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarMultiPartialModel, 
+  private[crowd] def step(gradIters: Int, gradThreshold: Double, gradLearning: Double)(model: RaykarMultiPartialModel, 
                             i: Int): RaykarMultiPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val m = mStep(model, gradIters, gradThreshold, gradLearning)
@@ -410,7 +440,7 @@ object RaykarMulti {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def initialization(dataset: DataFrame, annotatorData: Dataset[MulticlassAnnotation], 
+  private[crowd] def initialization(dataset: DataFrame, annotatorData: Dataset[MulticlassAnnotation], 
                       k_prior: Option[Array[Array[Array[Double]]]], 
                       w_prior: Option[Array[Array[Array[Double]]]]): RaykarMultiPartialModel = {
     val sc = dataset.sparkSession.sparkContext
@@ -424,7 +454,7 @@ object RaykarMulti {
     val nAnnotators = annCached.select($"annotator").distinct().count().toInt
     val nClasses = annCached.select($"value").distinct().count().toInt
 
-    //Processing priors
+    //Processing priors (adds uniform prior if user does not provide any)
     val annotatorPrior = k_prior match {
       case Some(arr) => arr 
       case None => Array.fill(nAnnotators,nClasses,nClasses)(2.0) 
@@ -432,7 +462,7 @@ object RaykarMulti {
 
     val weightsPrior: Array[Array[Array[Double]]] = w_prior match {
       case Some(arr) => arr 
-      case None => Array.tabulate(nClasses,nFeatures,nFeatures){ case (c,x,y) => if (x == y) 1 else 0 } 
+      case None => Array.tabulate(nClasses,nFeatures,nFeatures){ case (c,x,y) => if (x == y) (if (x == 0) 0 else 1) else 0 } 
     }
 
     //MajorityVoting estimation
@@ -472,12 +502,16 @@ object RaykarMulti {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def mStep(model: RaykarMultiPartialModel, gradIters: Int, gradThreshold: Double, gradLearning: Double): RaykarMultiPartialModel = {
+  private[crowd] def mStep(model: RaykarMultiPartialModel, gradIters: Int, gradThreshold: Double, gradLearning: Double): RaykarMultiPartialModel = {
 
     import model.dataset.sparkSession.implicits._ 
     val sc = model.dataset.sparkSession.sparkContext
 
 
+    /*
+     * Obtains frequencies for the combination (annotator, c, k), being c the given class and k the class the annotator
+     * annotates.
+     */
     def annotatorFrequency( annWithClassProb: Dataset[(AnnotatorClassCombination, AnnotationWithClassProb)] ) : 
           Dataset[AnnotatorFrequency] = {
 
@@ -487,7 +521,9 @@ object RaykarMulti {
                       .as[AnnotatorFrequency]
     }
 
-
+    /*
+     *  Obtains frequencies of combinations of (annotator, c), being c the given class for an example
+     */
     def annotatorClasFrequency( annWithClassProb: Dataset[(AnnotatorClassCombination, AnnotationWithClassProb)] ) : 
           Dataset[AnnotatorClassFrequency] = {
 
@@ -499,6 +535,9 @@ object RaykarMulti {
     }
 
 
+    /**
+     * Obtains prediction for the annotator precision (confusion matrix)
+     */
     def annotatorPrecision( frequencies: Dataset[AnnotatorFrequency], 
         classFreq: Dataset[AnnotatorClassFrequency] ) : Dataset[DiscreteAnnotatorPrecision] = {
           def getPrecisionWithPrior(annotator: Int, clas: Int, k: Int, num: Double, denom: Double) = {
@@ -521,6 +560,9 @@ object RaykarMulti {
     }
     
 
+    /*
+     * Obtains params a, b for the one vs all logistic regression
+     */
     def logisticRegressionParams( c: Int, frequencies: Dataset[AnnotatorFrequency], classFrequencies: Dataset[AnnotatorClassFrequency])
       : Dataset[LogisticParams] = {
 
@@ -551,11 +593,17 @@ object RaykarMulti {
                          .map(x => LogisticParams(x._1, x._2.a, x._2.b))
     }
 
+    /**
+     * Casting for spark Row members
+     */
     def castRowMember(m: Any) = m match {
             case m: Double => m 
             case m: Int => m.toDouble
     }
 
+    /**
+     * Prepares data for MLlib gradient descent
+     */
     def prepareDataLogisticGradient(logParams: Dataset[LogisticParams], mu: Dataset[BinarySoftLabel]) : 
           RDD[(Double, Vector)] = {
 
@@ -581,11 +629,17 @@ object RaykarMulti {
  
     }
 
+    /**
+     * Apply weights of a model to obtain the class prediction
+     */
     def applyModel(weights: Array[Double]) : Dataset[LogisticPrediction] = {
       model.dataset.select((Array(col("example"),col("comenriquegrodrigotempindependent")) ++ model.dataset.columns.tail.tail.map(col)):_*) 
                    .map((r : Row) => LogisticPrediction(r.getLong(0),Functions.sigmoid(Array.range(1,r.size).map(i => castRowMember(r.get(i))).zip(weights).foldLeft(0.0)((x,y) => x + y._1 * y._2 )))) 
     }
 
+    /**
+     * Obtains the logistic regression models
+     */
     def logisticRegression( frequencies: Dataset[AnnotatorFrequency], 
       classFrequencies: Dataset[AnnotatorClassFrequency] ) : (Array[Array[Double]], Dataset[LogisticMultiPrediction]) = {
       
@@ -645,7 +699,6 @@ object RaykarMulti {
                                                                 .as[(AnnotatorClassCombination, AnnotationWithClassProb)]
                                                                 .cache()
 
-    //TODO: Priors
     val freqMatrix = annotatorFrequency(fullCombination).cache()
     val freqClasMatrix = annotatorClasFrequency(fullCombination).cache()
 
@@ -665,7 +718,7 @@ object RaykarMulti {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def eStep(model: RaykarMultiPartialModel): RaykarMultiPartialModel = {
+  private[crowd] def eStep(model: RaykarMultiPartialModel): RaykarMultiPartialModel = {
 
     import model.dataset.sparkSession.implicits._ 
 
@@ -683,7 +736,7 @@ object RaykarMulti {
                                .as[EStepEstimationPoint]
 
     
-    //Computes ground truth estimation of each example
+    //Computes ground truth estimation of each example, returning a probability for each class.
     val numerator = eStepData.groupByKey(x => (x.example, x.clas))
                              .agg((new AnnotationsLikelihoodAggregator()).toColumn)
                              .as[Tuple2[Tuple2[Long,Int],Double]]
@@ -713,7 +766,7 @@ object RaykarMulti {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def logLikelihood(model: RaykarMultiPartialModel): RaykarMultiPartialModel = {
+  private[crowd] def logLikelihood(model: RaykarMultiPartialModel): RaykarMultiPartialModel = {
     import model.dataset.sparkSession.implicits._ 
 
     //Takes advantage of EStep results about likelihood of the annotators and computes the data likelihood

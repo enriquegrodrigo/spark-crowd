@@ -49,7 +49,31 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p> Provides functions for transforming an annotation dataset into
+ a standard label dataset using the Raykar algorithm for multiclass</p><p> This algorithm only works with <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">types.RealAnnotation</a> datasets. There are versions for the
+ <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> (<a href="RaykarBinary$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarBinary">RaykarBinary</a>) and <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a> (<a href="RaykarMulti$.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarMulti">RaykarMulti</a>).</p><p> It will return a <a href="../types/RaykarContModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel">types.RaykarContModel</a> with information about the estimation of the
+ ground truth for each example, the annotator precision estimation
+ of the model, the weights of the linear regression model learned and
+ the MAE of the model.</p><p> The next example can be found in the examples folders. In it, the user may also find an example
+ of how to add prior confidence on the annotators.
+</p></div><dl class="attributes block"> <div class="block">Example:
+               <ol><li class="cmt"><p></p><pre><span class="kw">import</span> com.enriquegrodrigo.spark.crowd.methods.RaykarCont
+<span class="kw">import</span> com.enriquegrodrigo.spark.crowd.types._
+sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
+<span class="kw">val</span> exampleFile = <span class="lit">"data/cont-data.parquet"</span>
+<span class="kw">val</span> annFile = <span class="lit">"data/cont-ann.parquet"</span>
+<span class="kw">val</span> exampleData = spark.read.parquet(exampleFile)
+<span class="kw">val</span> annData = spark.read.parquet(annFile).as[RealAnnotation]
+<span class="cmt">//Applying the learning algorithm</span>
+<span class="kw">val</span> mode = RaykarCont(exampleData, annData)
+<span class="cmt">//Get MulticlassLabel with the class predictions</span>
+<span class="kw">val</span> pred = mode.getMu().as[RealLabel]
+<span class="cmt">//Annotator precision matrices</span>
+<span class="kw">val</span> annprec = mode.getAnnotatorPrecision()
+<span class="cmt">//Annotator likelihood</span>
+<span class="kw">val</span> like = mode.getLogLikelihood()</pre></li></ol>
+            </div><dt>Version</dt><dd><p>0.1</p></dd><dt>See also</dt><dd><span class="cmt"><p>Raykar, Vikas C., et al. &quot;Learning from crowds.&quot; Journal of Machine
+ Learning Research 11.Apr (2010): 1297-1322.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -88,163 +112,7 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithLambda" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="AnnotationsWithLambdaextendsProductwithSerializable"></a>
-      <a id="AnnotationsWithLambda:AnnotationsWithLambda"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$AnnotationsWithLambda.html"><span class="name">AnnotationsWithLambda</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="lambda">lambda: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@AnnotationsWithLambdaextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Annotation with lambda information of the annotator</p><div class="fullcomment"><div class="comment cmt"><p> Annotation with lambda information of the annotator</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="AnnotationsWithPredictionsextendsProductwithSerializable"></a>
-      <a id="AnnotationsWithPredictions:AnnotationsWithPredictions"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$AnnotationsWithPredictions.html"><span class="name">AnnotationsWithPredictions</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="prediction">prediction: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@AnnotationsWithPredictionsextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Annotation with prediction information for the example</p><div class="fullcomment"><div class="comment cmt"><p> Annotation with prediction information for the example</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="AnnotatorLambdaextendsProductwithSerializable"></a>
-      <a id="AnnotatorLambda:AnnotatorLambda"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$AnnotatorLambda.html"><span class="name">AnnotatorLambda</span></a><span class="params">(<span name="annotator">annotator: <span class="extype" name="scala.Long">Long</span></span>, <span name="lambda">lambda: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@AnnotatorLambdaextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Lambda estimation for each annotator</p><div class="fullcomment"><div class="comment cmt"><p> Lambda estimation for each annotator</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.LambdaAggregator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="LambdaAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions,(Double,Double),Double]"></a>
-      <a id="LambdaAggregator:LambdaAggregator"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$LambdaAggregator.html"><span class="name">LambdaAggregator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.Aggregator">Aggregator</span>[<a href="RaykarCont$$AnnotationsWithPredictions.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions">AnnotationsWithPredictions</a>, (<span class="extype" name="scala.Double">Double</span>, <span class="extype" name="scala.Double">Double</span>), <span class="extype" name="scala.Double">Double</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@LambdaAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions,(Double,Double),Double]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Obtains a estimation of lambda for an annotator</p><div class="fullcomment"><div class="comment cmt"><p> Obtains a estimation of lambda for an annotator</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.LinearPrediction" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="LinearPredictionextendsProductwithSerializable"></a>
-      <a id="LinearPrediction:LinearPrediction"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$LinearPrediction.html"><span class="name">LinearPrediction</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="mu">mu: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@LinearPredictionextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Linear regresion prediction for an example</p><div class="fullcomment"><div class="comment cmt"><p> Linear regresion prediction for an example</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuAggregator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="MuAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithLambda,(Double,Double),Double]"></a>
-      <a id="MuAggregator:MuAggregator"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$MuAggregator.html"><span class="name">MuAggregator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.Aggregator">Aggregator</span>[<a href="RaykarCont$$AnnotationsWithLambda.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithLambda">AnnotationsWithLambda</a>, (<span class="extype" name="scala.Double">Double</span>, <span class="extype" name="scala.Double">Double</span>), <span class="extype" name="scala.Double">Double</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@MuAggregatorextendsAggregator[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithLambda,(Double,Double),Double]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Obtains an estimation of mu for each example</p><div class="fullcomment"><div class="comment cmt"><p> Obtains an estimation of mu for each example</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="MuEstimationextendsProductwithSerializable"></a>
-      <a id="MuEstimation:MuEstimation"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$MuEstimation.html"><span class="name">MuEstimation</span></a><span class="params">(<span name="example">example: <span class="extype" name="scala.Long">Long</span></span>, <span name="mu">mu: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@MuEstimationextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Mu estimation for an example</p><div class="fullcomment"><div class="comment cmt"><p> Mu estimation for an example</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContGradient" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="RaykarContGradientextendsGradient"></a>
-      <a id="RaykarContGradient:RaykarContGradient"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$RaykarContGradient.html"><span class="name">RaykarContGradient</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.mllib.optimization.Gradient">Gradient</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@RaykarContGradientextendsGradient" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Gradient descent method for the linear regresion part of the model</p><div class="fullcomment"><div class="comment cmt"><p> Gradient descent method for the linear regresion part of the model</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="RaykarContPartialModelextendsProductwithSerializable"></a>
-      <a id="RaykarContPartialModel:RaykarContPartialModel"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="RaykarCont$$RaykarContPartialModel.html"><span class="name">RaykarContPartialModel</span></a><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annotatorData">annotatorData: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">RealAnnotation</a>]</span>, <span name="mu">mu: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealLabel">RealLabel</a>]</span>, <span name="lambda">lambda: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealLabel">RealLabel</a>]</span>, <span name="weights">weights: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="improvement">improvement: <span class="extype" name="scala.Double">Double</span></span>, <span name="nAnnotators">nAnnotators: <span class="extype" name="scala.Int">Int</span></span>, <span name="nFeatures">nFeatures: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@RaykarContPartialModelextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> RaykarCon partial model shared through iterations</p><div class="fullcomment"><div class="comment cmt"><p> RaykarCon partial model shared through iterations</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         
 
@@ -310,7 +178,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annDataset">annDataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">RealAnnotation</a>]</span>, <span name="eMIters">eMIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="eMThreshold">eMThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.001</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.1</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.1</span></span>)</span><span class="result">: <a href="../types/RaykarContModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel">RaykarContModel</a></span>
+        <span class="name">apply</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annDataset">annDataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">RealAnnotation</a>]</span>, <span name="eMIters">eMIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">5</span></span>, <span name="eMThreshold">eMThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.001</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.1</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.1</span></span>)</span><span class="result">: <a href="../types/RaykarContModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel">RaykarContModel</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@apply(dataset:org.apache.spark.sql.DataFrame,annDataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotation],eMIters:Int,eMThreshold:Double,gradIters:Int,gradThreshold:Double,gradLearning:Double):com.enriquegrodrigo.spark.crowd.types.RaykarContModel" title="Permalink" target="_top">
@@ -319,7 +187,7 @@
     </span>
       <p class="shortcomment cmt"> Applies the learning algorithm
 </p><div class="fullcomment"><div class="comment cmt"><p> Applies the learning algorithm
-</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>the dataset with feature vectors.</p></dd><dt class="param">annDataset</dt><dd class="cmt"><p>the dataset with the annotations.</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>maximum number of iterations for the GradientDescent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt class="param">gradLearning</dt><dd class="cmt"><p>learning rate for the gradient descent algorithm</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../types/RaykarContModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel">com.enriquegrodrigo.spark.crowd.types.RaykarContModel</a></p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>the dataset with feature vectors (spark Dataframe).</p></dd><dt class="param">annDataset</dt><dd class="cmt"><p>the dataset with the annotations (spark Dataset of <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">types.RealAnnotation</a>.</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>maximum number of iterations for the GradientDescent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt class="param">gradLearning</dt><dd class="cmt"><p>learning rate for the gradient descent algorithm</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../types/RaykarContModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel">com.enriquegrodrigo.spark.crowd.types.RaykarContModel</a></p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -337,25 +205,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#castRowMember" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="castRowMember(m:Any):Double"></a>
-      <a id="castRowMember(Any):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">castRowMember</span><span class="params">(<span name="m">m: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@castRowMember(m:Any):Double" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Cast row member
-</p><div class="fullcomment"><div class="comment cmt"><p> Cast row member
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -379,79 +228,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#computeLambda" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeLambda(joined:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda]"></a>
-      <a id="computeLambda(Dataset[AnnotationsWithPredictions]):Dataset[AnnotatorLambda]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeLambda</span><span class="params">(<span name="joined">joined: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RaykarCont$$AnnotationsWithPredictions.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions">AnnotationsWithPredictions</a>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RaykarCont$$AnnotatorLambda.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda">AnnotatorLambda</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@computeLambda(joined:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotationsWithPredictions]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Compute lambda estimation
-</p><div class="fullcomment"><div class="comment cmt"><p> Compute lambda estimation
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#computeLikeInstance" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeLikeInstance(mui:Double,predi:Double):Double"></a>
-      <a id="computeLikeInstance(Double,Double):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeLikeInstance</span><span class="params">(<span name="mui">mui: <span class="extype" name="scala.Double">Double</span></span>, <span name="predi">predi: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@computeLikeInstance(mui:Double,predi:Double):Double" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Computes square error of an instance</p><div class="fullcomment"><div class="comment cmt"><p> Computes square error of an instance</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#computePred" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computePred(weights:org.apache.spark.broadcast.Broadcast[Array[Double]],featureVector:org.apache.spark.sql.Row):Double"></a>
-      <a id="computePred(Broadcast[Array[Double]],Row):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computePred</span><span class="params">(<span name="weights">weights: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]]</span>, <span name="featureVector">featureVector: <span class="extype" name="org.apache.spark.sql.Row">Row</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@computePred(weights:org.apache.spark.broadcast.Broadcast[Array[Double]],featureVector:org.apache.spark.sql.Row):Double" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Compute prediction for an example with the weights vector.</p><div class="fullcomment"><div class="comment cmt"><p> Compute prediction for an example with the weights vector.
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#computeYPred" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeYPred(annotations:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotation],lambdas:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation]"></a>
-      <a id="computeYPred(Dataset[RealAnnotation],Dataset[AnnotatorLambda]):Dataset[MuEstimation]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeYPred</span><span class="params">(<span name="annotations">annotations: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">RealAnnotation</a>]</span>, <span name="lambdas">lambdas: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RaykarCont$$AnnotatorLambda.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda">AnnotatorLambda</a>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RaykarCont$$MuEstimation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation">MuEstimation</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@computeYPred(annotations:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotation],lambdas:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.AnnotatorLambda]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Estimation of the ground truth
-</p><div class="fullcomment"><div class="comment cmt"><p> Estimation of the ground truth
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -526,25 +302,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#gradientDataToRDD" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="gradientDataToRDD(data:org.apache.spark.sql.DataFrame):org.apache.spark.rdd.RDD[(Double,org.apache.spark.mllib.linalg.Vector)]"></a>
-      <a id="gradientDataToRDD(DataFrame):RDD[(Double,Vector)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">gradientDataToRDD</span><span class="params">(<span name="data">data: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<span class="extype" name="scala.Double">Double</span>, <span class="extype" name="org.apache.spark.mllib.linalg.Vector">Vector</span>)]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@gradientDataToRDD(data:org.apache.spark.sql.DataFrame):org.apache.spark.rdd.RDD[(Double,org.apache.spark.mllib.linalg.Vector)]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Convert prepared data to RDD
-</p><div class="fullcomment"><div class="comment cmt"><p> Convert prepared data to RDD
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -562,25 +319,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#initialization" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="initialization(dataset:org.apache.spark.sql.DataFrame,annotatorData:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotation]):com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel"></a>
-      <a id="initialization(DataFrame,Dataset[RealAnnotation]):RaykarContPartialModel"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">initialization</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="annotatorData">annotatorData: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">RealAnnotation</a>]</span>)</span><span class="result">: <a href="RaykarCont$$RaykarContPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel">RaykarContPartialModel</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@initialization(dataset:org.apache.spark.sql.DataFrame,annotatorData:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotation]):com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Initialize the parameters.</p><div class="fullcomment"><div class="comment cmt"><p> Initialize the parameters.
- First ground truth estimation is done using the majority voting algorithm
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -649,44 +387,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#prepareDataGradient" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="prepareDataGradient(data:org.apache.spark.sql.DataFrame,mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation]):org.apache.spark.sql.DataFrame"></a>
-      <a id="prepareDataGradient(DataFrame,Dataset[MuEstimation]):DataFrame"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">prepareDataGradient</span><span class="params">(<span name="data">data: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="mu">mu: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RaykarCont$$MuEstimation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation">MuEstimation</a>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@prepareDataGradient(data:org.apache.spark.sql.DataFrame,mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.methods.RaykarCont.MuEstimation]):org.apache.spark.sql.DataFrame" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Prepare data for MLlib gradient descent algorithm
-</p><div class="fullcomment"><div class="comment cmt"><p> Prepare data for MLlib gradient descent algorithm
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont#step" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="step(gradIters:Int,gradThreshold:Double,gradLearning:Double)(model:com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel,i:Int):com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel"></a>
-      <a id="step(Int,Double,Double)(RaykarContPartialModel,Int):RaykarContPartialModel"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">step</span><span class="params">(<span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span></span>, <span name="gradLearning">gradLearning: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="params">(<span name="model">model: <a href="RaykarCont$$RaykarContPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel">RaykarContPartialModel</a></span>, <span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="RaykarCont$$RaykarContPartialModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel">RaykarContPartialModel</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarCont$@step(gradIters:Int,gradThreshold:Double,gradLearning:Double)(model:com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel,i:Int):com.enriquegrodrigo.spark.crowd.methods.RaykarCont.RaykarContPartialModel" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Step of the iterative algorithm
-</p><div class="fullcomment"><div class="comment cmt"><p> Step of the iterative algorithm
-</p></div><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

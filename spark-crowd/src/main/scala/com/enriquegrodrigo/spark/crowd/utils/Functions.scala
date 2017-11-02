@@ -5,7 +5,7 @@ import scala.math.exp
 import scala.math.log
 import scala.math.pow
 
-object Functions {
+private[spark] object Functions {
 
   val COMPTHRES = pow(10, -5) 
   val BIGNUMBER = pow(10, 2) 

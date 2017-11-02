@@ -13,13 +13,39 @@ import scala.math.{sqrt, exp}
 
 /**
  *  Provides functions for transforming an annotation dataset into 
- *  a standard label dataset using the Glad algorithm 
+ *  a standard label dataset using the Glad algorithm.
  *
- *  This algorithm only works with [[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]] datasets
+ *  This algorithm only works with [[types.BinaryAnnotation]] datasets.
+ *
+ *  The algorithm returns a [[types.GladModel]], with information about 
+ *  the class true label estimation, the annotator precision, the 
+ *  instances difficulty and the log-likilihood of the model.
  *
  *  @example
  *  {{{
- *    result: GladModel = Glad(dataset)
+ *   import com.enriquegrodrigo.spark.crowd.methods.Glad
+ *   import com.enriquegrodrigo.spark.crowd.types._
+ *   
+ *   sc.setCheckpointDir("checkpoint")
+ *   
+ *   val annFile = "data/binary-ann.parquet"
+ *   
+ *   val annData = spark.read.parquet(annFile).as[BinaryAnnotation] 
+ *   
+ *   //Applying the learning algorithm
+ *   val mode = Glad(annData)
+ *   
+ *   //Get MulticlassLabel with the class predictions
+ *   val pred = mode.getMu().as[BinarySoftLabel] 
+ *   
+ *   //Annotator precision matrices
+ *   val annprec = mode.getAnnotatorPrecision()
+ *   
+ *   //Annotator precision matrices
+ *   val annprec = mode.getInstanceDifficulty()
+ *   
+ *   //Annotator likelihood 
+ *   val like = mode.getLogLikelihood()
  *  }}}
  *  @see Whitehill, Jacob, et al. "Whose vote should count more: Optimal
  *  integration of labels from labelers of unknown expertise." Advances in
@@ -31,7 +57,7 @@ object Glad {
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  case class GladPartialModel(dataset: Dataset[GladPartial], params: Broadcast[GladParams], 
+  private[spark] case class GladPartialModel(dataset: Dataset[GladPartial], params: Broadcast[GladParams], 
                                   logLikelihood: Double, improvement: Double, 
                                   nAnnotators: Int) {
 
@@ -50,65 +76,65 @@ object Glad {
   * Class that storage the reliability for an annotator
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladAlphas(annotator: Long, alpha: Double)
+  private[spark] case class GladAlphas(annotator: Long, alpha: Double)
 
   /**
   *  Glad Annotator precision estimation 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3
   */
-  case class GladAnnotatorPrecision(annotator: Long, alpha: Int)
+  private[spark] case class GladAnnotatorPrecision(annotator: Long, alpha: Int)
 
   /**
   *  Case class for storing Glad model parameters
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladParams(alpha: Array[Double], w: Array[Double])
+  private[spark] case class GladParams(alpha: Array[Double], w: Array[Double])
 
   /**
   *  Case class for storing annotations with class estimations and beta  
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladPartial(example: Long, annotator: Int, value: Int, est: Double, beta: Double)
+  private[spark] case class GladPartial(example: Long, annotator: Int, value: Int, est: Double, beta: Double)
 
   /**
   *  Buffer for the alpha aggregator 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladAlphaAggregatorBuffer(agg: Double, alpha: Double)
+  private[spark] case class GladAlphaAggregatorBuffer(agg: Double, alpha: Double)
 
   /**
   *  Buffer for the beta aggregator 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladBetaAggregatorBuffer(agg: Double, beta: Double)
+  private[spark] case class GladBetaAggregatorBuffer(agg: Double, beta: Double)
 
   /**
   *  Buffer for the E step aggregator 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladEAggregatorBuffer(aggVect: scala.collection.Seq[Double])
+  private[spark] case class GladEAggregatorBuffer(aggVect: scala.collection.Seq[Double])
 
   /**
   *  Buffer for the likelihood aggregator 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  case class GladLogLikelihoodAggregatorBuffer(agg: Double, classProb: Double)
+  private[spark] case class GladLogLikelihoodAggregatorBuffer(agg: Double, classProb: Double)
 
   /****************************************************/
   /****************** AGGREGATORS ********************/
@@ -118,22 +144,20 @@ object Glad {
   *  Aggregator for the precision of annotators 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  class GladAlphaAggregator(params: Broadcast[GladParams], learningRate: Double) 
+  private[spark] class GladAlphaAggregator(params: Broadcast[GladParams], learningRate: Double) 
     extends Aggregator[GladPartial, GladAlphaAggregatorBuffer, Double] {
 
     def zero: GladAlphaAggregatorBuffer = GladAlphaAggregatorBuffer(0,-1) 
     
     def reduce(b: GladAlphaAggregatorBuffer, a: GladPartial) : GladAlphaAggregatorBuffer = {
+      //Obtains annotation gradient term 
       val alpha = params.value.alpha
-      val al = alpha(a.annotator)
-      val bet = a.beta
-      val aest = a.est
       val sigmoidValue = Functions.sigmoid(alpha(a.annotator)*a.beta)
       val p = if (a.value == 1) a.est else (1-a.est)
-      val term = (p - sigmoidValue)*bet
-      GladAlphaAggregatorBuffer(b.agg + term, al)
+      val term = (p - sigmoidValue)*a.beta
+      GladAlphaAggregatorBuffer(b.agg + term, alpha(a.annotator))
     }
   
     def merge(b1: GladAlphaAggregatorBuffer, b2: GladAlphaAggregatorBuffer) : GladAlphaAggregatorBuffer = { 
@@ -141,6 +165,7 @@ object Glad {
     }
   
     def finish(reduction: GladAlphaAggregatorBuffer) = {
+      //Obtains gradient descent update for an annotator's alpha parameter
       reduction.alpha + learningRate * reduction.agg
     }
   
@@ -153,18 +178,16 @@ object Glad {
   *  Aggregator for the difficulty of each example
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  class GladBetaAggregator(params: Broadcast[GladParams], learningRate: Double) 
+  private[spark] class GladBetaAggregator(params: Broadcast[GladParams], learningRate: Double) 
     extends Aggregator[GladPartial, GladBetaAggregatorBuffer, Double]{
 
     def zero: GladBetaAggregatorBuffer = GladBetaAggregatorBuffer(0,-1) 
     
     def reduce(b: GladBetaAggregatorBuffer, a: GladPartial) : GladBetaAggregatorBuffer = {
+      //Obtain per annotation beta gradient descent term
       val alpha = params.value.alpha
-      val al = alpha(a.annotator)
-      val bet = a.beta
-      val aest = a.est
       val sigmoidValue = Functions.sigmoid(alpha(a.annotator)*a.beta)
       val p = if (a.value == 1) a.est else (1-a.est)
       val term = (p - sigmoidValue)*alpha(a.annotator)
@@ -176,6 +199,7 @@ object Glad {
     }
   
     def finish(reduction: GladBetaAggregatorBuffer) = {
+      //Obtains gradient descent update for beta
       reduction.beta + learningRate * reduction.agg
     }
   
@@ -188,19 +212,19 @@ object Glad {
   *  Aggregator for the E step of the EM algorithm
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  class GladEAggregator(params: Broadcast[GladParams]) 
+  private[spark] class GladEAggregator(params: Broadcast[GladParams]) 
     extends Aggregator[GladPartial, GladEAggregatorBuffer, Double]{
   
     def zero: GladEAggregatorBuffer = GladEAggregatorBuffer(Vector.fill(2)(1)) //Binary
     
     def reduce(b: GladEAggregatorBuffer, a: GladPartial) : GladEAggregatorBuffer = {
+      //Obtains likelihood of an annotation
       val alpha = params.value.alpha
       val sigmoidValue = Functions.sigmoid(alpha(a.annotator)*a.beta)
-      val p0 = if (a.value == 0) sigmoidValue else (1 - sigmoidValue)
-      val p1 = if (a.value == 1) sigmoidValue else (1 - sigmoidValue) 
-      GladEAggregatorBuffer(Vector(Functions.logLim(p0) + b.aggVect(0), Functions.logLim(p1) + b.aggVect(1)))
+      val p = if (a.value == 0) sigmoidValue else (1 - sigmoidValue)
+      GladEAggregatorBuffer(Vector(Functions.logLim(p) + b.aggVect(0), Functions.logLim(1-p) + b.aggVect(1)))
     }
   
     def merge(b1: GladEAggregatorBuffer, b2: GladEAggregatorBuffer) : GladEAggregatorBuffer = { 
@@ -208,6 +232,7 @@ object Glad {
     }
   
     def finish(reduction: GladEAggregatorBuffer) = {
+      //Returns probability of positive example
       val w = params.value.w
       val negative = exp(reduction.aggVect(0) + Functions.logLim(w(0)))
       val positive = exp(reduction.aggVect(1) + Functions.logLim(w(1)))
@@ -224,23 +249,22 @@ object Glad {
   *  Aggregator for the Likelihood estimation of the EM algorithm
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  class GladLogLikelihoodAggregator(params: Broadcast[GladParams]) 
+  private[spark] class GladLogLikelihoodAggregator(params: Broadcast[GladParams]) 
     extends Aggregator[GladPartial, GladLogLikelihoodAggregatorBuffer, Double]{
 
     def zero: GladLogLikelihoodAggregatorBuffer = GladLogLikelihoodAggregatorBuffer(0,-1)
   
     def reduce(b: GladLogLikelihoodAggregatorBuffer, a: GladPartial) : GladLogLikelihoodAggregatorBuffer = {
+      //Obtains log-likelihood for annotation
       val alphaVal = params.value.alpha(a.annotator.toInt)
       val betaVal = a.beta
       val sig = Functions.sigmoid(alphaVal*betaVal) 
-      val p0 = 1-a.est
-      val p1 = a.est
-      val k0 = if (a.value == 0) sig else 1-sig 
-      val k1 = if (a.value == 1) sig else 1-sig 
-      GladLogLikelihoodAggregatorBuffer(b.agg + Functions.prodlog(p0,k0) 
-                                            + Functions.prodlog(p1,k1), p1) 
+      val p = 1-a.est
+      val k = if (a.value == 0) sig else 1-sig 
+      GladLogLikelihoodAggregatorBuffer(b.agg + Functions.prodlog(p,k) 
+                                            + Functions.prodlog(1-p,1-k), 1-p) 
     }
   
     def merge(b1: GladLogLikelihoodAggregatorBuffer, b2: GladLogLikelihoodAggregatorBuffer) : GladLogLikelihoodAggregatorBuffer = { 
@@ -248,6 +272,7 @@ object Glad {
     }
   
     def finish(reduction: GladLogLikelihoodAggregatorBuffer) =  {
+      //Returns example likelihood
       val agg = reduction.agg
       val w0 = params.value.w(0)
       val w1 = params.value.w(1)
@@ -269,7 +294,7 @@ object Glad {
   /**
   *  Apply the Glad Algorithm.
   *
-  *  @param dataset The dataset over which the algorithm will execute.
+  *  @param dataset The dataset (spark Dataset of type [[types.BinaryAnnotation]] over which the algorithm will execute.
   *  @param eMIters Number of iterations for the EM algorithm
   *  @param eMThreshold LogLikelihood variability threshold for the EM algorithm
   *  @param gradIters Maximum number of iterations for the GradientDescent algorithm
@@ -278,18 +303,20 @@ object Glad {
   *  @param alphaPrior First value for all alpha parameters 
   *  @param betaPrior First value for all beta parameters 
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3
   */
-  def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 1, eMThreshold: Double = 0.001, 
-            gradIters: Int = 3, gradThreshold: Double = 0.5, gradLearningRate: Double=0.1,
-            alphaPrior: Double = 1, betaPrior: Double = 1): GladModel = {
+  def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 5, eMThreshold: Double = 0.1, 
+            gradIters: Int = 30, gradThreshold: Double = 0.5, gradLearningRate: Double=0.01,
+            alphaPrior: Double = 1, betaPrior: Double = 10): GladModel = {
     import dataset.sparkSession.implicits._
     val initialModel = initialization(dataset, alphaPrior, betaPrior)
     val secondModel = step(gradIters,gradThreshold,gradLearningRate)(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
+    //Loops until some condition is met
     val l = Stream.range(2,eMIters).scanLeft(fixed)(step(gradIters,gradThreshold,gradLearningRate))
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
+    //Prepare results
     val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct()
     val difficulties = l.dataset.select($"example", $"beta").as[GladInstanceDifficulty].distinct
     new GladModel(preparedDataset.as[BinarySoftLabel], //Ground truth estimate
@@ -302,9 +329,9 @@ object Glad {
   *  The E step from the EM algorithm
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  def eStep(model: GladPartialModel): GladPartialModel = {
+  private[spark] def eStep(model: GladPartialModel): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
 
     //Label estimation
@@ -326,9 +353,9 @@ object Glad {
   *  The M step from the EM algorithm
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  def mStep(model: GladPartialModel, maxGradIters: Int, thresholdGrad: Double, learningRate: Double): GladPartialModel = {
+  private[spark] def mStep(model: GladPartialModel, maxGradIters: Int, thresholdGrad: Double, learningRate: Double): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val sc = model.dataset.sparkSession.sparkContext
 
@@ -408,7 +435,8 @@ object Glad {
     }
 
     val newModel: GladPartialModel = update(model,1)._1
-    //Gradient loop
+    //Gradient loop (Own gradient descent implementation as Gradient Descent in MLlib does not support 
+    // optimizing parameters for each example)
     val lastModel = Stream.range(2,maxGradIters).scanLeft((newModel,1.0))((x,i) => update(x._1, i))
                                     .takeWhile( (model) => model._2 > thresholdGrad )
                                     .last
@@ -419,9 +447,9 @@ object Glad {
   *  Full step of the EM algorithm 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  def step(maxGradIters: Int, thresholdGrad: Double, learningRate: Double)(model: GladPartialModel, i: Int): GladPartialModel = {
+  private[spark] def step(maxGradIters: Int, thresholdGrad: Double, learningRate: Double)(model: GladPartialModel, i: Int): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate)
     val e = eStep(m)
@@ -433,9 +461,9 @@ object Glad {
   *  Neg-logLikelihood calculation 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  def logLikelihood(model: GladPartialModel): GladPartialModel = {
+  private[spark] def logLikelihood(model: GladPartialModel): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val aggregator = new GladLogLikelihoodAggregator(model.params)
     val logLikelihood = model.dataset.groupByKey(_.example).agg(aggregator.toColumn).reduce((x,y) => (x._1, x._2 + y._2))._2
@@ -447,9 +475,9 @@ object Glad {
   *  The first label estimation is done using majority voting
   *
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.3 
   */
-  def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double): GladPartialModel = {
+  private[spark] def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double): GladPartialModel = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val datasetCached = dataset.cache() 

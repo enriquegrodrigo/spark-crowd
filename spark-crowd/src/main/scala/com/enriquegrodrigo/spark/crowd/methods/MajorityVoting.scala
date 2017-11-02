@@ -14,23 +14,45 @@ import org.apache.spark.sql.functions.{count,lit,sum,col, explode, array}
  *  a standard label dataset using the majority voting approach
  *  
  *  This object provides several functions for using majority voting style
- *  algorithms over annotations datasets (spark datasets with types [[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]], 
- *  [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]], or [[com.enriquegrodrigo.spark.crowd.types.RealAnnotation]]). For discrete types 
- *  ([[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]], [[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]]) the method uses the '''most 
+ *  algorithms over annotations datasets (spark datasets with types [[types.BinaryAnnotation]], 
+ *  [[types.MulticlassAnnotation]], or [[types.RealAnnotation]]). For discrete types 
+ *  ([[types.BinaryAnnotation]], [[types.MulticlassAnnotation]]) the method uses the '''most 
  *  frequent''' class. For continuous types, the '''mean''' is used. 
  *
  *  The object also provides methods for estimating the probability of a class
- *  for the discrete type, computing, for the binary case, the mean of the 
- *  positive class and, for the multiclass case, the one vs all mean of a
- *  class against the others. 
+ *  for the discrete type, computing, for the binary case, the proportion of the 
+ *  positive class and, for the multiclass case, the proportion of each of the classes.
+ *
+ *  The next example can be found in the examples folder of the project. 
  *
  *  @example
  *  {{{
- *    result: Dataset[BinaryLabel] = MajorityVoting.transformBinary(dataset)
+ *  
+ *  import com.enriquegrodrigo.spark.crowd.methods.MajorityVoting
+ *  import com.enriquegrodrigo.spark.crowd.types._
+ *  
+ *  val exampleFile = "data/binary-ann.parquet"
+ *  val exampleFileMulti = "data/multi-ann.parquet"
+ *  val exampleFileCont = "data/cont-ann.parquet"
+ *  
+ *  val exampleDataBinary = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
+ *  val exampleDataMulti = spark.read.parquet(exampleFileMulti).as[MulticlassAnnotation] 
+ *  val exampleDataCont = spark.read.parquet(exampleFileCont).as[RealAnnotation] 
+ *  
+ *  //Applying the learning algorithm
+ *  //Binary class
+ *  val muBinary = MajorityVoting.transformBinary(exampleDataBinary)
+ *  val muBinaryProb = MajorityVoting.transformSoftBinary(exampleDataBinary)
+ *  //Multiclass
+ *  val muMulticlass = MajorityVoting.transformMulticlass(exampleDataMulti)
+ *  val muMulticlassProb = MajorityVoting.transformSoftMulti(exampleDataMulti)
+ *  //Continuous case
+ *  val muCont = MajorityVoting.transformReal(exampleDataCont)
+ *
  *  }}}
  *
  *  @author enrique.grodrigo
- *  @version 0.1 
+ *  @version 0.1.3 
  */
 object MajorityVoting {
   
@@ -41,23 +63,23 @@ object MajorityVoting {
   /**
    *  Combination example class for complete multiclass probability estimation 
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
-  case class ExampleClassCombination(example: Long, clas: Int)
+  private[spark] case class ExampleClassCombination(example: Long, clas: Int)
 
   /**
    *  Frequency of a concrete class for example  
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
-  case class ExampleClassFrequency(example: Long, clas: Int, freq: Double)
+  private[spark] case class ExampleClassFrequency(example: Long, clas: Int, freq: Double)
 
   /**
    *  Number of labels for an example 
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3
    */
-  case class ExampleFrequency(example: Long, freq: Double)
+  private[spark] case class ExampleFrequency(example: Long, freq: Double)
 
 
 
@@ -68,12 +90,12 @@ object MajorityVoting {
   /**
    *  Obtain multiclass soft probability estimation 
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3
    */
-  class MulticlassMajorityEstimation() extends Aggregator[(ExampleClassCombination, MulticlassAnnotation), Double, Double] {
+  private[spark] class MulticlassMajorityEstimation() extends Aggregator[(ExampleClassCombination, MulticlassAnnotation), Double, Double] {
     def zero: Double = 0.0 
     def reduce(b: Double, a: (ExampleClassCombination,MulticlassAnnotation)) : Double =  a match {
-      case (_,null) => b
+      case (_,null) => b //For dealing with incomplete cases
       case (_,ann) => b + 1 
     }
     def merge(b1: Double, b2: Double) : Double = b1 + b2 
@@ -88,63 +110,79 @@ object MajorityVoting {
   /****************************************************/
 
   /**
-   * Obtains the most frequent class for BinaryAnnotation datasets
-   * @param dataset The annotations dataset to be aggregated
+   * Obtains the most frequent class (0 or 1) for [[types.BinaryAnnotation]] datasets
+   * @param dataset The annotations dataset (spark Dataset of type [[types.BinaryAnnotation]]) 
+   *    to be aggregated
    */
   def transformBinary(dataset: Dataset[BinaryAnnotation]): Dataset[BinaryLabel] = {
     import dataset.sparkSession.implicits._
-    val aggFunction = (new BinaryMVAggregator()).toColumn 
+    val aggFunction = (new BinaryMVAggregator()).toColumn //Aggregator for grouped agg method
+    //Groups by example and obtains the most frequent class (1 or 0) 
     dataset.groupByKey( (x: BinaryAnnotation) => x.example)
             .agg(aggFunction)
             .map((t: (Long, Int)) => BinaryLabel(t._1, t._2))
   }
   
   /**
-   * Obtains probability of the class being positive for BinaryAnnotation datasets
-   * @param dataset The annotations dataset to be aggregated
+   * Obtains probability of the class being positive for [[types.BinaryAnnotation]] datasets
+   * @param dataset The annotations dataset (spark Dataset of type [[types.BinaryAnnotation]]) 
+   *    to be aggregated
    */
   def transformSoftBinary(dataset: Dataset[BinaryAnnotation]): Dataset[BinarySoftLabel] = {
     import dataset.sparkSession.implicits._
-    val aggFunction = (new BinarySoftMVAggregator()).toColumn
+    val aggFunction = (new BinarySoftMVAggregator()).toColumn 
+    //Groups by example and obtains the proportion of the positive class (1)
     dataset.groupByKey( (x: BinaryAnnotation) => x.example)
             .agg(aggFunction)
             .map((t: (Long, Double)) => BinarySoftLabel(t._1, t._2))
   }
 
   /**
-   * Obtain the mean of the annotations for a given example.
-   * @param dataset The annotations dataset to be aggregated
+   * Obtain the mean of the annotations for each example from a [[types.RealAnnotation]].
+   * @param dataset The annotations dataset (spark Dataset of type [[types.RealAnnotation]]) 
+   *  to be aggregated
    */
   def transformReal(dataset: Dataset[RealAnnotation]): Dataset[RealLabel] = {
     import dataset.sparkSession.implicits._
     val aggFunction = (new RealMVAggregator()).toColumn
+    //Groups by example and obtains the mean of the annotations for each example
     dataset.groupByKey(_.example).agg(aggFunction).map((t: (Long, Double)) => RealLabel(t._1, t._2))
   }
 
   /**
-   * Obtain the most frequent class for all examples in the annotation dataset. 
-   * @param dataset The annotations dataset to be aggregated
+   * Obtain the most frequent class for each example of the a [[types.MulticlassAnnotation]] dataset. 
+   * @param dataset The annotations dataset (spark Dataset of type [[types.MulticlassAnnotation]]) 
+   *  to be aggregated
    */
   def transformMulticlass(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassLabel] = {
     import dataset.sparkSession.implicits._
     val nClasses = dataset.select($"value").distinct().count().toInt
     val aggFunction = (new MulticlassMVAggregator(nClasses)).toColumn
+    //Groups by example and obtains the most frequent class for each example
     dataset.groupByKey(_.example).agg(aggFunction).map((t: (Long, Int)) => MulticlassLabel(t._1, t._2))
   }
   
   /**
    * Obtain a list of datasets resulting of applying [[transformSoftBinary]] to
-   * each class against the others
-   * @param dataset The annotations dataset to be aggregated
+   * each class against the others (One vs All) on a  [[types.MulticlassAnnotation]] dataset. 
+   *
+   * It supposes classes go from 0 to nClasses. For example, for a three class problem, there
+   * should be classes {0,1,2}. 
+   *
+   * @param dataset The annotations dataset (spark Dataset of type [[types.MulticlassAnnotation]]) 
+   *  to be aggregated
    */
   def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassSoftProb] = {
     import dataset.sparkSession.implicits._
     val nClasses = dataset.select($"value").distinct().count().toInt
+    //Obtains all combinations example, clas (for imcomplete cases)
     val exampleClass = dataset.map(_.example)
                                     .distinct
                                     .withColumnRenamed("value", "example")
                                     .withColumn("clas", explode(array((0 until nClasses).map(lit): _*)))
                                     .as[ExampleClassCombination]
+    //Obtains the frequencies for each class for each example. If incomplete case (the annotations do not cover all classes)
+    // the method return 0 for that frequency.
     val classFrequencies = exampleClass.joinWith(dataset, 
                                             exampleClass.col("example") === dataset.col("example") &&  
                                               exampleClass.col("clas") === dataset.col("value"),
@@ -156,10 +194,12 @@ object MajorityVoting {
                                        .map(x => ExampleClassFrequency(x._1.example, x._1.clas, x._2))
                                        .as[ExampleClassFrequency]
 
+    //Obtains the number of annotations for each example
     val exampleFrequencies =  dataset.groupBy(col("example"))
                                      .agg(count(col("annotator")) as "freq")
                                      .as[ExampleFrequency]
 
+    //Estimates the probability of each class using standard division
     val estimation = exampleFrequencies.joinWith(classFrequencies, 
                                           exampleFrequencies.col("example") === classFrequencies.col("example"))
                                        .as[(ExampleFrequency, ExampleClassFrequency)]
