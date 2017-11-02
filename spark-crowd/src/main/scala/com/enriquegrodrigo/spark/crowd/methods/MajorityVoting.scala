@@ -52,7 +52,7 @@ import org.apache.spark.sql.functions.{count,lit,sum,col, explode, array}
  *  }}}
  *
  *  @author enrique.grodrigo
- *  @version 0.1.2 
+ *  @version 0.1.3 
  */
 object MajorityVoting {
   
@@ -63,21 +63,21 @@ object MajorityVoting {
   /**
    *  Combination example class for complete multiclass probability estimation 
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[spark] case class ExampleClassCombination(example: Long, clas: Int)
 
   /**
    *  Frequency of a concrete class for example  
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3 
    */
   private[spark] case class ExampleClassFrequency(example: Long, clas: Int, freq: Double)
 
   /**
    *  Number of labels for an example 
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3
    */
   private[spark] case class ExampleFrequency(example: Long, freq: Double)
 
@@ -90,12 +90,12 @@ object MajorityVoting {
   /**
    *  Obtain multiclass soft probability estimation 
    *  @author enrique.grodrigo
-   *  @version 0.1 
+   *  @version 0.1.3
    */
   private[spark] class MulticlassMajorityEstimation() extends Aggregator[(ExampleClassCombination, MulticlassAnnotation), Double, Double] {
     def zero: Double = 0.0 
     def reduce(b: Double, a: (ExampleClassCombination,MulticlassAnnotation)) : Double =  a match {
-      case (_,null) => b
+      case (_,null) => b //For dealing with incomplete cases
       case (_,ann) => b + 1 
     }
     def merge(b1: Double, b2: Double) : Double = b1 + b2 
@@ -116,7 +116,8 @@ object MajorityVoting {
    */
   def transformBinary(dataset: Dataset[BinaryAnnotation]): Dataset[BinaryLabel] = {
     import dataset.sparkSession.implicits._
-    val aggFunction = (new BinaryMVAggregator()).toColumn 
+    val aggFunction = (new BinaryMVAggregator()).toColumn //Aggregator for grouped agg method
+    //Groups by example and obtains the most frequent class (1 or 0) 
     dataset.groupByKey( (x: BinaryAnnotation) => x.example)
             .agg(aggFunction)
             .map((t: (Long, Int)) => BinaryLabel(t._1, t._2))
@@ -129,7 +130,8 @@ object MajorityVoting {
    */
   def transformSoftBinary(dataset: Dataset[BinaryAnnotation]): Dataset[BinarySoftLabel] = {
     import dataset.sparkSession.implicits._
-    val aggFunction = (new BinarySoftMVAggregator()).toColumn
+    val aggFunction = (new BinarySoftMVAggregator()).toColumn 
+    //Groups by example and obtains the proportion of the positive class (1)
     dataset.groupByKey( (x: BinaryAnnotation) => x.example)
             .agg(aggFunction)
             .map((t: (Long, Double)) => BinarySoftLabel(t._1, t._2))
@@ -143,6 +145,7 @@ object MajorityVoting {
   def transformReal(dataset: Dataset[RealAnnotation]): Dataset[RealLabel] = {
     import dataset.sparkSession.implicits._
     val aggFunction = (new RealMVAggregator()).toColumn
+    //Groups by example and obtains the mean of the annotations for each example
     dataset.groupByKey(_.example).agg(aggFunction).map((t: (Long, Double)) => RealLabel(t._1, t._2))
   }
 
@@ -155,6 +158,7 @@ object MajorityVoting {
     import dataset.sparkSession.implicits._
     val nClasses = dataset.select($"value").distinct().count().toInt
     val aggFunction = (new MulticlassMVAggregator(nClasses)).toColumn
+    //Groups by example and obtains the most frequent class for each example
     dataset.groupByKey(_.example).agg(aggFunction).map((t: (Long, Int)) => MulticlassLabel(t._1, t._2))
   }
   
@@ -171,11 +175,14 @@ object MajorityVoting {
   def transformSoftMulti(dataset: Dataset[MulticlassAnnotation]): Dataset[MulticlassSoftProb] = {
     import dataset.sparkSession.implicits._
     val nClasses = dataset.select($"value").distinct().count().toInt
+    //Obtains all combinations example, clas (for imcomplete cases)
     val exampleClass = dataset.map(_.example)
                                     .distinct
                                     .withColumnRenamed("value", "example")
                                     .withColumn("clas", explode(array((0 until nClasses).map(lit): _*)))
                                     .as[ExampleClassCombination]
+    //Obtains the frequencies for each class for each example. If incomplete case (the annotations do not cover all classes)
+    // the method return 0 for that frequency.
     val classFrequencies = exampleClass.joinWith(dataset, 
                                             exampleClass.col("example") === dataset.col("example") &&  
                                               exampleClass.col("clas") === dataset.col("value"),
@@ -187,10 +194,12 @@ object MajorityVoting {
                                        .map(x => ExampleClassFrequency(x._1.example, x._1.clas, x._2))
                                        .as[ExampleClassFrequency]
 
+    //Obtains the number of annotations for each example
     val exampleFrequencies =  dataset.groupBy(col("example"))
                                      .agg(count(col("annotator")) as "freq")
                                      .as[ExampleFrequency]
 
+    //Estimates the probability of each class using standard division
     val estimation = exampleFrequencies.joinWith(classFrequencies, 
                                           exampleFrequencies.col("example") === classFrequencies.col("example"))
                                        .as[(ExampleFrequency, ExampleClassFrequency)]
