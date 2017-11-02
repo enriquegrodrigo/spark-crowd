@@ -17,11 +17,40 @@ import scala.util.Random
  *  Provides functions for transforming an annotation dataset into 
  *  a standard label dataset using the RaykarBinary algorithm 
  *
- *  This algorithm only works with [[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]] datasets
+ *  This algorithm only works with [[types.BinaryAnnotation]] datasets. There are versions for the 
+ *  [[types.MulticlassAnnotation]] ([[RaykarMulti]]) and [[types.RealAnnotation]] ([[RaykarCont]]).
+ *
+ *  It will return a [[types.RaykarBinaryModel]] with information about the estimation of the 
+ *  ground truth for each example, the annotator precision estimation of the model, the weights of the
+ *  logistic regression model learned and the log-likelihood of the model. 
+ *
+ *  The next example can be found in the examples folders. In it, the user may also find an example
+ *  of how to add prior confidence on the annotators.
  *
  *  @example
  *  {{{
- *    result: RaykarBinaryModel  = RaykarBinary(dataset)
+ *    import com.enriquegrodrigo.spark.crowd.methods.RaykarBinary
+ *    import com.enriquegrodrigo.spark.crowd.types._
+ *    
+ *    sc.setCheckpointDir("checkpoint")
+ *    
+ *    val exampleFile = "data/binary-data.parquet"
+ *    val annFile = "data/binary-ann.parquet"
+ *    
+ *    val exampleData = spark.read.parquet(exampleFile)
+ *    val annData = spark.read.parquet(annFile).as[BinaryAnnotation] 
+ *    
+ *    //Applying the learning algorithm
+ *    val mode = RaykarBinary(exampleData, annData)
+ *    
+ *    //Get MulticlassLabel with the class predictions
+ *    val pred = mode.getMu().as[BinarySoftLabel] 
+ *    
+ *    //Annotator precision matrices
+ *    val annprec = mode.getAnnotatorPrecision()
+ *    
+ *    //Annotator likelihood 
+ *    val like = mode.getLogLikelihood()
  *  }}}
  *  @author enrique.grodrigo
  *  @version 0.1 
@@ -265,8 +294,8 @@ object RaykarBinary {
   /**
   *  Applies the learning algorithm
   *
-  *  @param dataset the dataset with feature vectors.
-  *  @param annDataset the dataset with the annotations.
+  *  @param dataset the dataset with feature vectors (spark ``Dataframe``).
+  *  @param annDataset the dataset with the annotations (spark Dataset of [[types.BinaryAnnotation]]).
   *  @param emIters number of iterations for the EM algorithm
   *  @param emThreshold logLikelihood variability threshold for the EM algorithm
   *  @param gradIters maximum number of iterations for the GradientDescent algorithm
@@ -275,7 +304,7 @@ object RaykarBinary {
   *  @param a_prior prior (Beta distribution hyperparameters) for the estimation
   *  of the probability that an annotator correctly classifias positive instances 
   *  @param b_prior prior (Beta distribution hyperparameters) for the estimation
-  *  of the probability that an annotator correctly classifias negative instances 
+  *  of the probability that an annotator correctly classify as negative instances 
   *  @param w_prior prior for the weights of the logistic regression model
   *  @return [[com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel]]
   *  @author enrique.grodrigo
