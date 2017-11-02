@@ -29,7 +29,7 @@ class DawidSkeneTest extends fixture.FlatSpec with Matchers {
       }
   }
 
-  "DawidSkene" should "obtain the expected result in the first example" in { f => 
+  "DawidSkene" should "obtain the expected results in the test data" in { f => 
     val exampleFile = getClass.getResource("/multi-ann.parquet").getPath
     val spark = f.spark
     import spark.implicits._

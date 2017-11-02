@@ -30,7 +30,7 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
       }
   }
 
-  "RaykarCont" should "obtain the expected result in the second example" in { f => 
+  "RaykarCont" should "obtain the expected result in the test data" in { f => 
     val spark = f.spark
     val annotationsFile = getClass.getResource("/cont-ann.parquet").getPath
     val dataFile = getClass.getResource("/cont-data.parquet").getPath

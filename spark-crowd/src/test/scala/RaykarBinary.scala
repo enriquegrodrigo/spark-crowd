@@ -31,7 +31,7 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
       }
   }
 
-  "RaykarBinary" should "obtain the expected result in the second example" in { f => 
+  "RaykarBinary" should "obtain the expected result in the test data" in { f => 
     val spark = f.spark
     val annotationsFile = getClass.getResource("/binary-ann.parquet").getPath
     val dataFile = getClass.getResource("/binary-data.parquet").getPath
