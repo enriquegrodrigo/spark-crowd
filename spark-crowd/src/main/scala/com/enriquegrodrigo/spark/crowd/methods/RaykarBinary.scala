@@ -539,6 +539,7 @@ object RaykarBinary {
 
     val p = model.dataset.map(computeP(model.params)).as[LogisticPrediction]
 
+    //Estimates ground truth value 
     val allParams = p.joinWith(model.dataStatistics, p.col("example") === model.dataStatistics.col("example"))
                      .as[(LogisticPrediction, RaykarBinaryStatistics)]
                      .map( x => FullParameters(x._1.example, x._1.p, x._2.a, x._2.b)) 
@@ -560,6 +561,7 @@ object RaykarBinary {
 
     val p = model.dataset.map(computeP(model.params)).as[LogisticPrediction]
 
+    //Obtains log-likelihood for the iteration
     val allParams = p.joinWith(model.dataStatistics, p.col("example") === model.dataStatistics.col("example"))
                      .as[(LogisticPrediction, RaykarBinaryStatistics)]
                      .map( x => FullParameters(x._1.example, x._1.p, x._2.a, x._2.b) ) 
