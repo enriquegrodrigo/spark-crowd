@@ -462,7 +462,7 @@ object RaykarMulti {
 
     val weightsPrior: Array[Array[Array[Double]]] = w_prior match {
       case Some(arr) => arr 
-      case None => Array.tabulate(nClasses,nFeatures,nFeatures){ case (c,x,y) => if (x == y) 1 else 0 } 
+      case None => Array.tabulate(nClasses,nFeatures,nFeatures){ case (c,x,y) => if (x == y) (if (x == 0) 0 else 1) else 0 } 
     }
 
     //MajorityVoting estimation
