@@ -15,6 +15,53 @@ import org.apache.spark.mllib.linalg.{Vector,Vectors}
 import scala.util.Random
 import scala.math.{pow => powMath}
 
+/**
+ *  Provides functions for transforming an annotation dataset into 
+ *  a standard label dataset using the Raykar algorithm for multiclass
+ *
+ *  This algorithm only works with [[types.RealAnnotation]] datasets. There are versions for the 
+ *  [[types.BinaryAnnotation]] ([[RaykarBinary]]) and [[types.MulticlassAnnotation]] ([[RaykarMulti]]).
+ *
+ *  It will return a [[types.RaykarContModel]] with information about the estimation of the 
+ *  ground truth for each example, the annotator precision estimation 
+ *  of the model, the weights of the linear regression model learned and 
+ *  the MAE of the model. 
+ *
+ *  The next example can be found in the examples folders. In it, the user may also find an example
+ *  of how to add prior confidence on the annotators.
+ *
+ *  @example
+ *  {{{
+ *    import com.enriquegrodrigo.spark.crowd.methods.RaykarCont
+ *    import com.enriquegrodrigo.spark.crowd.types._
+ *    
+ *    sc.setCheckpointDir("checkpoint")
+ *    
+ *    val exampleFile = "data/cont-data.parquet"
+ *    val annFile = "data/cont-ann.parquet"
+ *    
+ *    val exampleData = spark.read.parquet(exampleFile)
+ *    val annData = spark.read.parquet(annFile).as[RealAnnotation] 
+ *    
+ *    //Applying the learning algorithm
+ *    val mode = RaykarCont(exampleData, annData)
+ *    
+ *    //Get MulticlassLabel with the class predictions
+ *    val pred = mode.getMu().as[RealLabel] 
+ *    
+ *    //Annotator precision matrices
+ *    val annprec = mode.getAnnotatorPrecision()
+ *    
+ *    //Annotator likelihood 
+ *    val like = mode.getLogLikelihood()
+ *  }}}
+ *  @author enrique.grodrigo
+ *  @version 0.1 
+ *  @see Raykar, Vikas C., et al. "Learning from crowds." Journal of Machine
+ *  Learning Research 11.Apr (2010): 1297-1322.
+ *  
+ */
+
 object RaykarCont {
 
   /****************************************************/
@@ -151,8 +198,8 @@ object RaykarCont {
   /**
   *  Applies the learning algorithm
   *
-  *  @param dataset the dataset with feature vectors.
-  *  @param annDataset the dataset with the annotations.
+  *  @param dataset the dataset with feature vectors (spark Dataframe).
+  *  @param annDataset the dataset with the annotations (spark Dataset of [[types.RealAnnotation]].
   *  @param iters number of iterations for the EM algorithm
   *  @param threshold logLikelihood variability threshold for the EM algorithm
   *  @param gradIters maximum number of iterations for the GradientDescent algorithm
