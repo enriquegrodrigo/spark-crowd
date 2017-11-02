@@ -148,17 +148,23 @@ object DawidSkene {
     
     def reduce(b: DawidSkeneAggregatorBuffer, a: DawidSkenePartial) : DawidSkeneAggregatorBuffer = {
       val pi = params.value.pi 
+      //Obtains the class conditional probabilities for an annotation
       val classCondi = Vector.range(0,nClasses).map( c => pi(a.annotator.toInt)(c)(a.value))
+      //Accumulates them in the buffer for the example
       val newVect = classCondi.zip(b.aggVect).map(x => x._1 * x._2)
       DawidSkeneAggregatorBuffer(newVect) 
     }
   
     def merge(b1: DawidSkeneAggregatorBuffer, b2: DawidSkeneAggregatorBuffer) : DawidSkeneAggregatorBuffer = { 
+      //Accumulates through multiplications the class conditional probabilities for an example
       val buf = DawidSkeneAggregatorBuffer(b1.aggVect.zip(b2.aggVect).map(x => x._1 * x._2))
       buf
     }
   
     def finish(reduction: DawidSkeneAggregatorBuffer) = {
+      //In the buffer, one has the numerator one of the terms of bayes rule (supossing annotations are 
+      //independent given the class). To obtain the numerator we use the class weight (p(c) * prod p(an|c)) 
+      //and then take the class that makes max the expression
       val result = reduction.aggVect.zipWithIndex.maxBy(x => x._1*params.value.w(x._2))._2
       result
     }
@@ -181,15 +187,18 @@ object DawidSkene {
     def zero: DawidSkeneLogLikelihoodAggregatorBuffer = DawidSkeneLogLikelihoodAggregatorBuffer(0, -1)
   
     def reduce(b: DawidSkeneLogLikelihoodAggregatorBuffer, a: DawidSkenePartial) : DawidSkeneLogLikelihoodAggregatorBuffer = {
+      //Obtains the likelihood of an annotation and accumulates on the buffer
       val pival = params.value.pi(a.annotator.toInt)(a.est)(a.value)
       DawidSkeneLogLikelihoodAggregatorBuffer(b.agg + mathLog(pival), a.est) 
     }
   
     def merge(b1: DawidSkeneLogLikelihoodAggregatorBuffer, b2: DawidSkeneLogLikelihoodAggregatorBuffer) : DawidSkeneLogLikelihoodAggregatorBuffer = { 
+      //Accumulates log-likelihood of annotations
       DawidSkeneLogLikelihoodAggregatorBuffer(b1.agg + b2.agg, if (b1.predClass == -1) b2.predClass else b1.predClass) 
     }
   
     def finish(reduction: DawidSkeneLogLikelihoodAggregatorBuffer) =  {
+      //Accumulates likelihood of the example 
       reduction.agg + mathLog(params.value.w(reduction.predClass))
     }
   
@@ -222,11 +231,12 @@ object DawidSkene {
     val secondModel = step(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
 
-    //EM algorithm loop
+    //EM algorithm loop (done as a lazy stream, to stop when needed)
     val l = Stream.range(1,eMIters).scanLeft(fixed)(step)
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
 
+    //Prepares ground truth
     val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct() //Ground truth
 
     new DawidSkeneModel(preparedDataset.as[MulticlassLabel], //Ground truth
@@ -274,10 +284,11 @@ object DawidSkene {
     val data = model.dataset
     val nClasses = model.nClasses
     val nAnnotators = model.nAnnotators
+    //Matrix with annotator precision
     val pi = Array.fill[Double](nAnnotators.toInt,nClasses,nClasses)(1/nClasses) //Case where annotator never classfied as a class
     val w = Array.ofDim[Double](nClasses)
 
-    //Estimation of annotator confusión matrices
+    //Estimation of annotator confusion matrices
     val denoms = data.groupBy("annotator", "est")
                      .agg(count("example") as "denom")
     val nums = data.groupBy(col("annotator"), col("est"), col("value"))
@@ -344,6 +355,7 @@ object DawidSkene {
   private[crowd] def logLikelihood(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val aggregator = new DawidSkeneLogLikelihoodAggregator(model.params)
+    //Sums the per example log-likelihood to obtain the final one
     val logLikelihood = model.dataset.groupByKey(_.example).agg(aggregator.toColumn).reduce((x,y) => (x._1, x._2 + y._2))._2
     model.modify(nLogLikelihood=(-logLikelihood), nImprovement=(model.logLikelihood+logLikelihood))
   }
