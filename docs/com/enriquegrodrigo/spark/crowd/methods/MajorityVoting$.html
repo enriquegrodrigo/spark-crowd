@@ -51,16 +51,31 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p> Provides functions for transforming an annotation dataset into
  a standard label dataset using the majority voting approach</p><p> This object provides several functions for using majority voting style
- algorithms over annotations datasets (spark datasets with types <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation</a>,
- <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation</a>, or <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">com.enriquegrodrigo.spark.crowd.types.RealAnnotation</a>). For discrete types
- (<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation</a>, <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation</a>) the method uses the <b>most
+ algorithms over annotations datasets (spark datasets with types <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a>,
+ <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a>, or <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">types.RealAnnotation</a>). For discrete types
+ (<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a>, <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a>) the method uses the <b>most
  frequent</b> class. For continuous types, the <b>mean</b> is used.</p><p> The object also provides methods for estimating the probability of a class
- for the discrete type, computing, for the binary case, the mean of the
- positive class and, for the multiclass case, the one vs all mean of a
- class against the others.
+ for the discrete type, computing, for the binary case, the proportion of the
+ positive class and, for the multiclass case, the proportion of each of the classes.</p><p> The next example can be found in the examples folder of the project.
 </p></div><dl class="attributes block"> <div class="block">Example:
-               <ol><li class="cmt"><p></p><pre>result: Dataset[BinaryLabel] = MajorityVoting.transformBinary(dataset)</pre></li></ol>
-            </div><dt>Version</dt><dd><p>0.1</p></dd></dl><div class="toggleContainer block">
+               <ol><li class="cmt"><p></p><pre><span class="kw">import</span> com.enriquegrodrigo.spark.crowd.methods.MajorityVoting
+<span class="kw">import</span> com.enriquegrodrigo.spark.crowd.types._
+<span class="kw">val</span> exampleFile = <span class="lit">"data/binary-ann.parquet"</span>
+<span class="kw">val</span> exampleFileMulti = <span class="lit">"data/multi-ann.parquet"</span>
+<span class="kw">val</span> exampleFileCont = <span class="lit">"data/cont-ann.parquet"</span>
+<span class="kw">val</span> exampleDataBinary = spark.read.parquet(exampleFile).as[BinaryAnnotation]
+<span class="kw">val</span> exampleDataMulti = spark.read.parquet(exampleFileMulti).as[MulticlassAnnotation]
+<span class="kw">val</span> exampleDataCont = spark.read.parquet(exampleFileCont).as[RealAnnotation]
+<span class="cmt">//Applying the learning algorithm</span>
+<span class="cmt">//Binary class</span>
+<span class="kw">val</span> muBinary = MajorityVoting.transformBinary(exampleDataBinary)
+<span class="kw">val</span> muBinaryProb = MajorityVoting.transformSoftBinary(exampleDataBinary)
+<span class="cmt">//Multiclass</span>
+<span class="kw">val</span> muMulticlass = MajorityVoting.transformMulticlass(exampleDataMulti)
+<span class="kw">val</span> muMulticlassProb = MajorityVoting.transformSoftMulti(exampleDataMulti)
+<span class="cmt">//Continuous case</span>
+<span class="kw">val</span> muCont = MajorityVoting.transformReal(exampleDataCont)</pre></li></ol>
+            </div><dt>Version</dt><dd><p>0.1.3</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -405,7 +420,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Obtains the most frequent class for BinaryAnnotation datasets</p><div class="fullcomment"><div class="comment cmt"><p>Obtains the most frequent class for BinaryAnnotation datasets</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated</p></dd></dl></div>
+      <p class="shortcomment cmt">Obtains the most frequent class (0 or 1) for <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets</p><div class="fullcomment"><div class="comment cmt"><p>Obtains the most frequent class (0 or 1) for <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset (spark Dataset of type <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a>)
+   to be aggregated</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformMulticlass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="transformMulticlass(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassLabel]"></a>
       <a id="transformMulticlass(Dataset[MulticlassAnnotation]):Dataset[MulticlassLabel]"></a>
@@ -422,7 +438,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Obtain the most frequent class for all examples in the annotation dataset.</p><div class="fullcomment"><div class="comment cmt"><p>Obtain the most frequent class for all examples in the annotation dataset.</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated</p></dd></dl></div>
+      <p class="shortcomment cmt">Obtain the most frequent class for each example of the a <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a> dataset.</p><div class="fullcomment"><div class="comment cmt"><p>Obtain the most frequent class for each example of the a <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a> dataset.</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset (spark Dataset of type <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a>)
+ to be aggregated</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformReal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="transformReal(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealLabel]"></a>
       <a id="transformReal(Dataset[RealAnnotation]):Dataset[RealLabel]"></a>
@@ -439,7 +456,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Obtain the mean of the annotations for a given example.</p><div class="fullcomment"><div class="comment cmt"><p>Obtain the mean of the annotations for a given example.</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated</p></dd></dl></div>
+      <p class="shortcomment cmt">Obtain the mean of the annotations for each example from a <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">types.RealAnnotation</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Obtain the mean of the annotations for each example from a <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">types.RealAnnotation</a>.</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset (spark Dataset of type <a href="../types/RealAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotation">types.RealAnnotation</a>)
+ to be aggregated</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftBinary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="transformSoftBinary(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]"></a>
       <a id="transformSoftBinary(Dataset[BinaryAnnotation]):Dataset[BinarySoftLabel]"></a>
@@ -456,7 +474,8 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Obtains probability of the class being positive for BinaryAnnotation datasets</p><div class="fullcomment"><div class="comment cmt"><p>Obtains probability of the class being positive for BinaryAnnotation datasets</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated</p></dd></dl></div>
+      <p class="shortcomment cmt">Obtains probability of the class being positive for <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets</p><div class="fullcomment"><div class="comment cmt"><p>Obtains probability of the class being positive for <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset (spark Dataset of type <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a>)
+   to be aggregated</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftMulti" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="transformSoftMulti(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.MulticlassSoftProb]"></a>
       <a id="transformSoftMulti(Dataset[MulticlassAnnotation]):Dataset[MulticlassSoftProb]"></a>
@@ -474,9 +493,11 @@
       </a>
     </span>
       <p class="shortcomment cmt">Obtain a list of datasets resulting of applying <a href="#transformSoftBinary(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" class="extmbr" name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftBinary">transformSoftBinary</a> to
-each class against the others</p><div class="fullcomment"><div class="comment cmt"><p>Obtain a list of datasets resulting of applying <a href="#transformSoftBinary(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" class="extmbr" name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftBinary">transformSoftBinary</a> to
-each class against the others</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset to be aggregated
-TODO: Habría que cuidar casos que no aparecen (al menos tienen que tener un 0)</p></dd></dl></div>
+each class against the others (One vs All) on a  <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a> dataset.</p><div class="fullcomment"><div class="comment cmt"><p>Obtain a list of datasets resulting of applying <a href="#transformSoftBinary(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation]):org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinarySoftLabel]" class="extmbr" name="com.enriquegrodrigo.spark.crowd.methods.MajorityVoting#transformSoftBinary">transformSoftBinary</a> to
+each class against the others (One vs All) on a  <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a> dataset.</p><p>It supposes classes go from 0 to nClasses. For example, for a three class problem, there
+should be classes {0,1,2}.
+</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The annotations dataset (spark Dataset of type <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a>)
+ to be aggregated</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
