@@ -290,8 +290,8 @@ object RaykarCont {
                .groupByKey(_.example)
                .agg((new MuAggregator).toColumn)
                .as[(Long, Double)]
-               .map{ case (example, prediction) => MuEstimation(example, prediction) }
-               .as[MuEstimation]
+               .map{ case (example, prediction) => RealLabel(example, prediction) }
+               .as[RealLabel]
   }
 
   /**
@@ -311,10 +311,10 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def prepareDataGradient(data: DataFrame, mu: Dataset[MuEstimation]) : 
+  private[crowd] def prepareDataGradient(data: DataFrame, mu: Dataset[RealLabel]) : 
           DataFrame = {
 
-      val muFixed = mu.withColumnRenamed("mu", "comenriquegrodrigotempmu") 
+      val muFixed = mu.withColumnRenamed("value", "comenriquegrodrigotempmu") 
       val fullData = data.join(muFixed, "example")
       val features = fullData.columns.filter(x => (!x.startsWith("comenriquegrodrigotemp") && (x != "example")))
                                      .map(col)
@@ -356,11 +356,10 @@ object RaykarCont {
     val optWeights = opt.toArray
     val weights = model.mu.sparkSession.sparkContext.broadcast(optWeights)
     val pred = preparedData.map(r => RealLabel(r.getLong(1), computePred(weights, r))) 
-    val like = pred.joinWith(mu, pred.col("example") === mu.col("example")).map(x => computeLikeInstance(x._2.mu, x._1.value)).reduce(_+_) / model.dataset.count()
     
     val joined: Dataset[AnnotationsWithPredictions] = 
       model.annotatorData.joinWith(pred, 
-                                     model.annotatorData.col("example") === model.mu.col("example"))
+                                     model.annotatorData.col("example") === pred.col("example"))
                          .as[(RealAnnotation,RealLabel)]
                          .map(x => AnnotationsWithPredictions(x._1.example, 
                                                                 x._1.annotator, 
@@ -371,8 +370,12 @@ object RaykarCont {
 
    
     //Estimation of ground truth EStep
-    val mu: Dataset[MuEstimation] = computeYPred(model.annotatorData, lambdas)
-    val muFix = mu.map{ case MuEstimation(annotator, mu) => RealLabel(annotator, mu) }
+    val mu: Dataset[RealLabel] = computeYPred(model.annotatorData, lambdas)
+
+    //Estimation of least squares error 
+    val like = pred.joinWith(mu, pred.col("example") === mu.col("example")).map(x => computeLikeInstance(x._2.value, x._1.value)).reduce(_+_) / model.dataset.count()
+
+    val muFix = mu.map{ case RealLabel(annotator, mu) => RealLabel(annotator, mu) }
     model.modify(nMu=muFix.cache(), nWeights=weights, nLambdas = lambdas, nLogLikelihood = like, nImprovement = model.logLikelihood-like)
   }
 
