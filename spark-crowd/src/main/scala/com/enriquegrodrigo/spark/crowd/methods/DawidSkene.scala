@@ -61,16 +61,17 @@ object DawidSkene {
   *  @version 0.1.3 
   */
   private[crowd] case class DawidSkenePartialModel(dataset: Dataset[DawidSkenePartial], params: Broadcast[DawidSkeneParams], 
-                                  logLikelihood: Double, improvement: Double, nClasses: Int, 
-                                  nAnnotators: Long) {
+                                  annotatorCombinations: Dataset[AnnotatorCombination], logLikelihood: Double, improvement: Double, 
+                                  nClasses: Int, nAnnotators: Long) {
 
     def modify(nDataset: Dataset[DawidSkenePartial] =dataset, 
         nParams: Broadcast[DawidSkeneParams] =params, 
-        nLogLikelihood: Double =logLikelihood, 
+        annotatorCombinations: Dataset[AnnotatorCombination]=annotatorCombinations, 
+        nLogLikelihood: Double=logLikelihood,
         nImprovement: Double =improvement, 
         nNClasses: Int =nClasses, 
         nNAnnotators: Long =nAnnotators) = 
-          new DawidSkenePartialModel(nDataset, nParams, 
+          new DawidSkenePartialModel(nDataset, nParams, annotatorCombinations,
                                                   nLogLikelihood, 
                                                   nImprovement, 
                                                   nNClasses, 
@@ -92,6 +93,15 @@ object DawidSkene {
   *  @version 0.1.3 
   */
   private[crowd] case class DawidSkenePartial(example: Long, annotator: Long, value: Int, est: Int)
+
+  /**
+   *  Case class for saving the annotator combinations (to take care of corner empty cases). 
+   *
+   *  @author enrique.grodrigo
+   *  @version 0.1.3 
+   */
+  private[crowd] case class AnnotatorCombination(annotator: Long, j: Integer, l:Integer)
+
 
   /**
    *  Case class for saving the annotator accuracy parameters. 
@@ -285,22 +295,36 @@ object DawidSkene {
     val nClasses = model.nClasses
     val nAnnotators = model.nAnnotators
     //Matrix with annotator precision
-    val pi = Array.fill[Double](nAnnotators.toInt,nClasses,nClasses)(1/nClasses) //Case where annotator never classfied as a class
+    val pi = Array.fill[Double](nAnnotators.toInt,nClasses,nClasses)(0.0) //Case where annotator never classfied as a class
     val w = Array.ofDim[Double](nClasses)
 
     //Estimation of annotator confusion matrices
     val denoms = data.groupBy("annotator", "est")
                      .agg(count("example") as "denom")
-    val nums = data.groupBy(col("annotator"), col("est"), col("value"))
-                   .agg(count("example") as "num")
+
+    data.groupBy("annotator").count().filter($"annotator" === 0)
+
+    val numjoined = data.alias("d").join(model.annotatorCombinations.alias("c"),
+                                        $"d.annotator" === $"c.annotator" &&
+                                        $"d.est" === $"c.j" &&
+                                        $"d.value" === $"c.l", 
+                                       "right_outer")
+                                  .select($"c.annotator" as "annotator", 
+                                            $"c.j" as "j",
+                                            $"c.l" as "l",
+                                            $"d.example" as "example")
+
+    numjoined.filter($"annotator" === 0).show
+
+    val nums = numjoined.groupBy($"annotator", $"j", $"l")
+                   .agg(sum(when($"example".isNull,0).otherwise(1)) as "num")
     val pisd= nums.as("n").join(denoms.as("d"), 
                         ($"n.annotator" === $"d.annotator") &&  
-                        ($"n.est" === $"d.est"), "right_outer")
-                  .select(col("n.annotator"), col("n.est") as "j", col("n.value") as "l", 
-                            when(col("n.num").isNull, lit(1)/(col("d.denom") + nClasses))
-                              .otherwise((col("n.num") + 1)/(col("d.denom") + nClasses)) 
-                              as "pi")
+                        ($"n.j" === $"d.est"))
+                  .select($"n.annotator", $"n.j" as "j", $"n.l" as "l", 
+                              ((col("n.num") + 1)/(col("d.denom") + nClasses)) as "pi")
                   .as[PiValue]
+
     val pis = pisd.collect
 
     //Assigns the value to the annotator matrix (not distributed) Size: O(A*C^2)
@@ -381,6 +405,15 @@ object DawidSkene {
 
     //First estimation using majority voting 
     val anns = MajorityVoting.transformMulticlass(datasetCached)
+
+    //Annotator-Class-Class combinations 
+    val combinations = dataset.map(_.annotator)
+                              .distinct
+                              .withColumnRenamed("value", "annotator")
+                              .withColumn("j", explode(array((0 until classes).map(lit): _*)))
+                              .withColumn("l", explode(array((0 until classes).map(lit): _*)))
+                              .as[AnnotatorCombination]
+
     
     //Adds the class estimation to the annotations 
     val joinedDataset = datasetCached.alias("dc").joinWith(anns.alias("an"), $"dc.example" === $"an.example")
@@ -397,6 +430,7 @@ object DawidSkene {
                                   new DawidSkeneParams(Array.ofDim[Double](nAnnotators.toInt, classes, classes), //Reliability Matrix for annotators
                                   Array.ofDim[Double](classes)) //Class weights
                                 ),
+                                combinations,
                                 0, //Neg Log-likelihood
                                 0, //Improvement in likelihood 
                                 classes, //Number of classes 
