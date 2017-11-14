@@ -314,8 +314,6 @@ object DawidSkene {
                                             $"c.l" as "l",
                                             $"d.example" as "example")
 
-    numjoined.filter($"annotator" === 0).show
-
     val nums = numjoined.groupBy($"annotator", $"j", $"l")
                    .agg(sum(when($"example".isNull,0).otherwise(1)) as "num")
     val pisd= nums.as("n").join(denoms.as("d"), 
