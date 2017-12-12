@@ -24,7 +24,7 @@ The simplest way to use the package is adding the next dependency directly
 into the `build.sbt` file of your project:
 
 ```scala
-libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1"
+libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.3"
 ```
 
 If this is not a possibility, you can compile the project and create a 
@@ -53,7 +53,7 @@ to publish the library to a local Ivy repository. The
 library can be added to the `build.sbt` file of a new
 project with the following line:
 ```scala
-    libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1"
+    libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.3"
 ```
 
 ## Usage 
@@ -70,6 +70,10 @@ For running the examples of this package one can use our docker image with the l
 For running a spark-shell with the library pre-loaded, one can use: 
 
 	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/spark-crowd 
+
+One can also generate a `.jar` file as seen previously and use it with `spark-shell` or `spark-submit`. For example, with `spark-shell`:
+	spark-shell --jars spark-crowd_2.11-0.1.3.jar -i DawidSkeneExample.scala
+
 
 ### Types
 
@@ -88,6 +92,9 @@ example | annotator | value
 
 So the user needs to provide the annotations using this typed datasets to apply the learning methods. 
 This is usually simple if the user has all the information above in a Spark DataFrame:
+- The `example` variable should be in the range `[0..number of Examples]`
+- The `annotator` variable should be in the range `[0..number of Annotators]`
+- The `value` variable should be in the range `[0..number of Classes]`
 
 ```scala
 import com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation
@@ -103,7 +110,7 @@ In the case of the feature dataset, the requisites are that:
  * Appart from the features, the data must have an `example` and a `class` columns.
  * The example must be of type `Long`.
  * Class must be of type `Integer` or `Double`, depending on the type of class (discrete or continuous).
- * All features must be of type `Double`.
+ * All features must be of type `Double`. For discrete features one can use indicator variables.
 
 ### Methods
 

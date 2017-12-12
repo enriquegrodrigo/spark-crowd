@@ -50,5 +50,5 @@ For all the datasets, we have use 6 good annotators and 4 bad annotators. For ea
   |   1   |0.4|0.4|0.2|
 
 - **Continuous**: 
-  - A good annotator classifies with a normal distribution with standard deviation of 1 and mean the true class.
-  - A good annotator classifies with a normal distribution with standard deviation of 8 and mean the true class.
+  - A good annotator classifies with a normal distribution with standard deviation of 1 and mean the true class. In precision terms (inverse of variance), this would be ~ 1.
+  - A good annotator classifies with a normal distribution with standard deviation of 8 and mean the true class. In precision terms (inverse of variance), this would be 1/64 ~= 0.016.
