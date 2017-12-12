@@ -6,5 +6,5 @@ RUN cd /opt/ && \
 	wget https://oss.sonatype.org/service/local/repositories/releases/content/com/enriquegrodrigo/spark-crowd_2.11/0.1.3/spark-crowd_2.11-0.1.3.jar -O spark-crowd-0.1.3.jar 
 
 
-ENTRYPOINT ["spark-shell", "--jars", "/opt/spark-crowd-0.1.3.jar", "-i"]
+ENTRYPOINT ["spark-shell", "--jars", "/opt/spark-crowd-0.1.3.jar", "--master", "local[*]", "-i"]
 	
