@@ -24,7 +24,7 @@ The simplest way to use the package is adding the next dependency directly
 into the `build.sbt` file of your project:
 
 ```scala
-libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.3"
+libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.4"
 ```
 
 If this is not a possibility, you can compile the project and create a 
@@ -53,7 +53,7 @@ to publish the library to a local Ivy repository. The
 library can be added to the `build.sbt` file of a new
 project with the following line:
 ```scala
-    libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.3"
+    libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.4"
 ```
 
 ## Usage 
@@ -72,7 +72,7 @@ For running a spark-shell with the library pre-loaded, one can use:
 	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/spark-crowd 
 
 One can also generate a `.jar` file as seen previously and use it with `spark-shell` or `spark-submit`. For example, with `spark-shell`:
-	spark-shell --jars spark-crowd_2.11-0.1.3.jar -i DawidSkeneExample.scala
+	spark-shell --jars spark-crowd_2.11-0.1.4.jar -i DawidSkeneExample.scala
 
 
 ### Types
