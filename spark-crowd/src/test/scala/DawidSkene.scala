@@ -69,8 +69,6 @@ class DawidSkeneTest extends fixture.FlatSpec with Matchers {
     assert(fis6 ===  0.8028, "Annotator precision 0,1,1") 
     val fis7 = mode.getAnnotatorPrecision()(0)(2)(2)
     assert(fis7 === 0.6866, "Annotator precision 0,2,2") 
-    val fis8 = mode.getLogLikelihood()
-    assert(fis8 ===  7265.6019, "LogLikelihood") 
 
   }
 }

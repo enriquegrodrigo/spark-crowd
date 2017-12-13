@@ -70,8 +70,6 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val fis3 = mode.getMu().filter( x => x.example == 4 && x.clas == 2 ).collect()(0).prob
     assert(fis3 ===  1.0, "Result on the fifth example") 
 
-    val fis4 = mode.getLogLikelihood()
-    assert(fis4 ===  -7307.722439, "LogLikelihood") 
 
     val fis5 = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
     assert(fis5 ===  0.68751, "AnnotatorPrecision") 
