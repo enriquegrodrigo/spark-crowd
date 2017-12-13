@@ -71,7 +71,7 @@ import scala.util.Random
  *    val like = mode.getLogLikelihood()
  *  }}}
  *  @author enrique.grodrigo
- *  @version 0.1 
+ *  @version 0.1.5 
  *  @see Raykar, Vikas C., et al. "Learning from crowds." Journal of Machine
  *  Learning Research 11.Apr (2010): 1297-1322.
  *  
@@ -328,7 +328,7 @@ object RaykarBinary {
   *  @param w_prior prior for the weights of the logistic regression model
   *  @return [[com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel]]
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.1.5 
   */
   def apply(dataset: DataFrame, annDataset: Dataset[BinaryAnnotation], eMIters: Int = 5, 
             eMThreshold: Double = 0.001,  gradIters: Int = 100, 

@@ -68,6 +68,7 @@ import scala.math.{sqrt, exp}
  *  @see Whitehill, Jacob, et al. "Whose vote should count more: Optimal
  *  integration of labels from labelers of unknown expertise." Advances in
  *  neural information processing systems. 2009.
+ *  @version 0.1.5
  */
 object Glad {
 
@@ -321,7 +322,7 @@ object Glad {
   *  @param alphaPrior First value for all alpha parameters 
   *  @param betaPrior First value for all beta parameters 
   *  @author enrique.grodrigo
-  *  @version 0.1.3
+  *  @version 0.1.5
   */
   def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 5, eMThreshold: Double = 0.1, 
             gradIters: Int = 30, gradThreshold: Double = 0.5, gradLearningRate: Double=0.01,

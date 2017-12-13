@@ -61,7 +61,7 @@ import scala.math.{log => mathLog}
  *    val like = mode.getLogLikelihood()
  *  }}}
  *  @author enrique.grodrigo
- *  @version 0.1.4
+ *  @version 0.1.5
  *  @see Dawid, Alexander Philip, and Allan M. Skene. "Maximum likelihood
  *  estimation of observer error-rates using the EM algorithm." Applied
  *  statistics (1979): 20-28.
@@ -250,7 +250,7 @@ object DawidSkene {
    *  @return [[types.DawidSkeneModel]]
    *
    *  @author enrique.grodrigo
-   *  @version 0.1.3 
+   *  @version 0.1.5 
    */
   def apply(dataset: Dataset[MulticlassAnnotation], eMIters: Int = 10, eMThreshold: Double = 0.001): 
       DawidSkeneModel = {
