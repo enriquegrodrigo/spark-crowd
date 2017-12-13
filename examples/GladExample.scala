@@ -38,6 +38,3 @@ val annprec = mode.getAnnotatorPrecision()
 //Annotator precision matrices
 val annprec = mode.getInstanceDifficulty()
 
-//Annotator likelihood 
-val like = mode.getLogLikelihood()
-

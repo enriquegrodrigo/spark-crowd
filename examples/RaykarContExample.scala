@@ -37,6 +37,4 @@ val pred = mode.getMu().as[RealLabel]
 //Annotator precision matrices
 val annprec = mode.getAnnotatorPrecision()
 
-//Annotator likelihood 
-val like = mode.getLogLikelihood()
 
