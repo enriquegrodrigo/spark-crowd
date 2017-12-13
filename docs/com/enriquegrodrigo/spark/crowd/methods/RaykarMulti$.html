@@ -72,7 +72,7 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
 <span class="kw">val</span> annprec = mode.getAnnotatorPrecision()
 <span class="cmt">//Annotator likelihood</span>
 <span class="kw">val</span> like = mode.getLogLikelihood()</pre></li></ol>
-            </div><dt>Version</dt><dd><p>0.1</p></dd><dt>See also</dt><dd><span class="cmt"><p>Raykar, Vikas C., et al. &quot;Learning from crowds.&quot; Journal of Machine
+            </div><dt>Version</dt><dd><p>0.1.5</p></dd><dt>See also</dt><dd><span class="cmt"><p>Raykar, Vikas C., et al. &quot;Learning from crowds.&quot; Journal of Machine
  Learning Research 11.Apr (2010): 1297-1322.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -188,7 +188,7 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
       <p class="shortcomment cmt"> Applies the learning algorithm
 </p><div class="fullcomment"><div class="comment cmt"><p> Applies the learning algorithm
 </p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>the dataset with feature vectors (spark Dataframe).</p></dd><dt class="param">annDataset</dt><dd class="cmt"><p>the dataset with the annotations (spark Dataset of <a href="../types/MulticlassAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation">types.MulticlassAnnotation</a>).</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>maximum number of iterations for the GradientDescent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt class="param">gradLearning</dt><dd class="cmt"><p>learning rate for the gradient descent algorithm</p></dd><dt class="param">k_prior</dt><dd class="cmt"><p>prior (Dirichlet distribution hyperparameters) for the estimation
- of the probability that an annotator correctly a class given another</p></dd><dt class="param">w_prior</dt><dd class="cmt"><p>prior for the weights of the logistic regression model</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../types/RaykarBinaryModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel">com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel</a></p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
+ of the probability that an annotator correctly a class given another</p></dd><dt class="param">w_prior</dt><dd class="cmt"><p>prior for the weights of the logistic regression model</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../types/RaykarBinaryModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel">com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel</a></p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1.5</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>

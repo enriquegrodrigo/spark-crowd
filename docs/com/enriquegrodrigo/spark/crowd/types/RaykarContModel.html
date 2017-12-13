@@ -90,7 +90,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealLabel],lambdas:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision],weights:Array[Double],logLikelihood:Double):com.enriquegrodrigo.spark.crowd.types.RaykarContModel"></a>
+      <a id="&lt;init&gt;(mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealLabel],lambdas:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision],weights:Array[Double]):com.enriquegrodrigo.spark.crowd.types.RaykarContModel"></a>
       <a id="&lt;init&gt;:RaykarContModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,14 +98,14 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">RaykarContModel</span><span class="params">(<span name="mu">mu: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RealLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealLabel">RealLabel</a>]</span>, <span name="lambdas">lambdas: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RealAnnotatorPrecision.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision">RealAnnotatorPrecision</a>]</span>, <span name="weights">weights: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="logLikelihood">logLikelihood: <span class="extype" name="scala.Double">Double</span></span>)</span>
+        <span class="name">RaykarContModel</span><span class="params">(<span name="mu">mu: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RealLabel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealLabel">RealLabel</a>]</span>, <span name="lambdas">lambdas: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="RealAnnotatorPrecision.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision">RealAnnotatorPrecision</a>]</span>, <span name="weights">weights: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.RaykarContModel@&lt;init&gt;(mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealLabel],lambdas:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision],weights:Array[Double],logLikelihood:Double):com.enriquegrodrigo.spark.crowd.types.RaykarContModel" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.RaykarContModel@&lt;init&gt;(mu:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealLabel],lambdas:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.RealAnnotatorPrecision],weights:Array[Double]):com.enriquegrodrigo.spark.crowd.types.RaykarContModel" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">mu</dt><dd class="cmt"><p>label estimation returned from the model.</p></dd><dt class="param">weights</dt><dd class="cmt"><p>logistic regresion weights.</p></dd><dt class="param">logLikelihood</dt><dd class="cmt"><p>logLikelihood of the final estimation of the model.</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">mu</dt><dd class="cmt"><p>label estimation returned from the model.</p></dd><dt class="param">weights</dt><dd class="cmt"><p>logistic regresion weights.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -299,25 +299,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel#getLogLikelihood" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getLogLikelihood():Double"></a>
-      <a id="getLogLikelihood():Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getLogLikelihood</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.types.RaykarContModel@getLogLikelihood():Double" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"> Method that returns the mean square error of the model
-</p><div class="fullcomment"><div class="comment cmt"><p> Method that returns the mean square error of the model
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Double</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.types.RaykarContModel#getModelWeights" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getModelWeights():Array[Double]"></a>
       <a id="getModelWeights():Array[Double]"></a>
