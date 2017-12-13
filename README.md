@@ -79,8 +79,8 @@ One can also generate a `.jar` file as seen previously and use it with `spark-sh
 
 This package makes extensive use of Spark *DataFrame* and *Dataset* APIs. The latter 
 takes advantage of typed rows which is beneficial for debugging purposes, among other things. 
-As the annotations datasets usually have a fixed structure the package includes types
-three annotations datasets (binary, multiclass and real annotations), all of them 
+As the annotations data sets usually have a fixed structure the package includes types
+three annotations data sets (binary, multiclass and real annotations), all of them 
 with the following structure:
 
 example | annotator | value 
@@ -90,7 +90,7 @@ example | annotator | value
 2 | 2| 0
 ...|...|...
 
-So the user needs to provide the annotations using this typed datasets to apply the learning methods. 
+So the user needs to provide the annotations using this typed data sets to apply the learning methods. 
 This is usually simple if the user has all the information above in a Spark DataFrame:
 - The `example` variable should be in the range `[0..number of Examples]`
 - The `annotator` variable should be in the range `[0..number of Annotators]`
