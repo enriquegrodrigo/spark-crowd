@@ -34,8 +34,7 @@ import org.apache.spark.broadcast.Broadcast
 */
 class GladModel(mu: Dataset[BinarySoftLabel], 
                           prec: Array[Double], 
-                          diffic: Dataset[GladInstanceDifficulty],
-                          logLikelihood: Double) extends Model[BinarySoftLabel] {
+                          diffic: Dataset[GladInstanceDifficulty]) extends Model[BinarySoftLabel] {
                             
   /**
   *  Method that returns the probabilistic estimation of the true label 
@@ -45,15 +44,6 @@ class GladModel(mu: Dataset[BinarySoftLabel],
   *  @version 0.1 
   */
   def getMu(): Dataset[BinarySoftLabel] = mu 
-
-  /**
-  *  Method that returns the likelihood of the model 
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getLogLikelihood(): Double = logLikelihood 
 
   /**
   *  Method that returns the annotator precision information 

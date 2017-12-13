@@ -432,8 +432,7 @@ object RaykarMulti {
     //Real model result
     return new RaykarMultiModel(l.mu, 
                                   l.annotatorPrecision,  
-                                  l.logisticWeights, 
-                                  l.likelihood)
+                                  l.logisticWeights)
   }
   
   /**

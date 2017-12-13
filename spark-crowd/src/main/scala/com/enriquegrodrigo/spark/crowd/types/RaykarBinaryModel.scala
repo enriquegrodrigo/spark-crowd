@@ -36,8 +36,7 @@ import org.apache.spark.broadcast.Broadcast
 class RaykarBinaryModel(mu: Dataset[BinarySoftLabel], 
                           alpha: Array[Double],  
                           beta: Array[Double],  
-                          weights: Array[Double],
-                          logLikelihood: Double) extends Model[BinarySoftLabel] {
+                          weights: Array[Double]) extends Model[BinarySoftLabel] {
 
   /**
   *  Method that returns the probabilistic estimation of the true label 
@@ -47,15 +46,6 @@ class RaykarBinaryModel(mu: Dataset[BinarySoftLabel],
   *  @version 0.1 
   */
   def getMu(): Dataset[BinarySoftLabel] = mu 
-
-  /**
-  *  Method that returns the likelihood of the model 
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getLogLikelihood(): Double = logLikelihood 
 
   /**
   *  Method that returns the annotator precision information 

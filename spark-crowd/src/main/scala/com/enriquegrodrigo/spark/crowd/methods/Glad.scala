@@ -339,8 +339,8 @@ object Glad {
     val difficulties = l.dataset.select($"example", $"beta").as[GladInstanceDifficulty].distinct
     new GladModel(preparedDataset.as[BinarySoftLabel], //Ground truth estimate
                         l.params.value.alpha, //Model parameters 
-                        difficulties, //Difficulty for each example 
-                        l.logLikelihood)
+                        difficulties //Difficulty for each example
+                        )
   }
 
   /**

@@ -34,8 +34,7 @@ import org.apache.spark.broadcast.Broadcast
 */
 class RaykarContModel(mu: Dataset[RealLabel], 
                           lambdas: Dataset[RealAnnotatorPrecision],  
-                          weights: Array[Double],
-                          logLikelihood: Double) extends Model[RealLabel] {
+                          weights: Array[Double]) extends Model[RealLabel] {
                             
   /**
   *  Method that returns the estimation of the true label 
@@ -45,15 +44,6 @@ class RaykarContModel(mu: Dataset[RealLabel],
   *  @version 0.1 
   */
   def getMu(): Dataset[RealLabel] = mu 
-
-  /**
-  *  Method that returns the mean square error of the model 
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getLogLikelihood(): Double = logLikelihood 
 
   /**
   *  Method that returns the annotator precision as a real parameter 

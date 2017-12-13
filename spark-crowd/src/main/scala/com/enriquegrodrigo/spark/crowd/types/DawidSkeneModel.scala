@@ -32,8 +32,7 @@ import org.apache.spark.broadcast.Broadcast
 *  @version 0.1 
 */
 class DawidSkeneModel(mu: Dataset[MulticlassLabel], 
-                          prec: Array[Array[Array[Double]]],
-                          logLikelihood: Double) extends Model[MulticlassLabel] {
+                          prec: Array[Array[Array[Double]]]) extends Model[MulticlassLabel] {
                             
   /**
   *  Method that returns the probabilistic estimation of the true label 
@@ -43,15 +42,6 @@ class DawidSkeneModel(mu: Dataset[MulticlassLabel],
   *  @version 0.1 
   */
   def getMu(): Dataset[MulticlassLabel] = mu 
-
-  /**
-  *  Method that returns the likelihood of the model 
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getLogLikelihood(): Double = logLikelihood 
 
   /**
   *  Method that returns the annotator precision information 

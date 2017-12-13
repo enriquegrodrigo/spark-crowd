@@ -239,7 +239,7 @@ object RaykarCont {
     val l = Stream.range(1,eMIters).scanLeft(fixed)(step(gradIters, gradThreshold, gradLearning))
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
-    new RaykarContModel(l.mu, l.lambda, l.weights.value, l.logLikelihood)
+    new RaykarContModel(l.mu, l.lambda, l.weights.value)
   }
 
  /**

@@ -34,8 +34,7 @@ import org.apache.spark.broadcast.Broadcast
 */
 class RaykarMultiModel(mu: Dataset[MulticlassSoftProb], 
                           prec: Dataset[DiscreteAnnotatorPrecision],  
-                          weights: Array[Array[Double]],
-                          logLikelihood: Double) extends Model[MulticlassSoftProb] {
+                          weights: Array[Array[Double]]) extends Model[MulticlassSoftProb] {
                             
   /**
   *  Method that returns the probabilistic estimation of the true label 
@@ -45,15 +44,6 @@ class RaykarMultiModel(mu: Dataset[MulticlassSoftProb],
   *  @version 0.1 
   */
   def getMu(): Dataset[MulticlassSoftProb] = mu 
-
-  /**
-  *  Method that returns the likelihood of the model 
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getLogLikelihood(): Double = logLikelihood 
 
   /**
   *  Method that returns the annotator precision information 

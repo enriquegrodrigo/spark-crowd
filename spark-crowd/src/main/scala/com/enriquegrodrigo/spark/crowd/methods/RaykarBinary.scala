@@ -346,7 +346,7 @@ object RaykarBinary {
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
     val preparedDataset = l.mu.select($"example", $"value").distinct()
-    new RaykarBinaryModel(preparedDataset.as[BinarySoftLabel], l.params.value.alpha, l.params.value.beta, l.params.value.w, l.logLikelihood)
+    new RaykarBinaryModel(preparedDataset.as[BinarySoftLabel], l.params.value.alpha, l.params.value.beta, l.params.value.w)
   }
   
   /**

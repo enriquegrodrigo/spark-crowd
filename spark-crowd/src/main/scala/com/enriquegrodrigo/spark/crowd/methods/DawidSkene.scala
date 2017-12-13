@@ -268,8 +268,7 @@ object DawidSkene {
     val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct() //Ground truth
 
     new DawidSkeneModel(preparedDataset.as[MulticlassLabel], //Ground truth
-                        l.params.value.pi, //Model parameters (pi, for the reliability matrix and w for the class weights) 
-                        l.logLikelihood //Neg log-likelihood of the model
+                        l.params.value.pi //Model parameters (pi, for the reliability matrix and w for the class weights) 
                        )
   }
 
