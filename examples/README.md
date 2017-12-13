@@ -1,7 +1,7 @@
 # Example datasets
 
 All data for the examples is included in the folder data using the parquet data format. 
-For each type of class (binary, multiclass and continuous) we a dataset with three 
+For each type of class (binary, multiclass and continuous) we have a data set with three 
 separated components:
 - *type*-data: the file containing a Dataframe of the form:
 
@@ -10,12 +10,12 @@ separated components:
 | 0       | 0.84 | 0.75 | 0.42 | ... | 0.58 | 
 | 1       | ...  | ...  | ...  | ... | ...  | 
 
-- *type*-ann: a Dataset with type `BinaryAnnotation`, `MulticlassAnnotation` or `RealAnnotation` depending on
-the dataset type.
+- *type*-ann: a data set with type `BinaryAnnotation`, `MulticlassAnnotation` or `RealAnnotation` depending on
+the data set type.
 - *type*-gt: The ground truth for the example. Normally we won't have this information, as the data is generated, 
 we can use the ground truth for comparisons.  
 
-For all the datasets, we have use 6 good annotators and 4 bad annotators. For each of the types, this means:
+For all the data sets, we have use 6 good annotators and 4 bad annotators. For each of the types, this means:
 
 - **Binary**: 
   - A good annotator has 80% chance of classifying correctly either when the true class is 0 or 1:
