@@ -20,7 +20,7 @@
 import com.enriquegrodrigo.spark.crowd.methods.DawidSkene
 import com.enriquegrodrigo.spark.crowd.types._
 
-val exampleFile = "data/multi-ann.parquet"
+val exampleFile = "examples/data/multi-ann.parquet"
 
 val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation] 
 
