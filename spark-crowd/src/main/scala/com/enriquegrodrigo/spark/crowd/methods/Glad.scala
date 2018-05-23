@@ -219,7 +219,9 @@ object Glad {
   
     def finish(reduction: GladBetaAggregatorBuffer) = {
       //Obtains gradient descent update for beta
-      reduction.beta + learningRate * reduction.agg
+      val updater = (reduction.beta + learningRate * (reduction.agg - 1/reduction.beta))
+      //if (updater < 0) 0 else updater 
+      updater
     }
   
     def bufferEncoder: Encoder[GladBetaAggregatorBuffer] = Encoders.product[GladBetaAggregatorBuffer]
@@ -456,7 +458,7 @@ object Glad {
     val newModel: GladPartialModel = update(model,1)._1
     //Gradient loop (Own gradient descent implementation as Gradient Descent in MLlib does not support 
     // optimizing parameters for each example)
-    val lastModel = Stream.range(2,maxGradIters).scanLeft((newModel,1.0))((x,i) => update(x._1, i))
+    val lastModel = Stream.range(2,maxGradIters).scanLeft((newModel,thresholdGrad+1))((x,i) => update(x._1, i))
                                     .takeWhile( (model) => model._2 > thresholdGrad )
                                     .last
     lastModel._1
