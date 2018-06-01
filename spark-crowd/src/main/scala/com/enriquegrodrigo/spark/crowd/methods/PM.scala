@@ -139,7 +139,6 @@ object PM {
     val weights = seNormWeights(m.annotations, m.mu)
     val mu = gtEstimation(m.annotations,weights).checkpoint()
     val mseDifference = mse(m.mu,mu)
-    print(mseDifference)
     return InternalModel(m.annotations, mu, weights, mseDifference)  
   }
   
@@ -156,7 +155,6 @@ object PM {
     val s = Stream.range(2,iterations).scanLeft(firstFixed)(stepF)
                                     .takeWhile( (model) => model.difference > threshold )
                   
-    println(s)
     val l = s.last
     //Results: Ground Truth estimation, class prior estimation and annotator quality matrices
     PMModel(l.mu, l.weights)

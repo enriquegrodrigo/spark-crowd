@@ -137,7 +137,6 @@ object CATD {
     val weights = weightEstimation(m.annotations, m.mu, alpha)
     val mu = gtEstimation(m.annotations,weights).checkpoint()
     val mseDifference = mse(m.mu,mu)
-    print(mseDifference)
     return InternalModel(m.annotations, mu, weights, mseDifference)  
   }
   
@@ -154,7 +153,6 @@ object CATD {
     val s = Stream.range(2,iterations).scanLeft(firstFixed)(stepF)
                                     .takeWhile( (model) => model.difference > threshold )
                   
-    println(s)
     val l = s.last
     //Results: Ground Truth estimation, class prior estimation and annotator quality matrices
     CATDModel(l.mu, l.weights)
