@@ -418,7 +418,7 @@ object CGlad {
                                     .as[CGladPartial]
                                     .cache()
       //Checkpointing every 10th iteration of the Gradient descent algorithm
-      oldModel.modify(nDataset = if (iter%10 == 0) dataset.checkpoint() else dataset )
+      oldModel.modify(nDataset = if (iter%10 == 0) dataset.localCheckpoint() else dataset )
     }
 
     
@@ -472,6 +472,7 @@ object CGlad {
       val nModel = mergeUpdates(updatedBeta,nAlpha,nWeights) 
       val likeModel = logLikelihood(nModel) 
       val improvement = oldModel.logLikelihood - likeModel.logLikelihood 
+      println("    Gradient Iteration " + iter +  ": " + likeModel.logLikelihood)
       (nModel.modify(nLogLikelihood = likeModel.logLikelihood),improvement) 
     }
 
@@ -495,7 +496,8 @@ object CGlad {
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate)
     val e = eStep(m)
     val result = logLikelihood(e)
-    result.modify(nDataset = result.dataset.checkpoint)
+    println("EM Step " + i + ": " + result.logLikelihood)
+    result.modify(nDataset = result.dataset.localCheckpoint)
   }
 
   /**

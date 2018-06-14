@@ -398,7 +398,7 @@ object Glad {
                                     .as[GladPartial]
                                     .cache()
       //Checkpointing every 10th iteration of the Gradient descent algorithm
-      oldModel.modify(nDataset = if (iter%10 == 0) dataset.checkpoint() else dataset )
+      oldModel.modify(nDataset = if (iter%10 == 0) dataset.localCheckpoint() else dataset )
     }
 
     
@@ -475,7 +475,7 @@ object Glad {
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate)
     val e = eStep(m)
     val result = logLikelihood(e)
-    result.modify(nDataset = result.dataset.checkpoint)
+    result.modify(nDataset = result.dataset.localCheckpoint)
   }
 
   /**
