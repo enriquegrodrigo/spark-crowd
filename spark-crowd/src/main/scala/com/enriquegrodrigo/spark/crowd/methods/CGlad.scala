@@ -25,6 +25,12 @@ import com.enriquegrodrigo.spark.crowd.utils.Functions
 import org.apache.spark.sql._
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.expressions.Aggregator
+import org.apache.spark.ml.linalg.Vector
+import org.apache.spark.ml.linalg.Vectors
+import scala.collection.JavaConversions.asScalaBuffer
+import org.apache.spark.ml.recommendation.ALS
+import org.apache.spark.ml.clustering.KMeans
+
 
 import scala.util.Random
 import scala.math.{sqrt, exp}
@@ -70,17 +76,17 @@ import scala.math.{sqrt, exp}
  *  neural information processing systems. 2009.
  *  @version 0.1.5
  */
-object Glad {
+object CGlad {
 
   /****************************************************/
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  private[spark] case class GladPartialModel(dataset: Dataset[GladPartial], params: Broadcast[GladParams], 
+  private[spark] case class GladPartialModel(dataset: Dataset[CGladPartial], params: Broadcast[GladParams], 
                                   logLikelihood: Double, improvement: Double, 
                                   nAnnotators: Int) {
 
-  def modify(nDataset: Dataset[GladPartial] =dataset, 
+  def modify(nDataset: Dataset[CGladPartial] =dataset, 
       nParams: Broadcast[GladParams] =params, 
       nLogLikelihood: Double =logLikelihood, 
       nImprovement: Double =improvement, 
@@ -90,6 +96,19 @@ object Glad {
                                                 nImprovement, 
                                                 nNAnnotators)
   }
+
+
+  case class FeatureVector(id: Integer, features: org.apache.spark.ml.linalg.Vector)
+  case class Cluster(example: Integer, cluster: Integer)
+
+  /**
+  * Class that storages the beta for each cluster 
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.1.3 
+  */
+  private[spark] case class ClusterBeta(exampleCluster: Long, beta: Double)
+
 
   /**
   * Class that storage the reliability for an annotator
@@ -121,7 +140,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1.3 
   */
-  private[spark] case class GladPartial(example: Long, annotator: Int, value: Int, est: Double, beta: Double)
+  private[spark] case class CGladPartial(example: Long, exampleCluster:Int, annotator: Int, value: Int,  est: Double, beta: Double)
 
   /**
   *  Buffer for the alpha aggregator 
@@ -166,11 +185,11 @@ object Glad {
   *  @version 0.1.3 
   */
   private[spark] class GladAlphaAggregator(params: Broadcast[GladParams], learningRate: Double) 
-    extends Aggregator[GladPartial, GladAlphaAggregatorBuffer, Double] {
+    extends Aggregator[CGladPartial, GladAlphaAggregatorBuffer, Double] {
 
     def zero: GladAlphaAggregatorBuffer = GladAlphaAggregatorBuffer(0,-1) 
     
-    def reduce(b: GladAlphaAggregatorBuffer, a: GladPartial) : GladAlphaAggregatorBuffer = {
+    def reduce(b: GladAlphaAggregatorBuffer, a: CGladPartial) : GladAlphaAggregatorBuffer = {
       //Obtains annotation gradient term 
       val alpha = params.value.alpha
       val sigmoidValue = Functions.sigmoid(alpha(a.annotator)*a.beta)
@@ -200,11 +219,11 @@ object Glad {
   *  @version 0.1.3 
   */
   private[spark] class GladBetaAggregator(params: Broadcast[GladParams], learningRate: Double) 
-    extends Aggregator[GladPartial, GladBetaAggregatorBuffer, Double]{
+    extends Aggregator[CGladPartial, GladBetaAggregatorBuffer, Double]{
 
     def zero: GladBetaAggregatorBuffer = GladBetaAggregatorBuffer(0,-1) 
     
-    def reduce(b: GladBetaAggregatorBuffer, a: GladPartial) : GladBetaAggregatorBuffer = {
+    def reduce(b: GladBetaAggregatorBuffer, a: CGladPartial) : GladBetaAggregatorBuffer = {
       //Obtain per annotation beta gradient descent term
       val alpha = params.value.alpha
       val sigmoidValue = Functions.sigmoid(alpha(a.annotator)*a.beta)
@@ -219,9 +238,7 @@ object Glad {
   
     def finish(reduction: GladBetaAggregatorBuffer) = {
       //Obtains gradient descent update for beta
-      val updater = (reduction.beta + learningRate * (reduction.agg - 1/reduction.beta))
-      //if (updater < 0) 0 else updater 
-      updater
+      reduction.beta + learningRate * (reduction.agg - 1/reduction.beta)
     }
   
     def bufferEncoder: Encoder[GladBetaAggregatorBuffer] = Encoders.product[GladBetaAggregatorBuffer]
@@ -236,11 +253,11 @@ object Glad {
   *  @version 0.1.3 
   */
   private[spark] class GladEAggregator(params: Broadcast[GladParams]) 
-    extends Aggregator[GladPartial, GladEAggregatorBuffer, Double]{
+    extends Aggregator[CGladPartial, GladEAggregatorBuffer, Double]{
   
     def zero: GladEAggregatorBuffer = GladEAggregatorBuffer(Vector.fill(2)(1)) //Binary
     
-    def reduce(b: GladEAggregatorBuffer, a: GladPartial) : GladEAggregatorBuffer = {
+    def reduce(b: GladEAggregatorBuffer, a: CGladPartial) : GladEAggregatorBuffer = {
       //Obtains likelihood of an annotation
       val alpha = params.value.alpha
       val sigmoidValue = Functions.sigmoid(alpha(a.annotator)*a.beta)
@@ -273,11 +290,11 @@ object Glad {
   *  @version 0.1.3 
   */
   private[spark] class GladLogLikelihoodAggregator(params: Broadcast[GladParams]) 
-    extends Aggregator[GladPartial, GladLogLikelihoodAggregatorBuffer, Double]{
+    extends Aggregator[CGladPartial, GladLogLikelihoodAggregatorBuffer, Double]{
 
     def zero: GladLogLikelihoodAggregatorBuffer = GladLogLikelihoodAggregatorBuffer(0,-1)
   
-    def reduce(b: GladLogLikelihoodAggregatorBuffer, a: GladPartial) : GladLogLikelihoodAggregatorBuffer = {
+    def reduce(b: GladLogLikelihoodAggregatorBuffer, a: CGladPartial) : GladLogLikelihoodAggregatorBuffer = {
       //Obtains log-likelihood for annotation
       val alphaVal = params.value.alpha(a.annotator.toInt)
       val betaVal = a.beta
@@ -328,9 +345,9 @@ object Glad {
   */
   def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 5, eMThreshold: Double = 0.1, 
             gradIters: Int = 30, gradThreshold: Double = 0.5, gradLearningRate: Double=0.01,
-            alphaPrior: Double = 1, betaPrior: Double = 10): GladModel = {
+            alphaPrior: Double = 1, betaPrior: Double = 10, rank: Integer = 3, k: Integer= 3): CGladModel = {
     import dataset.sparkSession.implicits._
-    val initialModel = initialization(dataset, alphaPrior, betaPrior)
+    val (initialModel, ranks, clusters)  = initialization(dataset, alphaPrior, betaPrior, rank, k)
     val secondModel = step(gradIters,gradThreshold,gradLearningRate)(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
     //Loops until some condition is met
@@ -338,11 +355,13 @@ object Glad {
                                     .takeWhile( (model) => model.improvement > eMThreshold )
                                     .last
     //Prepare results
-    val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct()
+    val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct
     val difficulties = l.dataset.select($"example", $"beta").as[GladInstanceDifficulty].distinct
-    new GladModel(preparedDataset.as[BinarySoftLabel], //Ground truth estimate
+    new CGladModel(preparedDataset.as[BinarySoftLabel], //Ground truth estimate
                         l.params.value.alpha, //Model parameters 
-                        difficulties //Difficulty for each example
+                        difficulties, //Difficulty for each example
+                        ranks, //Ranks of the examples
+                        clusters //Clusters
                         )
   }
 
@@ -362,9 +381,9 @@ object Glad {
                                       .map(x => BinarySoftLabel(x._1, x._2))
     //Add it to the annotation dataset
     val nData= model.dataset.joinWith(newPrediction, model.dataset.col("example") === newPrediction.col("example"))
-                               .as[(GladPartial,BinarySoftLabel)]
-                               .map(x => GladPartial(x._1.example, x._1.annotator, x._1.value, x._2.value, x._1.beta))
-                               .as[GladPartial]
+                               .as[(CGladPartial,BinarySoftLabel)]
+                               .map(x => CGladPartial(x._1.example, x._1.exampleCluster, x._1.annotator, x._1.value, x._2.value, x._1.beta))
+                               .as[CGladPartial]
                                .cache()
 
     model.modify(nDataset=nData)
@@ -388,14 +407,15 @@ object Glad {
 
       //New beta estimation
       val betaAgg = new GladBetaAggregator(oldModel.params,learningRate/sqrt(iter))
-      val newBeta = oldModel.dataset.groupByKey(_.example)
+      val newBeta = oldModel.dataset.groupByKey(_.exampleCluster)
                                     .agg(betaAgg.toColumn)
-                                    .map(x => BinarySoftLabel(x._1,x._2))
+                                    .map(x => ClusterBeta(x._1,x._2))
 
       //Add the estimation to the annotation dataset
-      val dataset = oldModel.dataset.joinWith(newBeta, oldModel.dataset.col("example") === newBeta.col("example"))
-                                    .map(x => GladPartial(x._1.example,x._1.annotator,x._1.value, x._1.est, x._2.value))
-                                    .as[GladPartial]
+      //TODO: Clustering
+      val dataset = oldModel.dataset.joinWith(newBeta, oldModel.dataset.col("exampleCluster") === newBeta.col("exampleCluster"))
+                                    .map(x => CGladPartial(x._1.example, x._1.exampleCluster, x._1.annotator,x._1.value, x._1.est, x._2.beta))
+                                    .as[CGladPartial]
                                     .cache()
       //Checkpointing every 10th iteration of the Gradient descent algorithm
       oldModel.modify(nDataset = if (iter%10 == 0) dataset.localCheckpoint() else dataset )
@@ -452,13 +472,14 @@ object Glad {
       val nModel = mergeUpdates(updatedBeta,nAlpha,nWeights) 
       val likeModel = logLikelihood(nModel) 
       val improvement = oldModel.logLikelihood - likeModel.logLikelihood 
+      println("    Gradient Iteration " + iter +  ": " + likeModel.logLikelihood)
       (nModel.modify(nLogLikelihood = likeModel.logLikelihood),improvement) 
     }
 
     val newModel: GladPartialModel = update(model,1)._1
     //Gradient loop (Own gradient descent implementation as Gradient Descent in MLlib does not support 
     // optimizing parameters for each example)
-    val lastModel = Stream.range(2,maxGradIters).scanLeft((newModel,thresholdGrad+1))((x,i) => update(x._1, i))
+    val lastModel = Stream.range(2,maxGradIters).scanLeft((newModel,thresholdGrad+1))((x,i) => update(x._1, i)) //Thres + 1 to avoid not doing anything 
                                     .takeWhile( (model) => model._2 > thresholdGrad )
                                     .last
     lastModel._1
@@ -475,6 +496,7 @@ object Glad {
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate)
     val e = eStep(m)
     val result = logLikelihood(e)
+    println("EM Step " + i + ": " + result.logLikelihood)
     result.modify(nDataset = result.dataset.localCheckpoint)
   }
 
@@ -498,30 +520,55 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1.3 
   */
-  private[spark] def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double): GladPartialModel = {
+  private[spark] def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double, rank: Integer, k: Integer): (GladPartialModel, Dataset[ExampleRanks], Dataset[ExampleCluster]) = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val datasetCached = dataset.cache() 
     val nAnnotators = datasetCached.select($"annotator").distinct().count()
+
+    //Initial Clustering
+    val als = new ALS().setMaxIter(5).setRegParam(0.01).setUserCol("annotator").setItemCol("example").setRatingCol("value").setRank(rank)
+    val alsmodel = als.fit(datasetCached)
+    val itemfactors = alsmodel.itemFactors
+    val featurevectors = itemfactors.map((r: Row) => ExampleRanks(r.getInt(0), 
+                              Vectors.dense(asScalaBuffer(r.getList[Float](1)).toArray.map(x => x.toDouble))))
+                                    .as[ExampleRanks]
+    val kmeans = new KMeans().setK(k).setSeed(1L)
+    val kmodel = kmeans.fit(featurevectors)
+    val clusters = kmodel.transform(featurevectors)
+    val mapping = clusters.select($"id" as "example", $"prediction" as "cluster").as[ExampleCluster]
+
     val anns = MajorityVoting.transformSoftBinary(datasetCached)
+
     val joinedDataset = datasetCached.joinWith(anns, datasetCached.col("example") === anns.col("example"))
                                .as[(BinaryAnnotation,BinarySoftLabel)]
-                               .map(x => GladPartial(x._1.example, x._1.annotator.toInt, x._1.value, x._2.value, betaPrior))
-                               .as[GladPartial]
-    val partialDataset = joinedDataset
-                                .select($"example", $"annotator", $"value", $"est", $"beta")
-                                .as[GladPartial]
+                               .map(x => CGladPartial(x._1.example, 0, x._1.annotator.toInt, x._1.value, x._2.value, betaPrior))
+                               .as[CGladPartial]
+    //Adding Clusters
+    val newAnn = joinedDataset.joinWith(mapping, joinedDataset.col("example") === mapping.col("example"))
+                              .as[(CGladPartial, Cluster)]
+                              .map(x => CGladPartial(x._1.example, 
+                                                              x._2.cluster, 
+                                                              x._1.annotator.toInt, 
+                                                              x._1.value, 
+                                                              x._1.est, 
+                                                              x._1.beta))
+    val partialDataset = newAnn 
+                                .select($"example", $"exampleCluster", $"annotator", $"value", $"est", $"beta")
+                                .as[CGladPartial]
                                 .cache()
     datasetCached.unpersist()
     val r = new Random(0)
     val alphaInit = Array.fill(nAnnotators.toInt)(alphaPrior)
-    new GladPartialModel(partialDataset, //Annotation dataset 
+    (new GladPartialModel(partialDataset, //Annotation dataset 
                                 sc.broadcast(new GladParams(alphaInit, //Reliability of annotators (placeholder)
                                   Array.fill(2)(10)) //Class weights (placeholder) 
                                 ), 
                                 0, //Neg-loglikelihood
                                 0, //Neg-loglikelihood 
-                                nAnnotators.toInt) //Number of annotators 
+                                nAnnotators.toInt), //Number of annotators 
+          featurevectors,
+          mapping)
   }
 }
 
