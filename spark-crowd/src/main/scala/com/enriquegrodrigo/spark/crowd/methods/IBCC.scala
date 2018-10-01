@@ -52,7 +52,7 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *                   ))
  *  }}}
  *
- *  The algorithm returns a [[types.IBCCModel]], with information about 
+ *  The algorithm returns a [[IBCC.IBCCModel]], with information about 
  *  the class true label estimation, the annotators precision, and the 
  *  class prior estimation 
  *
