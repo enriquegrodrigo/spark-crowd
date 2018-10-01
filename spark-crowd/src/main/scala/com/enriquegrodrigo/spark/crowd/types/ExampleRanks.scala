@@ -17,19 +17,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import com.enriquegrodrigo.spark.crowd.methods.DawidSkene
-import com.enriquegrodrigo.spark.crowd.types._
+package com.enriquegrodrigo.spark.crowd.types
 
-val exampleFile = "examples/data/multi-ann.parquet"
+import org.apache.spark.ml.linalg.Vector
 
-val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation] 
-
-//Applying the learning algorithm
-val mode = DawidSkene(exampleData)
-
-//Get MulticlassLabel with the class predictions
-val pred = mode.getMu().as[MulticlassLabel] 
-
-//Annotator precision matrices
-val annprec = mode.getAnnotatorPrecision()
-
+/**
+*  
+*  Beta parameter for each instance in the Glad model 
+*
+*  @param example example 
+*  @param features vector of features
+*  @author enrique.grodrigo
+*  @version 0.16
+*/
+case class ExampleRanks(id: Integer, features: org.apache.spark.ml.linalg.Vector)
+ 
