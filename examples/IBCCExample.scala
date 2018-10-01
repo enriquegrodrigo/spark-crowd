@@ -8,7 +8,7 @@ val annFile = "examples/data/multi-ann.parquet"
 val annData = spark.read.parquet(annFile)
 
 //Applying the learning algorithm
-val mode = IBCC(annData)
+val mode = IBCC(annData.as[MulticlassAnnotation])
 
 //Get MulticlassLabel with the class predictions
 val pred = mode.mu

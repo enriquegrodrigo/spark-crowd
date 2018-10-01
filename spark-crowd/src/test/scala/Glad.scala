@@ -65,9 +65,9 @@ class GladTest extends fixture.FlatSpec with Matchers {
     val fis4 = mode.getMu().filter(_.example == 2).collect()(0).value
     assert(fis4 ===  1.0, "Third example") 
     val fis5 = mode.getAnnotatorPrecision()(0)
-    assert(fis5 ===  35.98048, "First annotator") 
+    assert(fis5 ===  26.9952158, "First annotator") 
     val fis7 = mode.getInstanceDifficulty().filter(_.example==1).collect()(0).beta
-    assert(fis7 ===  8.0204976, "First example difficulty") 
+    assert(fis7 ===  7.9860708, "First example difficulty") 
   }
 
 }

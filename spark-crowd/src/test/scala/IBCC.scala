@@ -56,7 +56,7 @@ class IBCCTest extends fixture.FlatSpec with Matchers {
     val spark = f.spark
     import spark.implicits._
     val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation].toDF()
+    val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation]
     val mode = IBCC(exampleData)
     val fis = mode.mu.where(col("example") === 0).where(col("class") ===0).collect()(0).getAs[Double](2)
     assert(fis === 0.9999, "First example. Class=0") 

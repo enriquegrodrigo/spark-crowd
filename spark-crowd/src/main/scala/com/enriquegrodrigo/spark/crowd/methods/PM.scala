@@ -21,8 +21,11 @@
 
 package com.enriquegrodrigo.spark.crowd.methods
 
+import com.enriquegrodrigo.spark.crowd.types._
+
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
@@ -142,10 +145,11 @@ object PM {
     return InternalModel(m.annotations, mu, weights, mseDifference)  
   }
   
-  def apply(dataset: DataFrame, iterations: Int = 5, threshold: Double = 0.1): PMModel = {
+  def apply(dataset: Dataset[RealAnnotation], iterations: Int = 5, threshold: Double = 0.1): PMModel = {
 
     //Initialization
-    val initModel = initialization(dataset)
+    val d = dataset.toDF()
+    val initModel = initialization(d)
     //Prepare for steps
     val stepF = (model: InternalModel,i:Int) => step(model,i)
     val first = stepF(initModel, 0)

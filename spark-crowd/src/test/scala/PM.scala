@@ -56,7 +56,7 @@ class PMTest extends fixture.FlatSpec with Matchers {
     val spark = f.spark
     import spark.implicits._
     val sc = spark.sparkContext
-    val exampleData = spark.read.parquet(exampleFile).toDF()
+    val exampleData = spark.read.parquet(exampleFile).as[RealAnnotation]
     val mode = PM(exampleData)
     val fis = mode.mu.where(col("example") === 0).collect()(0).getAs[Double](1)
     assert(fis === 21.145965, "First example.") 

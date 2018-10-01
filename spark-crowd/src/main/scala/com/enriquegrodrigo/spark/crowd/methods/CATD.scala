@@ -21,8 +21,11 @@
 
 package com.enriquegrodrigo.spark.crowd.methods
 
+import com.enriquegrodrigo.spark.crowd.types._
+
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
@@ -64,7 +67,7 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *   val annData = spark.read.parquet(annFile)
  *   
  *   //Applying the learning algorithm
- *   val mode = CATD(annData)
+ *   val mode = CATD(annData.as[RealAnnotation])
  *   
  *   //Get MulticlassLabel with the class predictions
  *   val pred = mode.mu
@@ -140,10 +143,11 @@ object CATD {
     return InternalModel(m.annotations, mu, weights, mseDifference)  
   }
   
-  def apply(dataset: DataFrame, iterations: Int = 5, threshold: Double = 0.1, alpha: Double = 0.05): CATDModel = {
+  def apply(dataset: Dataset[RealAnnotation], iterations: Int = 5, threshold: Double = 0.1, alpha: Double = 0.05): CATDModel = {
+    val d = dataset.toDF()
 
     //Initialization
-    val initModel = initialization(dataset)
+    val initModel = initialization(d)
     //Prepare for steps
     val stepF = (model: InternalModel,i:Int) => step(alpha)(model,i)
     val first = stepF(initModel, 0)

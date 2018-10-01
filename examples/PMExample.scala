@@ -5,7 +5,7 @@ sc.setCheckpointDir("checkpoint")
 
 val annFile = "examples/data/cont-ann.parquet"
 
-val annData = spark.read.parquet(annFile)
+val annData = spark.read.parquet(annFile).as[RealAnnotation]
 
 //Applying the learning algorithm
 val mode = PM(annData)

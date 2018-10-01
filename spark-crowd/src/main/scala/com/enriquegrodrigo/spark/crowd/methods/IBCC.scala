@@ -22,8 +22,11 @@
 
 package com.enriquegrodrigo.spark.crowd.methods
 
+import com.enriquegrodrigo.spark.crowd.types._
+
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
@@ -289,7 +292,7 @@ object IBCC {
   /**
   *  Apply the IBCC Algorithm.
   *
-  *  @param dataset The dataset (spark DataFrame with columns ("example": String, "annotator": String, "value": Int)
+  *  @param dataset The dataset (spark dataset of MulticlassAnnotation
   *  @param eMIters Number of iterations for the EM algorithm
   *  @param eMThreshold LogLikelihood variability threshold for the EM algorithm
   *  @param annDirich Dirichlech prior for annotators. By default, a uniform prior.  
@@ -297,12 +300,13 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def apply(dataset: DataFrame, eMIters: Int = 5, eMThreshold: Double = 0.1, 
+  def apply(dataset: Dataset[MulticlassAnnotation], eMIters: Int = 5, eMThreshold: Double = 0.1, 
             annDirich: Option[Map[String,Array[Array[Double]]]] = None, 
             classDirich: Option[Array[Double]] = None): IBCCModel = {
 
     //Initialization
-    val (annotations, mu, jck, nExamples, nAnnotators, nClasses, allClasses)  = initialization(dataset)
+    val d = dataset.toDF()
+    val (annotations, mu, jck, nExamples, nAnnotators, nClasses, allClasses)  = initialization(d)
     val annPrior = annDirich.getOrElse(Map((0 until nAnnotators.toInt).map(x => (x.toString,priorMatrixGen(nClasses))):_*))
     val classP = classDirich.getOrElse(classPrior(nClasses))
 
