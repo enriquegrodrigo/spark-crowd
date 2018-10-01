@@ -60,22 +60,22 @@ class RaykarMultiTest extends fixture.FlatSpec with Matchers {
     val annotations = spark.read.parquet(annotationsFile).as[MulticlassAnnotation] 
     val data = spark.read.parquet(dataFile) 
     val sc = spark.sparkContext
-    val mode = RaykarMulti(data, annotations)
+    val mode = RaykarMulti(data, annotations, eMIters=1, gradIters=5)
     val fis = mode.getMu().filter( x => x.example == 0 && x.clas == 0 ).collect()(0).prob
     assert(fis ===  1.0, "Result on the first example") 
 
     val fis2 = mode.getMu().filter( x => x.example == 1 && x.clas == 1 ).collect()(0).prob
-    assert(fis2 ===  0.982296, "Result on the second example") 
+    assert(fis2 ===  0.9835084, "Result on the second example") 
 
     val fis3 = mode.getMu().filter( x => x.example == 4 && x.clas == 2 ).collect()(0).prob
     assert(fis3 ===  1.0, "Result on the fifth example") 
 
 
     val fis5 = mode.getAnnotatorPrecision().filter( x => x.annotator==0 && x.c==0 && x.k==0 ).collect()(0).prob
-    assert(fis5 ===  0.68751, "AnnotatorPrecision") 
+    assert(fis5 ===  0.6534629, "AnnotatorPrecision") 
 
     val fis6 = mode.getModelWeights(0)(1)
-    assert(fis6 ===  -0.066726, "First model weight") 
+    assert(fis6 ===  -0.04512865, "First model weight") 
   }
 
 }

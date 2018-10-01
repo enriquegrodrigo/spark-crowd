@@ -57,23 +57,23 @@ class IBCCTest extends fixture.FlatSpec with Matchers {
     import spark.implicits._
     val sc = spark.sparkContext
     val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation]
-    val mode = IBCC(exampleData)
+    val mode = IBCC(exampleData, eMIters=1)
     val fis = mode.mu.where(col("example") === 0).where(col("class") ===0).collect()(0).getAs[Double](2)
     assert(fis === 0.9999, "First example. Class=0") 
     val fis2 = mode.mu.where(col("example") === 1).where(col("class") ===0).collect()(0).getAs[Double](2)
     assert(fis2 === 0.0, "Second example. Class=0") 
     val fis3 = mode.mu.where(col("example") === 1).where(col("class") ===1).collect()(0).getAs[Double](2)
-    assert(fis3 === 0.9793, "Second example. Class=1") 
+    assert(fis3 === 0.97812, "Second example. Class=1") 
     val fis4 = mode.mu.where(col("example") === 3).where(col("class") ===1).collect()(0).getAs[Double](2)
     assert(fis4 === 0.9999, "Fourth example. Class=1") 
     val fis5 = mode.mu.where(col("example") === 6).where(col("class") ===1).collect()(0).getAs[Double](2)
     assert(fis5 === 0.0, "Seven example. Class=1") 
     val fis6 = mode.pi.where(col("annotator") === 0).where(col("c") === 0).where(col("k")===0).collect()(0).getAs[Double](3)
-    assert(fis6 === 0.69216, "First Annotator. Class=0") 
+    assert(fis6 === 0.6534629, "First Annotator. Class=0") 
     val fis7 = mode.pi.where(col("annotator") === 1).where(col("c") === 1).where(col("k")===1).collect()(0).getAs[Double](3)
-    assert(fis7 === 0.79451, "Second Annotator. Class=1") 
+    assert(fis7 === 0.59317379, "Second Annotator. Class=1") 
     val fis8 = mode.pi.where(col("annotator") === 2).where(col("c") === 2).where(col("k")===2).collect()(0).getAs[Double](3)
-    assert(fis8 === 0.729386, "Third Annotator. Class=2") 
+    assert(fis8 === 0.666666666, "Third Annotator. Class=2") 
     val fis9 = mode.p.where(col("class")===2).collect()(0)(1)
     assert(fis9 === 0.3466398592228416, "Class prior 2") 
   }

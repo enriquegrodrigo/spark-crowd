@@ -54,7 +54,7 @@ class DawidSkeneTest extends fixture.FlatSpec with Matchers {
     import spark.implicits._
     val sc = spark.sparkContext
     val exampleData = spark.read.parquet(exampleFile).as[MulticlassAnnotation] 
-    val mode = DawidSkene(exampleData)
+    val mode = DawidSkene(exampleData, eMIters=1)
     val fis = mode.getMu().filter(_.example == 0).collect()(0)
     assert(fis.value ==  0, "First example") 
     val fis2 = mode.getMu().filter(_.example == 1).collect()(0)
@@ -66,9 +66,9 @@ class DawidSkeneTest extends fixture.FlatSpec with Matchers {
     val fis5 = mode.getAnnotatorPrecision()(0)(0)(0)
     assert(fis5 ===  0.6876, "Annotator precision 0,0,0") 
     val fis6 = mode.getAnnotatorPrecision()(0)(1)(1)
-    assert(fis6 ===  0.8028, "Annotator precision 0,1,1") 
+    assert(fis6 ===  0.8, "Annotator precision 0,1,1") 
     val fis7 = mode.getAnnotatorPrecision()(0)(2)(2)
-    assert(fis7 === 0.6866, "Annotator precision 0,2,2") 
+    assert(fis7 === 0.690544, "Annotator precision 0,2,2") 
 
   }
 }

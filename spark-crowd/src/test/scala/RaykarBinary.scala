@@ -60,17 +60,17 @@ class RaykarBinaryTest extends fixture.FlatSpec with Matchers {
     val annotations = spark.read.parquet(annotationsFile).as[BinaryAnnotation] 
     val data = spark.read.parquet(dataFile) 
     val sc = spark.sparkContext
-    val mode = RaykarBinary(data, annotations)
+    val mode = RaykarBinary(data, annotations, eMIters=1, gradIters=5)
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value
     assert(fis ===  1.0, "Second example") 
     val fis2 = mode.getMu().filter(_.example == 5).collect()(0).value
-    assert(fis2 ===  0.0003997, "Sixth example") 
+    assert(fis2 ===  0.0085544, "Sixth example") 
     val fis3 = mode.getAnnotatorPrecision()._1(0)
-    assert(fis3 ===  0.8763, "First annotator alpha") 
+    assert(fis3 ===  0.791549, "First annotator alpha") 
     val fis4 = mode.getAnnotatorPrecision()._2(0)
-    assert(fis4 ===  0.877087, "First annotator beta") 
+    assert(fis4 ===  0.78552618, "First annotator beta") 
     val fis6 = mode.getModelWeights()(1)
-    assert(fis6 ===  0.17042161, "Model weights") 
+    assert(fis6 ===  0.16859646768, "Model weights") 
   }
 
 

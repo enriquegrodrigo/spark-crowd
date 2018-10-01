@@ -59,7 +59,7 @@ class RaykarContTest extends fixture.FlatSpec with Matchers {
     val annotations = spark.read.parquet(annotationsFile).as[RealAnnotation] 
     val data = spark.read.parquet(dataFile) 
     val sc = spark.sparkContext
-    val mode = RaykarCont(data, annotations)
+    val mode = RaykarCont(data, annotations, eMIters=1)
     val fis = mode.getMu().filter(_.example == 1).collect()(0).value
     assert(fis ===  20.707865, "Second example") 
     val fis2 = mode.getMu().filter(_.example == 5).collect()(0).value
