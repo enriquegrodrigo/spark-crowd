@@ -75,6 +75,6 @@ class IBCCTest extends fixture.FlatSpec with Matchers {
     val fis8 = mode.pi.where(col("annotator") === 2).where(col("c") === 2).where(col("k")===2).collect()(0).getAs[Double](3)
     assert(fis8 === 0.666666666, "Third Annotator. Class=2") 
     val fis9 = mode.p.where(col("class")===2).collect()(0)(1)
-    assert(fis9 === 0.3466398592228416, "Class prior 2") 
+    assert(fis9 === 0.33958125623130614, "Class prior 2") 
   }
 }
