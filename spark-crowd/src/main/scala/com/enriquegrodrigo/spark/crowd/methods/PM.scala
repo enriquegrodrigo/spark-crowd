@@ -112,7 +112,7 @@ object PM {
     val squaredDistanceF = udf(squaredDistance(_: Double,_: Double))
     val joined = annotations.join(mu, "example").cache()
     val stdnorm = joined.groupBy("example")
-                        .agg(stddev_samp("value") as "norm")
+                        .agg(stddev_pop("value") as "norm")
     val distances = joined.join(stdnorm, "example")
                           .select(col("annotator"), squaredDistanceF(col("mu"), col("value"))/col("norm") as "distance")
                           .rollup("annotator")
