@@ -11,11 +11,11 @@ val annData = spark.read.parquet(annFile)
 val mode = IBCC(annData.as[MulticlassAnnotation])
 
 //Get MulticlassLabel with the class predictions
-val pred = mode.mu
+val pred = mode.getMu()
 
 //Annotator precision matrices
-val annprec = mode.pi
+val annprec = mode.getAnnotatorPrecision()
 
 //Annotator precision matrices
-val classPrior = mode.p
+val classPrior = mode.getClassPrior()
 

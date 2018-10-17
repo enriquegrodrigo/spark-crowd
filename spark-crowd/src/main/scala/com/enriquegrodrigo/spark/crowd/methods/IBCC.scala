@@ -89,7 +89,14 @@ object IBCC {
   /****************************************************/
 
   case class InternalModel(mu: DataFrame, p: DataFrame, pi: DataFrame, likelihood: Double, improvement: Double)  
-  case class IBCCModel(mu: DataFrame, p: DataFrame, pi: DataFrame)
+  class IBCCModel(mu: DataFrame, p: DataFrame, pi: DataFrame) {
+    def getMu(): Dataset[MulticlassSoftProb] = {
+      import mu.sparkSession.implicits._
+      mu.select(col("example"), col("class") as "clas", col("mu") as "prob").as[MulticlassSoftProb]
+    }
+    def getAnnotatorPrecision(): DataFrame = pi 
+    def getClassPrior(): DataFrame = p 
+  }
 
   /****************************************************/
   /******************     UDAF    ********************/
@@ -324,7 +331,7 @@ object IBCC {
                                     .last
 
     //Results: Ground Truth estimation, class prior estimation and annotator quality matrices
-    IBCCModel(l.mu, l.p, l.pi)
+    (new IBCCModel(l.mu, l.p, l.pi))
   }
 
 }

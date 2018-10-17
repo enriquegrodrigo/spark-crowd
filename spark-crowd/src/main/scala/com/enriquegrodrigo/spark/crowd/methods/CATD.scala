@@ -86,8 +86,13 @@ object CATD {
   /****************************************************/
 
   case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
-  case class CATDModel(mu: DataFrame, weights: DataFrame)
-
+  class CATDModel(mu: DataFrame, weights: DataFrame) {
+    def getMu(): Dataset[RealLabel] = {
+      import mu.sparkSession.implicits._
+      mu.select(col("example"), col("mu") as "value").as[RealLabel]
+    }
+    def getAnnotatorWeights(): DataFrame = weights
+  }
   /****************************************************/
   /********************   UDF   **********************/
   /****************************************************/
@@ -159,7 +164,7 @@ object CATD {
                   
     val l = s.last
     //Results: Ground Truth estimation, class prior estimation and annotator quality matrices
-    CATDModel(l.mu, l.weights)
+    (new CATDModel(l.mu, l.weights))
   }
 
 }

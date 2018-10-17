@@ -11,9 +11,9 @@ val annData = spark.read.parquet(annFile).as[RealAnnotation]
 val mode = PM(annData)
 
 //Get MulticlassLabel with the class predictions
-val pred = mode.mu
+val pred = mode.getMu()
 
 //Annotator precision matrices
-val annprec = mode.weights
+val annprec = mode.getAnnotatorWeights()
 
 

@@ -86,8 +86,13 @@ object PM {
   /****************************************************/
 
   case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
-  case class PMModel(mu: DataFrame, weights: DataFrame)
-
+  class PMModel(mu: DataFrame, weights: DataFrame) {
+    def getMu(): Dataset[RealLabel] = {
+      import mu.sparkSession.implicits._
+      mu.select(col("example"), col("mu") as "value").as[RealLabel]
+    }
+    def getAnnotatorWeights(): DataFrame = weights
+  }
   /****************************************************/
   /********************   UDF   **********************/
   /****************************************************/
@@ -161,7 +166,7 @@ object PM {
                   
     val l = s.last
     //Results: Ground Truth estimation, class prior estimation and annotator quality matrices
-    PMModel(l.mu, l.weights)
+    (new PMModel(l.mu, l.weights))
   }
 
 }
