@@ -94,7 +94,10 @@ object IBCC {
       import mu.sparkSession.implicits._
       mu.select(col("example"), col("class") as "clas", col("mu") as "prob").as[MulticlassSoftProb]
     }
-    def getAnnotatorPrecision(): DataFrame = pi 
+    def getAnnotatorPrecision(): Dataset[DiscreteAnnotatorPrecision] = {
+      import pi.sparkSession.implicits._
+      pi.select(col("annotator"), col("c"), col("k"), col("pi") as "prob").as[DiscreteAnnotatorPrecision] 
+    }
     def getClassPrior(): DataFrame = p 
   }
 

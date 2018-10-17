@@ -79,17 +79,21 @@ object DawidSkene {
   *  @version 0.1.3 
   */
   private[crowd] case class DawidSkenePartialModel(dataset: Dataset[DawidSkenePartial], params: Broadcast[DawidSkeneParams], 
-                                  annotatorCombinations: Dataset[AnnotatorCombination], logLikelihood: Double, improvement: Double, 
+                                  annotatorCombinations: Dataset[AnnotatorCombination], annotatorPrecision: Dataset[PiValue],
+                                  logLikelihood: Double, improvement: Double, 
                                   nClasses: Int, nAnnotators: Long) {
 
     def modify(nDataset: Dataset[DawidSkenePartial] =dataset, 
         nParams: Broadcast[DawidSkeneParams] =params, 
         annotatorCombinations: Dataset[AnnotatorCombination]=annotatorCombinations, 
+        annotatorPrecision: Dataset[PiValue]=annotatorPrecision, 
         nLogLikelihood: Double=logLikelihood,
         nImprovement: Double =improvement, 
         nNClasses: Int =nClasses, 
         nNAnnotators: Long =nAnnotators) = 
-          new DawidSkenePartialModel(nDataset, nParams, annotatorCombinations,
+          new DawidSkenePartialModel(nDataset, nParams, 
+                                                  annotatorCombinations,
+                                                  annotatorPrecision,
                                                   nLogLikelihood, 
                                                   nImprovement, 
                                                   nNClasses, 
@@ -268,7 +272,7 @@ object DawidSkene {
     val preparedDataset = l.dataset.select($"example", $"est" as "value").distinct() //Ground truth
 
     new DawidSkeneModel(preparedDataset.as[MulticlassLabel], //Ground truth
-                        l.params.value.pi //Model parameters (pi, for the reliability matrix and w for the class weights) 
+                        l.annotatorPrecision.toDF() //Annotator pi values
                        )
   }
 
@@ -363,7 +367,7 @@ object DawidSkene {
 
     val params = sc.broadcast(DawidSkeneParams(pi, w))
     
-    model.modify(nParams=params)
+    model.modify(nParams=params, annotatorPrecision=pisd)
   }
 
   /**
@@ -422,8 +426,7 @@ object DawidSkene {
     val anns = MajorityVoting.transformMulticlass(datasetCached)
 
     //Annotator-Class-Class combinations 
-    val combinations = dataset.map(_.annotator)
-                              .distinct
+    val combinations = dataset.map(_.annotator) .distinct
                               .withColumnRenamed("value", "annotator")
                               .withColumn("j", explode(array((0 until classes).map(lit): _*)))
                               .withColumn("l", explode(array((0 until classes).map(lit): _*)))
@@ -439,6 +442,7 @@ object DawidSkene {
                                 .select($"example", $"annotator", $"value", $"est")
                                 .as[DawidSkenePartial]
                                 .cache()
+    val precPlaceholder = Seq((0,0,0,0.5)).toDF().select(col("_1") as "annotator", col("_2") as "j",col("_3") as "l", col("_4") as "pi").as[PiValue]
 
     new DawidSkenePartialModel(partialDataset, 
                                 sc.broadcast(
@@ -446,6 +450,7 @@ object DawidSkene {
                                   Array.ofDim[Double](classes)) //Class weights
                                 ),
                                 combinations,
+                                precPlaceholder, 
                                 0, //Neg Log-likelihood
                                 0, //Improvement in likelihood 
                                 classes, //Number of classes 

@@ -95,7 +95,10 @@ object PMTI {
       import mu.sparkSession.implicits._
       mu.select(col("example"), col("mu") as "value").as[RealLabel]
     }
-    def getAnnotatorWeights(): DataFrame = weights
+    def getAnnotatorWeights(): Dataset[RealAnnotatorWeight] = {
+      import weights.sparkSession.implicits._
+      weights.select(col("annotator"), col("w") as "weight").as[RealAnnotatorWeight]
+    }
   }
 
   /****************************************************/

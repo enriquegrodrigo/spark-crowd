@@ -92,14 +92,14 @@ object RaykarCont {
    *  @version 0.1 
    */
   private[crowd] case class RaykarContPartialModel(dataset: DataFrame, annotatorData: Dataset[RealAnnotation], 
-                                    mu: Dataset[RealLabel], lambda: Dataset[RealAnnotatorPrecision], 
+                                    mu: Dataset[RealLabel], lambda: Dataset[RealAnnotatorWeight], 
                                     weights: Broadcast[Array[Double]], logLikelihood: Double, 
                                     improvement: Double, nAnnotators: Int, nFeatures: Int) {
 
     def modify(nDataset: DataFrame =dataset, 
         nAnnotatorData: Dataset[RealAnnotation] =annotatorData, 
         nMu: Dataset[RealLabel] =mu, 
-        nLambdas: Dataset[RealAnnotatorPrecision] =lambda, 
+        nLambdas: Dataset[RealAnnotatorWeight] =lambda, 
         nWeights: Broadcast[Array[Double]] =weights, 
         nLogLikelihood: Double =logLikelihood, 
         nImprovement: Double =improvement, 
@@ -258,7 +258,7 @@ object RaykarCont {
     val nAnnotators = annCached.select($"annotator").distinct().count().toInt
 
     val mu = MajorityVoting.transformReal(annCached)
-    val placeholderLambda = Seq(RealAnnotatorPrecision(0,0.0)).toDS()
+    val placeholderLambda = Seq(RealAnnotatorWeight(0,0.0)).toDS()
     RaykarContPartialModel(dataset, annotatorData, mu, 
                                 placeholderLambda, 
                                 sc.broadcast(Array.fill(nFeatures)(0.0)), 
@@ -284,12 +284,12 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def computeLambda(joined: Dataset[AnnotationsWithPredictions]): Dataset[RealAnnotatorPrecision] = {
+  private[crowd] def computeLambda(joined: Dataset[AnnotationsWithPredictions]): Dataset[RealAnnotatorWeight] = {
     import joined.sparkSession.implicits._
     joined.groupByKey(_.annotator).agg((new LambdaAggregator()).toColumn)
                                   .as[(Long,Double)]
-                                  .map{ case (annotator, lambda) => RealAnnotatorPrecision(annotator, lambda) }
-                                  .as[RealAnnotatorPrecision]
+                                  .map{ case (annotator, lambda) => RealAnnotatorWeight(annotator, lambda) }
+                                  .as[RealAnnotatorWeight]
   }
 
  /**
@@ -298,11 +298,11 @@ object RaykarCont {
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  private[crowd] def computeYPred(annotations: Dataset[RealAnnotation], lambdas: Dataset[RealAnnotatorPrecision]) = {
+  private[crowd] def computeYPred(annotations: Dataset[RealAnnotation], lambdas: Dataset[RealAnnotatorWeight]) = {
     import annotations.sparkSession.implicits._
     annotations.joinWith(lambdas, annotations.col("annotator") === lambdas.col("annotator"))
-               .as[(RealAnnotation, RealAnnotatorPrecision)]
-               .map{case (RealAnnotation(example, annotator, value), RealAnnotatorPrecision(_,lambda)) => 
+               .as[(RealAnnotation, RealAnnotatorWeight)]
+               .map{case (RealAnnotation(example, annotator, value), RealAnnotatorWeight(_,lambda)) => 
                               AnnotationsWithLambda(example,annotator,value,lambda)}
                .as[AnnotationsWithLambda]
                .groupByKey(_.example)
@@ -384,7 +384,7 @@ object RaykarCont {
                                                                 x._1.value, 
                                                                 x._2.value))
     //Estimation of annotator precision
-    val lambdas: Dataset[RealAnnotatorPrecision] = computeLambda(joined)
+    val lambdas: Dataset[RealAnnotatorWeight] = computeLambda(joined)
 
    
     //Estimation of ground truth EStep

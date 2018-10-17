@@ -21,6 +21,7 @@ import org.apache.log4j.Logger
 import org.apache.log4j.Level
 import collection.mutable.Stack
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 import com.enriquegrodrigo.spark.crowd.methods.DawidSkene
@@ -63,11 +64,11 @@ class DawidSkeneTest extends fixture.FlatSpec with Matchers {
     assert(fis3.value ==  0, "Eleventh example") 
     val fis4 = mode.getMu().filter(_.example == 31).collect()(0)
     assert(fis4.value ==  2, "Thirty second example") 
-    val fis5 = mode.getAnnotatorPrecision()(0)(0)(0)
+    val fis5 = mode.getAnnotatorPrecision().toDF().where(col("annotator") === 0).where(col("c") === 0).where(col("k")===0).collect()(0).getAs[Double](3)
     assert(fis5 ===  0.6876, "Annotator precision 0,0,0") 
-    val fis6 = mode.getAnnotatorPrecision()(0)(1)(1)
+    val fis6 = mode.getAnnotatorPrecision().toDF().where(col("annotator") === 0).where(col("c") === 1).where(col("k")===1).collect()(0).getAs[Double](3)
     assert(fis6 ===  0.8, "Annotator precision 0,1,1") 
-    val fis7 = mode.getAnnotatorPrecision()(0)(2)(2)
+    val fis7 = mode.getAnnotatorPrecision().toDF().where(col("annotator") === 0).where(col("c") === 2).where(col("k")===2).collect()(0).getAs[Double](3)
     assert(fis7 === 0.690544, "Annotator precision 0,2,2") 
 
   }

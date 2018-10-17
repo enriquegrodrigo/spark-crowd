@@ -33,7 +33,7 @@ import org.apache.spark.broadcast.Broadcast
 *  @version 0.1 
 */
 class RaykarContModel(mu: Dataset[RealLabel], 
-                          lambdas: Dataset[RealAnnotatorPrecision],  
+                          lambdas: Dataset[RealAnnotatorWeight],  
                           weights: Array[Double]) extends Model[RealLabel] {
                             
   /**
@@ -52,7 +52,7 @@ class RaykarContModel(mu: Dataset[RealLabel],
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def getAnnotatorPrecision(): Dataset[RealAnnotatorPrecision] = lambdas
+  def getAnnotatorWeights(): Dataset[RealAnnotatorWeight] = lambdas
 
   /**
   *  Method that returns the weights of the linear regresion model 

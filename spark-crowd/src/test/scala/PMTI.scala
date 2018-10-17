@@ -66,11 +66,11 @@ class PMTITest extends fixture.FlatSpec with Matchers {
     assert(fis4 === 2.7978586, "Fourth example.") 
     val fis5 = mode.getMu().toDF().where(col("example") === 6).collect()(0).getAs[Double](1)
     assert(fis5 === 8.042222, "Seven example.") 
-    val fis6 = mode.getAnnotatorWeights().where(col("annotator") === 0).collect()(0).getAs[Double](1)
+    val fis6 = mode.getAnnotatorWeights().toDF().where(col("annotator") === 0).collect()(0).getAs[Double](1)
     assert(fis6 === 0.0443846, "First Annotator.") 
-    val fis7 = mode.getAnnotatorWeights().where(col("annotator") === 1).collect()(0).getAs[Double](1)
+    val fis7 = mode.getAnnotatorWeights().toDF().where(col("annotator") === 1).collect()(0).getAs[Double](1)
     assert(fis7 === 0.042161, "Second Annotator.") 
-    val fis8 = mode.getAnnotatorWeights().where(col("annotator") === 7).collect()(0).getAs[Double](1)
+    val fis8 = mode.getAnnotatorWeights().toDF().where(col("annotator") === 7).collect()(0).getAs[Double](1)
     assert(fis8 === 0.0, "Eigth Annotator.") 
   }
 }

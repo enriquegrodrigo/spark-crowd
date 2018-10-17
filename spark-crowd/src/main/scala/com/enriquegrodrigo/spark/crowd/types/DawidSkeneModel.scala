@@ -19,8 +19,10 @@
 
 package com.enriquegrodrigo.spark.crowd.types
 
-import org.apache.spark.sql.Dataset
+import org.apache.spark.sql._
 import org.apache.spark.broadcast.Broadcast
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
 
 /**
 *  DawidSkene model returned by the DawidSkene method 
@@ -32,7 +34,7 @@ import org.apache.spark.broadcast.Broadcast
 *  @version 0.1 
 */
 class DawidSkeneModel(mu: Dataset[MulticlassLabel], 
-                          prec: Array[Array[Array[Double]]]) extends Model[MulticlassLabel] {
+                          prec: DataFrame) extends Model[MulticlassLabel] {
                             
   /**
   *  Method that returns the probabilistic estimation of the true label 
@@ -50,5 +52,8 @@ class DawidSkeneModel(mu: Dataset[MulticlassLabel],
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def getAnnotatorPrecision(): Array[Array[Array[Double]]] = prec 
+  def getAnnotatorPrecision(): Dataset[DiscreteAnnotatorPrecision] = {
+    import prec.sparkSession.implicits._
+    prec.select(col("annotator"), col("j") as "c", col("l") as "k", col("pi") as "prob").as[DiscreteAnnotatorPrecision]
+  }
 }
