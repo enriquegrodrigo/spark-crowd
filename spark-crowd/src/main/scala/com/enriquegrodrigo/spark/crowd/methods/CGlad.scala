@@ -345,9 +345,9 @@ object CGlad {
   */
   def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 5, eMThreshold: Double = 0.1, 
             gradIters: Int = 30, gradThreshold: Double = 0.5, gradLearningRate: Double=0.01,
-            alphaPrior: Double = 1, betaPrior: Double = 10, rank: Integer = 3, k: Integer= 3): CGladModel = {
+            alphaPrior: Double = 1, betaPrior: Double = 10, rank: Integer = 3, k: Integer= 3, seed: Long = 1L): CGladModel = {
     import dataset.sparkSession.implicits._
-    val (initialModel, ranks, clusters)  = initialization(dataset, alphaPrior, betaPrior, rank, k)
+    val (initialModel, ranks, clusters)  = initialization(dataset, alphaPrior, betaPrior, rank, k, seed)
     val secondModel = step(gradIters,gradThreshold,gradLearningRate)(initialModel,0)
     val fixed = secondModel.modify(nImprovement=1)
     //Loops until some condition is met
@@ -526,7 +526,7 @@ object CGlad {
   *  @author enrique.grodrigo
   *  @version 0.1.3 
   */
-  private[spark] def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double, rank: Integer, k: Integer): (GladPartialModel, Dataset[ExampleRanks], Dataset[ExampleCluster]) = {
+  private[spark] def initialization(dataset: Dataset[BinaryAnnotation], alphaPrior: Double, betaPrior: Double, rank: Integer, k: Integer, seed: Long): (GladPartialModel, Dataset[ExampleRanks], Dataset[ExampleCluster]) = {
     val sc = dataset.sparkSession.sparkContext
     import dataset.sparkSession.implicits._
     val datasetCached = dataset.cache() 
@@ -539,7 +539,7 @@ object CGlad {
     val featurevectors = itemfactors.map((r: Row) => ExampleRanks(r.getInt(0), 
                               Vectors.dense(asScalaBuffer(r.getList[Float](1)).toArray.map(x => x.toDouble))))
                                     .as[ExampleRanks]
-    val kmeans = new KMeans().setK(k).setSeed(1L)
+    val kmeans = new KMeans().setK(k).setSeed(seed)
     val kmodel = kmeans.fit(featurevectors)
     val clusters = kmodel.transform(featurevectors)
     val mapping = clusters.select($"id" as "example", $"prediction" as "cluster").as[ExampleCluster]
