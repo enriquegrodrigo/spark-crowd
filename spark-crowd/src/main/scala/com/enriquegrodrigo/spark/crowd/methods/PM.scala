@@ -121,7 +121,6 @@ object PM {
   
     val denom = distances.where(col("annotator").isNull).collect()(0).getAs[Double](1)
     val weights = distances.where(col("annotator").isNotNull).select(col("annotator"), -log(col("distance")/denom) as "w")
-    weights.show
     return weights
   }
   

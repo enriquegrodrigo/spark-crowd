@@ -452,7 +452,6 @@ object Glad {
       val nModel = mergeUpdates(updatedBeta,nAlpha,nWeights) 
       val likeModel = logLikelihood(nModel) 
       val improvement = oldModel.logLikelihood - likeModel.logLikelihood 
-      println("    Gradient Iteration " + iter +  ": " + likeModel.logLikelihood)
       (nModel.modify(nLogLikelihood = likeModel.logLikelihood),improvement) 
     }
 
@@ -483,7 +482,6 @@ object Glad {
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate, i)
     val e = eStep(m)
     val result = logLikelihood(e)
-    println("EM Step " + i + ": " + result.logLikelihood)
     result.modify(nDataset = result.dataset.localCheckpoint)
   }
 
