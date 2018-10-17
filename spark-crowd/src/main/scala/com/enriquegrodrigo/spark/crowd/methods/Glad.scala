@@ -376,7 +376,7 @@ object Glad {
   *  @author enrique.grodrigo
   *  @version 0.1.3 
   */
-  private[spark] def mStep(model: GladPartialModel, maxGradIters: Int, thresholdGrad: Double, learningRate: Double): GladPartialModel = {
+  private[spark] def mStep(model: GladPartialModel, maxGradIters: Int, thresholdGrad: Double, learningRate: Double, outerIter: Int, correction: Double = 1): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
     val sc = model.dataset.sparkSession.sparkContext
 
@@ -387,7 +387,7 @@ object Glad {
     def updateBeta(oldModel: GladPartialModel, iter: Int): GladPartialModel = {
 
       //New beta estimation
-      val betaAgg = new GladBetaAggregator(oldModel.params,learningRate/sqrt(iter))
+      val betaAgg = new GladBetaAggregator(oldModel.params,(correction*learningRate)/sqrt(iter))
       val newBeta = oldModel.dataset.groupByKey(_.example)
                                     .agg(betaAgg.toColumn)
                                     .map(x => BinarySoftLabel(x._1,x._2))
@@ -398,7 +398,7 @@ object Glad {
                                     .as[GladPartial]
                                     .cache()
       //Checkpointing every 10th iteration of the Gradient descent algorithm
-      oldModel.modify(nDataset = if (iter%10 == 0) dataset.localCheckpoint() else dataset )
+      oldModel.modify(nDataset = if (iter%2 == 0) dataset.localCheckpoint() else dataset )
     }
 
     
@@ -408,7 +408,7 @@ object Glad {
     */
     def obtainAlpha(oldModel: GladPartialModel, iter: Int): Array[Double] = {
       val oldAlpha = oldModel.params.value.alpha
-      val alphaAgg = new GladAlphaAggregator(oldModel.params,learningRate/sqrt(iter))
+      val alphaAgg = new GladAlphaAggregator(oldModel.params,(correction*learningRate)/sqrt(iter))
       val alpha = Array.ofDim[Double](oldModel.nAnnotators)
       val alphasDataset =  oldModel.dataset.groupByKey(_.annotator)
                                            .agg(alphaAgg.toColumn)
@@ -452,16 +452,24 @@ object Glad {
       val nModel = mergeUpdates(updatedBeta,nAlpha,nWeights) 
       val likeModel = logLikelihood(nModel) 
       val improvement = oldModel.logLikelihood - likeModel.logLikelihood 
+      println("    Gradient Iteration " + iter +  ": " + likeModel.logLikelihood)
       (nModel.modify(nLogLikelihood = likeModel.logLikelihood),improvement) 
     }
 
     val newModel: GladPartialModel = update(model,1)._1
     //Gradient loop (Own gradient descent implementation as Gradient Descent in MLlib does not support 
     // optimizing parameters for each example)
-    val lastModel = Stream.range(2,maxGradIters).scanLeft((newModel,thresholdGrad+1))((x,i) => update(x._1, i))
+    val stream = Stream.range(2,maxGradIters).scanLeft((newModel,thresholdGrad+1))((x,i) => update(x._1, i))
                                     .takeWhile( (model) => model._2 > thresholdGrad )
-                                    .last
-    lastModel._1
+
+    val last = stream.last
+          
+    last._1
+    //println("OutputIter: " + outerIter + " | Stream-length: " + stream.length + " | Correction: " + correction)
+    //if (outerIter <= 2 && stream.length < 5) 
+    //  mStep(model, maxGradIters, thresholdGrad, learningRate, outerIter, correction*0.1) 
+    //else
+    //  last._1
   }
 
   /**
@@ -472,9 +480,10 @@ object Glad {
   */
   private[spark] def step(maxGradIters: Int, thresholdGrad: Double, learningRate: Double)(model: GladPartialModel, i: Int): GladPartialModel = {
     import model.dataset.sparkSession.implicits._ 
-    val m = mStep(model,maxGradIters,thresholdGrad,learningRate)
+    val m = mStep(model,maxGradIters,thresholdGrad,learningRate, i)
     val e = eStep(m)
     val result = logLikelihood(e)
+    println("EM Step " + i + ": " + result.logLikelihood)
     result.modify(nDataset = result.dataset.localCheckpoint)
   }
 
