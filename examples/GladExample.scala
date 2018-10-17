@@ -22,7 +22,7 @@ import com.enriquegrodrigo.spark.crowd.types._
 
 sc.setCheckpointDir("checkpoint")
 
-val annFile = "data/binary-ann.parquet"
+val annFile = "examples/data/binary-ann.parquet"
 
 val annData = spark.read.parquet(annFile).as[BinaryAnnotation] 
 

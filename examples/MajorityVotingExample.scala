@@ -20,9 +20,9 @@
 import com.enriquegrodrigo.spark.crowd.methods.MajorityVoting
 import com.enriquegrodrigo.spark.crowd.types._
 
-val exampleFile = "data/binary-ann.parquet"
-val exampleFileMulti = "data/multi-ann.parquet"
-val exampleFileCont = "data/cont-ann.parquet"
+val exampleFile = "examples/data/binary-ann.parquet"
+val exampleFileMulti = "examples/data/multi-ann.parquet"
+val exampleFileCont = "examples/data/cont-ann.parquet"
 
 val exampleDataBinary = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
 val exampleDataMulti = spark.read.parquet(exampleFileMulti).as[MulticlassAnnotation] 

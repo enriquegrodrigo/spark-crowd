@@ -40,7 +40,8 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
 
 /**
  *  Provides functions for transforming an annotation dataset into 
- *  a standard label dataset using the PM algorithm.
+ *  a standard label dataset using the modified version of the PM algorithm
+ *  in the paper Truth Inference in Crowdsourcing: Is the problem solved?.
  *
  *  This algorithm only works with continuous label datasets that follows the schema: 
  *
@@ -52,12 +53,12 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *                   ))
  *  }}}
  *
- *  The algorithm returns a [[PM.PMModel]], with information about 
+ *  The algorithm returns a [[PMTI.PMModel]], with information about 
  *  the class true label estimation and the annotators weight
  *
  *  @example
  *  {{{
- *   import com.enriquegrodrigo.spark.crowd.methods.PM
+ *   import com.enriquegrodrigo.spark.crowd.methods.PMTI
  *   import com.enriquegrodrigo.spark.crowd.types._
  *   
  *   sc.setCheckpointDir("checkpoint")
@@ -67,26 +68,35 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *   val annData = spark.read.parquet(annFile)
  *   
  *   //Applying the learning algorithm
- *   val mode = PM(annData)
+ *   val mode = PMTI(annData)
  *   
  *   //Get MulticlassLabel with the class predictions
- *   val pred = mode.mu
+ *   val pred = mode.getMu()
  *   
  *   //Annotator weights
- *   val annweights = mode.weights
+ *   val annweights = mode.getWeights()
  *   
  *  }}}
- *  @see Q. Li, Y. Li, J. Gao, B. Zhao, W. Fan, and J. Han. Resolving conflicts in heterogeneous data by truth discovery and source reliability estimation. In SIGMOD, pages 1187–1198, 2014.
+ *  @see Yudian Zheng, Guoliang Li, Yuanbing Li, Caihua Shan, Reynold Cheng. 
+         Truth Inference in Crowdsourcing: Is the Problem Solved? 
+         In VLDB 2017, Vol 10, Isuue 5, Pages 541-552, Full Paper, Present in VLDB 2017, Aug 28 - Sep 1, Munich, Germany.  
  *  @version 0.2.0
  */
-object PM {
+object PMTI {
 
   /****************************************************/
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
   case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
-  case class PMModel(mu: DataFrame, weights: DataFrame)
+
+  class PMModel(mu: DataFrame, weights: DataFrame) {
+    def getMu(): Dataset[RealLabel] = {
+      import mu.sparkSession.implicits._
+      mu.select(col("example"), col("mu") as "value").as[RealLabel]
+    }
+    def getAnnotatorWeights(): DataFrame = weights
+  }
 
   /****************************************************/
   /********************   UDF   **********************/
@@ -115,13 +125,11 @@ object PM {
                         .agg(stddev_pop("value") as "norm")
     val distances = joined.join(stdnorm, "example")
                           .select(col("annotator"), squaredDistanceF(col("mu"), col("value"))/col("norm") as "distance")
-                          .rollup("annotator")
-                          .agg(sum(col("distance")) as "distance")
+                          .groupBy("annotator")
+                          .agg(sum(col("distance")) as "distance", max(col("distance")) as "maxdis")
                           .cache()
-  
-    val denom = distances.where(col("annotator").isNull).collect()(0).getAs[Double](1)
-    val weights = distances.where(col("annotator").isNotNull).select(col("annotator"), -log(col("distance")/denom) as "w")
-    weights.show
+    val denom = distances.agg(max(col("distance")) as "maxdis").collect()(0).getAs[Double](0)
+    val weights = distances.select(col("annotator"), -log(col("distance")/denom) as "w")
     return weights
   }
   
@@ -162,7 +170,7 @@ object PM {
                   
     val l = s.last
     //Results: Ground Truth estimation, class prior estimation and annotator quality matrices
-    PMModel(l.mu, l.weights)
+    (new PMModel(l.mu, l.weights))
   }
 
 }
