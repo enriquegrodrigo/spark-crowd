@@ -55,7 +55,7 @@ class CGladTest extends fixture.FlatSpec with Matchers {
     import spark.implicits._
     val sc = spark.sparkContext
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
-    val mode = CGlad(exampleData, eMIters=2, gradIters=5)
+    val mode = CGlad(exampleData, eMIters=3, gradIters=5)
     val fis = mode.getMu().filter(_.example == 0).collect()(0).value
     assert(fis ===  1.0, "First example") 
     val fis2 = mode.getMu().filter(_.example == 1).collect()(0).value 

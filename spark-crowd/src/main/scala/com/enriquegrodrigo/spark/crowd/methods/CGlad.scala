@@ -472,7 +472,6 @@ object CGlad {
       val nModel = mergeUpdates(updatedBeta,nAlpha,nWeights) 
       val likeModel = logLikelihood(nModel) 
       val improvement = oldModel.logLikelihood - likeModel.logLikelihood 
-      println("    Gradient Iteration " + iter +  ": " + likeModel.logLikelihood)
       (nModel.modify(nLogLikelihood = likeModel.logLikelihood),improvement) 
     }
 
@@ -482,7 +481,6 @@ object CGlad {
     val stream = Stream.range(2,maxGradIters).scanLeft((newModel,thresholdGrad+1))((x,i) => update(x._1, i)) //Thres + 1 to avoid not doing anything 
                                     .takeWhile( (model) => model._2 > thresholdGrad )
     val last = stream.last
-    println("OutputIter: " + outerIter + " | Stream-length: " + stream.length + " | Correction: " + correction)
           
     last._1 
     //if (outerIter <= 2 && stream.length < 5) 
@@ -502,7 +500,6 @@ object CGlad {
     val m = mStep(model,maxGradIters,thresholdGrad,learningRate, i)
     val e = eStep(m)
     val result = logLikelihood(e)
-    println("EM Step " + i + ": " + result.logLikelihood)
     result.modify(nDataset = result.dataset.localCheckpoint)
   }
 
