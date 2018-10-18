@@ -10,6 +10,7 @@ lazy val root = (project in file(".")).settings(
       else
         Opts.resolver.sonatypeStaging
     ),
+    useGpg:= true,
     licenses:=Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
     homepage:=Some(url("https://github.com/enriquegrodrigo/spark-crowd")),
     scmInfo := Some(ScmInfo(url("https://github.com/enriquegrodrigo/spark-crowd"), "scm:git@github.com:enriquegrodrigo/spark-crowd.git")),
