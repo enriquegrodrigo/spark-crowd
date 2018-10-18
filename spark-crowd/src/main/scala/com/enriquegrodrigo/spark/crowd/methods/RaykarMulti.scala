@@ -409,7 +409,7 @@ object RaykarMulti {
   *  @param w_prior prior for the weights of the logistic regression model
   *  @return [[com.enriquegrodrigo.spark.crowd.types.RaykarBinaryModel]]
   *  @author enrique.grodrigo
-  *  @version 0.1.5 
+  *  @version 0.2.0 
   */
   def apply(dataset: DataFrame, annDataset: Dataset[MulticlassAnnotation], eMIters: Int = 5, 
             eMThreshold: Double = 0.001, gradIters: Int = 100, gradThreshold: Double = 0.1, 

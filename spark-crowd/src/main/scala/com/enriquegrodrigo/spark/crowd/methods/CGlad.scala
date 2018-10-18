@@ -74,7 +74,7 @@ import scala.math.{sqrt, exp}
  *  @see Whitehill, Jacob, et al. "Whose vote should count more: Optimal
  *  integration of labels from labelers of unknown expertise." Advances in
  *  neural information processing systems. 2009.
- *  @version 0.1.5
+ *  @version 0.2.0
  */
 object CGlad {
 

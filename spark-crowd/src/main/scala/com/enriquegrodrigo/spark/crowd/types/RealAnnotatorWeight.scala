@@ -25,6 +25,6 @@ package com.enriquegrodrigo.spark.crowd.types
 *  @param annotator annotator of the relation 
 *  @param weight the weight of the annotator
 *  @author enrique.grodrigo
-*  @version 0.1 
+*  @version 0.2 
 */
 case class RealAnnotatorWeight(annotator: Long, weight: Double)

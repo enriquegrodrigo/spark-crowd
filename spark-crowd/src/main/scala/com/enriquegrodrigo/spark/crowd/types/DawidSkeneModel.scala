@@ -31,7 +31,7 @@ import org.apache.spark.sql.functions._
 *  @param prec dataset with annotator precision information 
 *  @param logLikelihood logLikelihood of the final estimation of the model.  
 *  @author enrique.grodrigo
-*  @version 0.1 
+*  @version 0.2 
 */
 class DawidSkeneModel(mu: Dataset[MulticlassLabel], 
                           prec: DataFrame) extends Model[MulticlassLabel] {

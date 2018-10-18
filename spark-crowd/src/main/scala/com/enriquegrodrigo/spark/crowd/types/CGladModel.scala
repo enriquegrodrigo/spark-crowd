@@ -30,7 +30,7 @@ import org.apache.spark.broadcast.Broadcast
 *  @param betas instance difficulty given by Glad model. 
 *  @param logLikelihood logLikelihood of the final estimation of the model.  
 *  @author enrique.grodrigo
-*  @version 0.1 
+*  @version 0.2 
 */
 class CGladModel(mu: Dataset[BinarySoftLabel], 
                           prec: Array[Double], 

@@ -30,7 +30,7 @@ import org.apache.spark.broadcast.Broadcast
 *  @param weights logistic regresion weights.  
 *  @param logLikelihood logLikelihood of the final estimation of the model.  
 *  @author enrique.grodrigo
-*  @version 0.1 
+*  @version 0.2 
 */
 class RaykarContModel(mu: Dataset[RealLabel], 
                           lambdas: Dataset[RealAnnotatorWeight],  
@@ -50,7 +50,7 @@ class RaykarContModel(mu: Dataset[RealLabel],
   *
   *  @return Double 
   *  @author enrique.grodrigo
-  *  @version 0.1 
+  *  @version 0.2 
   */
   def getAnnotatorWeights(): Dataset[RealAnnotatorWeight] = lambdas
 

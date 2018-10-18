@@ -22,8 +22,8 @@ import com.enriquegrodrigo.spark.crowd.types._
 
 sc.setCheckpointDir("checkpoint")
 
-val exampleFile = "data/multi-data.parquet"
-val annFile = "data/multi-ann.parquet"
+val exampleFile = "examples/data/multi-data.parquet"
+val annFile = "examples/data/multi-ann.parquet"
 
 val exampleData = spark.read.parquet(exampleFile)
 val annData = spark.read.parquet(annFile).as[MulticlassAnnotation] 

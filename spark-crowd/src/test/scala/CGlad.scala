@@ -68,6 +68,10 @@ class CGladTest extends fixture.FlatSpec with Matchers {
     assert(fis5 ===  -210.2846, "First annotator") 
     val fis7 = mode.getInstanceDifficulty().filter(_.example==1).collect()(0).beta
     assert(fis7 ===  -67.04876368, "First example difficulty") 
+    val fis8 = mode.getRankData().filter(_.id==1).collect()(0).features(0)
+    assert(fis8 ===  -0.25503179, "First example rank data") 
+    val fis9 = mode.getClusters().filter(_.example==1).collect()(0).cluster
+    assert(fis9 ===  1, "First example cluster") 
   }
 
 }

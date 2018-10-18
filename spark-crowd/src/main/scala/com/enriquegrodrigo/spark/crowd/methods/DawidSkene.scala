@@ -76,7 +76,7 @@ object DawidSkene {
   *  Partial model shared through EM iterations 
   *
   *  @author enrique.grodrigo
-  *  @version 0.1.3 
+  *  @version 0.2.0 
   */
   private[crowd] case class DawidSkenePartialModel(dataset: Dataset[DawidSkenePartial], params: Broadcast[DawidSkeneParams], 
                                   annotatorCombinations: Dataset[AnnotatorCombination], annotatorPrecision: Dataset[PiValue],
@@ -254,7 +254,7 @@ object DawidSkene {
    *  @return [[types.DawidSkeneModel]]
    *
    *  @author enrique.grodrigo
-   *  @version 0.1.5 
+   *  @version 0.2.0 
    */
   def apply(dataset: Dataset[MulticlassAnnotation], eMIters: Int = 10, eMThreshold: Double = 0.001): 
       DawidSkeneModel = {
@@ -306,7 +306,7 @@ object DawidSkene {
    *  @param model the partial DawidSkene model (DawidSkenePartialModel)
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1.3 
+   *  @version 0.2.0 
    */
   private[crowd] def mStep(model: DawidSkenePartialModel): DawidSkenePartialModel = {
     import model.dataset.sparkSession.implicits._
@@ -409,7 +409,7 @@ object DawidSkene {
    *  @param dataset the dataset of MulticlassAnnotation
    *  @return DawidSkenePartialModel   
    *  @author enrique.grodrigo
-   *  @version 0.1.3 
+   *  @version 0.2.0 
    */
   private[crowd] def initialization(dataset: Dataset[MulticlassAnnotation]): DawidSkenePartialModel = {
     val sc = dataset.sparkSession.sparkContext

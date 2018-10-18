@@ -27,6 +27,6 @@ package com.enriquegrodrigo.spark.crowd.types
 *  @param c true class 
 *  @param k labeled class 
 *  @author enrique.grodrigo
-*  @version 0.1 
+*  @version 0.2 
 */
 case class DiscreteAnnotatorPrecision(annotator: Long, c: Int, k: Int, prob: Double)

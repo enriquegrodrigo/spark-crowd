@@ -22,8 +22,8 @@ import com.enriquegrodrigo.spark.crowd.types._
 
 sc.setCheckpointDir("checkpoint")
 
-val exampleFile = "data/cont-data.parquet"
-val annFile = "data/cont-ann.parquet"
+val exampleFile = "examples/data/cont-data.parquet"
+val annFile = "examples/data/cont-ann.parquet"
 
 val exampleData = spark.read.parquet(exampleFile)
 val annData = spark.read.parquet(annFile).as[RealAnnotation] 
@@ -35,6 +35,6 @@ val mode = RaykarCont(exampleData, annData)
 val pred = mode.getMu().as[RealLabel] 
 
 //Annotator precision matrices
-val annprec = mode.getAnnotatorPrecision()
+val annprec = mode.getAnnotatorWeights()
 
 

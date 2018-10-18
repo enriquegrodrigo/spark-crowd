@@ -225,7 +225,7 @@ object RaykarCont {
   *  @param gradLearning learning rate for the gradient descent algorithm 
   *  @return [[com.enriquegrodrigo.spark.crowd.types.RaykarContModel]]
   *  @author enrique.grodrigo
-  *  @version 0.1.5
+  *  @version 0.2.0
   */
   def apply(dataset: DataFrame, annDataset: Dataset[RealAnnotation], eMIters: Int = 5, 
             eMThreshold: Double = 0.001, gradIters: Int = 100, gradThreshold: Double = 0.1, 
