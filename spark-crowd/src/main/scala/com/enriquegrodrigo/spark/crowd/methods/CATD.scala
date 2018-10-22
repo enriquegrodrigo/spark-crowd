@@ -42,15 +42,7 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *  Provides functions for transforming an annotation dataset into 
  *  a standard label dataset using the CATD algorithm.
  *
- *  This algorithm only works with continuous label datasets that follows the schema: 
- *
- *  {{{
- *      val schema = new StructType(
- *                          Array(new StructField("example", StringType, false),
- *                                new StructField("annotator", StringType, false),
- *                                new StructField("value", DoubleType, false)
- *                   ))
- *  }}}
+ *  This algorithm only works with continuous label datasets of type [[types.RealAnnotation]]: 
  *
  *  The algorithm returns a [[CATD.CATDModel]], with information about 
  *  the class true label estimation and the annotators weight
@@ -70,10 +62,10 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *   val mode = CATD(annData.as[RealAnnotation])
  *   
  *   //Get MulticlassLabel with the class predictions
- *   val pred = mode.mu
+ *   val pred = mode.getMu()
  *   
  *   //Annotator weights
- *   val annweights = mode.weights
+ *   val annweights = mode.getAnnotatorWeights()
  *   
  *  }}}
  *  @see Q. Li, Y. Li, J. Gao, L. Su, B. Zhao, M. Demirbas, W. Fan, and J. Han. A confidence-aware approach for truth discovery on long-tail data. PVLDB, 8(4):425–436, 2014.
@@ -85,27 +77,52 @@ object CATD {
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
+  /* Internal model for the iterations */
+  private[crowd] case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
+
+
+  /**
+   *  Model returned by the CATD algorithm  
+   *
+   *  @author enrique.grodrigo
+   *  @version 0.2.0 
+   */
   class CATDModel(mu: DataFrame, weights: DataFrame) {
+    /**
+     *  Dataset of [[types.RealLabel]] with the ground truth estimation
+     *
+     *  @author enrique.grodrigo
+     *  @version 0.2.0 
+     */
     def getMu(): Dataset[RealLabel] = {
       import mu.sparkSession.implicits._
       mu.select(col("example"), col("mu") as "value").as[RealLabel]
     }
+
+    /**
+     *  Dataset of [[types.RealAnnotatorWeight]] with the annotator weights used for the aggregation
+     *
+     *  @author enrique.grodrigo
+     *  @version 0.2.0 
+     */
     def getAnnotatorWeights(): Dataset[RealAnnotatorWeight] = {
       import weights.sparkSession.implicits._
       weights.select(col("annotator"), col("w") as "weight").as[RealAnnotatorWeight]
     }
   }
+
   /****************************************************/
   /********************   UDF   **********************/
   /****************************************************/
   
-  def chisq(ns: Long, alpha: Double): Double = {
+  /*ChiSquared probability*/ 
+  private[crowd] def chisq(ns: Long, alpha: Double): Double = {
     val md = new ChiSquaredDistribution(ns)
     return md.inverseCumulativeProbability(1 - alpha/2)
   }
 
-  def weightExpression(alpha: Double)(ns: Long, denom: Double): Double = {
+  /*Weight calculation for the annotator*/ 
+  private[crowd] def weightExpression(alpha: Double)(ns: Long, denom: Double): Double = {
     return chisq(ns,alpha)/denom
   }
 
@@ -115,13 +132,13 @@ object CATD {
   /******************** METHODS **********************/
   /****************************************************/
 
-  def initialization(df: DataFrame): InternalModel = {
+  private[crowd] def initialization(df: DataFrame): InternalModel = {
     //Obtains the mean for each example
     val mu = df.groupBy("example").agg(avg("value") as "mu").cache()
     return InternalModel(df.cache(), mu, mu, -1) //Second mu is a placeholder
   }
   
-  def weightEstimation(df: DataFrame, mu: DataFrame, alpha: Double): DataFrame = {
+  private[crowd] def weightEstimation(df: DataFrame, mu: DataFrame, alpha: Double): DataFrame = {
     val aggregation = df.join(mu, "example")
                         .groupBy("annotator")
                         .agg(sum(pow(col("value")-col("mu"), 2)) as "denom", count("example") as "ns")
@@ -130,7 +147,7 @@ object CATD {
     return annWeights.cache()
   }
   
-  def gtEstimation(df: DataFrame, weights: DataFrame): DataFrame = {
+  private[crowd] def gtEstimation(df: DataFrame, weights: DataFrame): DataFrame = {
     return df.join(weights, "annotator")
              .groupBy("example")
              .agg(sum(col("value") * col("w")) as "num", sum(col("w")) as "denom")
@@ -138,19 +155,31 @@ object CATD {
              .cache()
   }
   
-  def mse(mu1: DataFrame, mu2: DataFrame): Double = {
+  private[crowd] def mse(mu1: DataFrame, mu2: DataFrame): Double = {
     return mu1.join(mu2.toDF("example", "mu2"), "example")
               .select((sum(pow(col("mu")-col("mu2"), 2))/count("example")) as "mse")
               .collect()(0).getAs[Double](0)
   }
   
-  def step(alpha: Double)(m: InternalModel, i: Integer): InternalModel = {
+  private[crowd] def step(alpha: Double)(m: InternalModel, i: Integer): InternalModel = {
     val weights = weightEstimation(m.annotations, m.mu, alpha)
     val mu = gtEstimation(m.annotations,weights).checkpoint()
     val mseDifference = mse(m.mu,mu)
     return InternalModel(m.annotations, mu, weights, mseDifference)  
   }
-  
+
+ /**
+   *  Applies the CATD learning algorithm.
+   *
+   *  @param dataset The dataset over which the algorithm will execute ([[types.RealAnnotation]]
+   *  @param iterations Maximum number of iterations of the algorithm 
+   *  @param threshold Minimum change in MSE needed for continuing with the execution 
+   *  @param alpha Chi-square alpha value for the weight calculation
+   *  @return [[CATD.CATDModel]]
+   *
+   *  @author enrique.grodrigo
+   *  @version 0.2.0 
+   */
   def apply(dataset: Dataset[RealAnnotation], iterations: Int = 5, threshold: Double = 0.1, alpha: Double = 0.05): CATDModel = {
     val d = dataset.toDF()
 

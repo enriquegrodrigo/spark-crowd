@@ -43,15 +43,8 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *  a standard label dataset using the modified version of the PM algorithm
  *  in the paper Truth Inference in Crowdsourcing: Is the problem solved?.
  *
- *  This algorithm only works with continuous label datasets that follows the schema: 
- *
- *  {{{
- *      val schema = new StructType(
- *                          Array(new StructField("example", StringType, false),
- *                                new StructField("annotator", StringType, false),
- *                                new StructField("value", DoubleType, false)
- *                   ))
- *  }}}
+ *  This algorithm only works with continuous target variables. Thus you need an 
+ *  annotation dataset of [[types.RealAnnotation]]: 
  *
  *  The algorithm returns a [[PMTI.PMModel]], with information about 
  *  the class true label estimation and the annotators weight
@@ -74,7 +67,7 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *   val pred = mode.getMu()
  *   
  *   //Annotator weights
- *   val annweights = mode.getWeights()
+ *   val annweights = mode.getAnnotatorWeights()
  *   
  *  }}}
  *  @see Yudian Zheng, Guoliang Li, Yuanbing Li, Caihua Shan, Reynold Cheng. 
@@ -88,13 +81,33 @@ object PMTI {
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
+  private[crowd] case class InternalModel(annotations: DataFrame, mu: DataFrame, weights: DataFrame, difference: Double)  
 
+  /**
+  *  Model returned by the learning algorithm.
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.2.0
+  */
   class PMModel(mu: DataFrame, weights: DataFrame) {
+
+    /**
+    *  Estimated ground truth.
+    *
+    *  @author enrique.grodrigo
+    *  @version 0.2.0
+    */
     def getMu(): Dataset[RealLabel] = {
       import mu.sparkSession.implicits._
       mu.select(col("example"), col("mu") as "value").as[RealLabel]
     }
+
+    /**
+    *  Estimated annotator weights.
+    *
+    *  @author enrique.grodrigo
+    *  @version 0.2.0
+    */
     def getAnnotatorWeights(): Dataset[RealAnnotatorWeight] = {
       import weights.sparkSession.implicits._
       weights.select(col("annotator"), col("w") as "weight").as[RealAnnotatorWeight]
@@ -105,7 +118,7 @@ object PMTI {
   /********************   UDF   **********************/
   /****************************************************/
   
-  def squaredDistance(gt: Double, y: Double): Double = {
+  private[crowd] def squaredDistance(gt: Double, y: Double): Double = {
     return math.pow((gt - y),2)
   }
  
@@ -114,14 +127,14 @@ object PMTI {
   /******************** METHODS **********************/
   /****************************************************/
 
-  def initialization(df: DataFrame): InternalModel = {
+  private[crowd] def initialization(df: DataFrame): InternalModel = {
     //Obtains the mean for each example
     val mu = df.groupBy("example").agg(avg("value") as "mu").cache()
     return InternalModel(df.cache(), mu, mu, -1) //Second mu is a placeholder
   }
   
   
-  def seNormWeights(annotations: DataFrame, mu: DataFrame): DataFrame = {
+  private[crowd] def seNormWeights(annotations: DataFrame, mu: DataFrame): DataFrame = {
     val squaredDistanceF = udf(squaredDistance(_: Double,_: Double))
     val joined = annotations.join(mu, "example").cache()
     val stdnorm = joined.groupBy("example")
@@ -136,7 +149,7 @@ object PMTI {
     return weights
   }
   
-  def gtEstimation(df: DataFrame, weights: DataFrame): DataFrame = {
+  private[crowd] def gtEstimation(df: DataFrame, weights: DataFrame): DataFrame = {
     return df.join(weights, "annotator")
              .groupBy("example")
              .agg(sum(col("value") * col("w")) as "num", sum(col("w")) as "denom")
@@ -144,19 +157,28 @@ object PMTI {
              .cache()
   }
   
-  def mse(mu1: DataFrame, mu2: DataFrame): Double = {
+  private[crowd] def mse(mu1: DataFrame, mu2: DataFrame): Double = {
     return mu1.join(mu2.toDF("example", "mu2"), "example")
               .select((sum(pow(col("mu")-col("mu2"), 2))/count("example")) as "mse")
               .collect()(0).getAs[Double](0)
   }
   
-  def step(m: InternalModel, i: Integer): InternalModel = {
+  private[crowd] def step(m: InternalModel, i: Integer): InternalModel = {
     val weights = seNormWeights(m.annotations, m.mu)
     val mu = gtEstimation(m.annotations,weights).checkpoint()
     val mseDifference = mse(m.mu,mu)
     return InternalModel(m.annotations, mu, weights, mseDifference)  
   }
-  
+
+ /**
+  *  Apply the IBCC Algorithm.
+  *
+  *  @param dataset The dataset (spark dataset of [[types.RealAnnotation]]) 
+  *  @param iterations Iterations of the learning algorithm 
+  *  @param threshold Minimum MSE for the algorithm to continue iterating 
+  *  @author enrique.grodrigo
+  *  @version 0.2.0
+  */ 
   def apply(dataset: Dataset[RealAnnotation], iterations: Int = 5, threshold: Double = 0.1): PMModel = {
 
     //Initialization

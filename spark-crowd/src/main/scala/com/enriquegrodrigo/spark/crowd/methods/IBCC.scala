@@ -42,15 +42,8 @@ import scala.math.{sqrt => scalaSqrt, exp => scalaExp, abs => scalaAbs}
  *  Provides functions for transforming an annotation dataset into 
  *  a standard label dataset using the IBCC algorithm.
  *
- *  This algorithm only works with Multiclass datasets that follows the schema: 
- *
- *  {{{
- *      val schema = new StructType(
- *                          Array(new StructField("example", StringType, false),
- *                                new StructField("annotator", StringType, false),
- *                                new StructField("value", IntegerType, false)
- *                   ))
- *  }}}
+ *  This algorithm only works with multiclass target variables (Datasets of 
+ *  type [[types.MulticlassAnnotation]]
  *
  *  The algorithm returns a [[IBCC.IBCCModel]], with information about 
  *  the class true label estimation, the annotators precision, and the 
@@ -88,16 +81,43 @@ object IBCC {
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  case class InternalModel(mu: DataFrame, p: DataFrame, pi: DataFrame, likelihood: Double, improvement: Double)  
+  private[crowd] case class InternalModel(mu: DataFrame, p: DataFrame, pi: DataFrame, likelihood: Double, improvement: Double)  
+  
+  /**
+  *  Model returned by the learning algorithm.
+  *
+  *  @author enrique.grodrigo
+  *  @version 0.2.0
+  */
   class IBCCModel(mu: DataFrame, p: DataFrame, pi: DataFrame) {
+    /**
+    *  Estimated probabilities for each example 
+    *
+    *  @author enrique.grodrigo
+    *  @version 0.2.0
+    */
     def getMu(): Dataset[MulticlassSoftProb] = {
       import mu.sparkSession.implicits._
       mu.select(col("example"), col("class") as "clas", col("mu") as "prob").as[MulticlassSoftProb]
     }
+
+    /**
+    *  Estimated annotator precision 
+    *
+    *  @author enrique.grodrigo
+    *  @version 0.2.0
+    */
     def getAnnotatorPrecision(): Dataset[DiscreteAnnotatorPrecision] = {
       import pi.sparkSession.implicits._
       pi.select(col("annotator"), col("c"), col("k"), col("pi") as "prob").as[DiscreteAnnotatorPrecision] 
     }
+
+    /**
+    *  Estimated class prior.  
+    *
+    *  @author enrique.grodrigo
+    *  @version 0.2.0
+    */
     def getClassPrior(): DataFrame = p 
   }
 
@@ -105,7 +125,7 @@ object IBCC {
   /******************     UDAF    ********************/
   /****************************************************/
 
-  class Prod extends UserDefinedAggregateFunction {
+  private[crowd] class Prod extends UserDefinedAggregateFunction {
     def inputSchema: StructType = StructType(Array(StructField("pi", DoubleType)))
     def bufferSchema: StructType = StructType(Array(StructField("result", DoubleType)))
     def dataType: DataType = DoubleType
@@ -128,11 +148,11 @@ object IBCC {
   /********************   UDF   **********************/
   /****************************************************/
   
-  def addClassPriors(classPrior: Array[Double], nExamples: Long)(c: Int, num: Double) = {
+  private[crowd] def addClassPriors(classPrior: Array[Double], nExamples: Long)(c: Int, num: Double) = {
     (num + classPrior(c))/(classPrior.sum + nExamples)
   }
 
-  def addAnnotatorPrior(annPrior: Map[String, Array[Array[Double]]])(j: String, c: Int, k: Int, num: Double, denom: Double) = {
+  private[crowd] def addAnnotatorPrior(annPrior: Map[String, Array[Array[Double]]])(j: String, c: Int, k: Int, num: Double, denom: Double) = {
     (annPrior(j)(c)(k) + num)/(annPrior(j)(c).sum + denom)
   }
 
@@ -141,7 +161,7 @@ object IBCC {
   /******************** METHODS **********************/
   /****************************************************/
 
-  def probmvoting(annotations: DataFrame, nClasses: Long, allClasses: Column): DataFrame = {
+  private[crowd] def probmvoting(annotations: DataFrame, nClasses: Long, allClasses: Column): DataFrame = {
   //Generating example-class combination. Take care of examples without some classes combinations. 
   val exampleClass = annotations.select(col("example")).distinct().withColumn("value", explode(allClasses))
   val joined = exampleClass.join(annotations, Seq("example", "value"), "left_outer").withColumnRenamed("value", "class")
@@ -162,7 +182,7 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def priorMatrixGen(nClasses: Int): Array[Array[Double]] = {
+  private[crowd] def priorMatrixGen(nClasses: Int): Array[Array[Double]] = {
     return Array.fill[Double](nClasses,nClasses)(1.0)
   }
 
@@ -172,7 +192,7 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def classPrior(nClasses: Int): Array[Double] = {
+  private[crowd] def classPrior(nClasses: Int): Array[Double] = {
     return Array.fill[Double](nClasses)(1.0)
   }
 
@@ -182,7 +202,7 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def initialization(annotations: DataFrame): (DataFrame, DataFrame, DataFrame, Long, Long, Int, Column) = {
+  private[crowd] def initialization(annotations: DataFrame): (DataFrame, DataFrame, DataFrame, Long, Long, Int, Column) = {
     val anncached = annotations.cache()
     val nClasses = anncached.select(col("value")).distinct().count().toInt
     val nAnnotators = anncached.select(col("annotator")).distinct().count()
@@ -203,7 +223,7 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def mStep(annotations: DataFrame, mu: DataFrame, jck: DataFrame, nExamples: Long, 
+  private[crowd] def mStep(annotations: DataFrame, mu: DataFrame, jck: DataFrame, nExamples: Long, 
             classDirichlet: Array[Double], annPrior: Map[String, Array[Array[Double]]], 
             allClasses: Column): (DataFrame, DataFrame) = {
 
@@ -257,7 +277,7 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def eStep(annotations: DataFrame, pi: DataFrame, classPrior:DataFrame): DataFrame = {
+  private[crowd] def eStep(annotations: DataFrame, pi: DataFrame, classPrior:DataFrame): DataFrame = {
     //Prepares data for E step
     val eData = annotations.withColumnRenamed("value", "k").join(pi, Seq("annotator", "k"))
     //Prod for annotations taking pi into account
@@ -276,7 +296,7 @@ object IBCC {
   *  @author enrique.grodrigo
   *  @version 0.2.0
   */
-  def step(annotations: DataFrame, jck: DataFrame, nExamples: Long, 
+  private[crowd] def step(annotations: DataFrame, jck: DataFrame, nExamples: Long, 
             allClasses: Column, annotatorPrior: Map[String, Array[Array[Double]]], 
             classPrior: Array[Double])(model: InternalModel, i: Int): InternalModel = {
 
@@ -287,7 +307,7 @@ object IBCC {
     return InternalModel(mu, p, pi,like, improvement)
   }
   
-  def likelihood(annotations: DataFrame, pi: DataFrame, classPrior: DataFrame, allClasses: Column): Double = {
+  private[crowd] def likelihood(annotations: DataFrame, pi: DataFrame, classPrior: DataFrame, allClasses: Column): Double = {
     val prod = new Prod
     return annotations.withColumn("c", explode(allClasses))
                             .select(col("example"), col("annotator"), col("c"), col("value") as "k")

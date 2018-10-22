@@ -1,0 +1,146 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Installation &#8212; spark-crowd 0.1.6 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Design and architechture" href="../package/design.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>You can use our package in your own developments in three ways:</p>
+<ul class="simple">
+<li>Using the package directly using spark-packages</li>
+<li>Adding it as a dependency to your project through Maven central.</li>
+<li>Compiling the source code and using the <code class="docutils literal notranslate"><span class="pre">jar</span></code> file.</li>
+</ul>
+<p>Alternatively, if you just want to execute simple scala scripts locally,
+you can use our docker image as explained in <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quick Start</span></a></p>
+<div class="section" id="using-spark-packages">
+<h2>Using Spark Packages<a class="headerlink" href="#using-spark-packages" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way of using the package is through <a class="reference external" href="https://spark-packages.org/">Spark Packages</a>, as you only need to add the package in the command line when running your
+application:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>spark-submit --packages com.enriquegrodrigo:spark-crowd_2.11:0.1.5 application.scala
+</pre></div>
+</div>
+<p>You can also open a <cite>spark-shell</cite> using:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>spark-shell --packages com.enriquegrodrigo:spark-crowd_2.11:0.1.5
+</pre></div>
+</div>
+<p>Likewise, you can submit an application that uses <cite>spark-crowd</cite> using:</p>
+</div>
+<div class="section" id="adding-it-as-a-dependency">
+<h2>Adding it as a dependency<a class="headerlink" href="#adding-it-as-a-dependency" title="Permalink to this headline">¶</a></h2>
+<p>In addition to Spark Packages, the package is also in Maven Central, so you can add the package as a dependency in your scala project.
+For example, in <em>sbt</em> you can add the dependency as shown below:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;com.enriquegrodrigo&quot;</span> <span class="o">%%</span> <span class="s">&quot;spark-crowd&quot;</span> <span class="o">%</span> <span class="s">&quot;0.1.5&quot;</span>
+</pre></div>
+</div>
+<p>This will allow you to use the methods inside your Apache Spark projects.</p>
+</div>
+<div class="section" id="compiling-the-source-code">
+<h2>Compiling the source code<a class="headerlink" href="#compiling-the-source-code" title="Permalink to this headline">¶</a></h2>
+<p>To build the package using <em>sbt</em> you can use the following command inside the spark-crowd folder:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sbt package
+</pre></div>
+</div>
+<p>It will generate a compiled <code class="docutils literal notranslate"><span class="pre">jar</span></code> file that you can add to your project.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">spark-crowd</a></h1>
+
+
+
+<p class="blurb">Learning from crowdsourced Big Data</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=enriquegrodrigo&repo=spark-crowd&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-spark-packages">Using Spark Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-it-as-a-dependency">Adding it as a dependency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compiling-the-source-code">Compiling the source code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../package/design.html">Design and architechture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../package/methods.html">Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../package/other.html">Comparison with other packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../package/contributors.html">Contributors</a></li>
+</ul>
+
+<hr />
+<ul>
+<li class="toctree-l1"><a href="../_static/api/index.html"> API Docs </a></li>
+<li class="toctree-l1"><a href="../_static/api/index.html"> PDF Guide </a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Enrique G. Rodrigo.
+      
+      |
+      <a href="../_sources/usage/installation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/enriquegrodrigo/spark-crowd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
