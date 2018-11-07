@@ -1,25 +1,6 @@
-/*
- * MIT License 
- *
- * Copyright (c) 2017 Enrique González Rodrigo 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
- * software and associated documentation files (the "Software"), to deal in the Software 
- * without restriction, including without limitation the rights to use, copy, modify, 
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
- * persons to whom the Software is furnished to do so, subject to the following conditions: 
- *
- * The above copyright notice and this permission notice shall be included in all copies or 
- * substantial portions of the Software.  
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package com.enriquegrodrigo.spark.crowd.types
 
-import org.apache.spark.sql.Dataset
+import org.apache.spark.sql._
 import org.apache.spark.broadcast.Broadcast
 
 /**
@@ -32,11 +13,11 @@ import org.apache.spark.broadcast.Broadcast
 *  @author enrique.grodrigo
 *  @version 0.2 
 */
-class CGladModel(mu: Dataset[BinarySoftLabel], 
+class CGladModel2(mu: Dataset[BinarySoftLabel], 
                           prec: Array[Double], 
-                          diffic: Dataset[GladInstanceDifficulty],
-                          ranks: Dataset[ExampleRanks],
-                          clusters: Dataset[ExampleCluster]) extends Model[BinarySoftLabel] {
+                          diffic: Array[Double], 
+                          clusters: DataFrame
+                          ) extends Model[BinarySoftLabel] {
                             
   /**
   *  Method that returns the probabilistic estimation of the true label 
@@ -63,23 +44,7 @@ class CGladModel(mu: Dataset[BinarySoftLabel],
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def getInstanceDifficulty(): Dataset[GladInstanceDifficulty] = diffic 
+  def getInstanceDifficulty(): Array[Double] = diffic 
+  def getInstanceCluster(): DataFrame = clusters 
 
-  /**
-  *  Method that returns information about ranks  
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getRankData(): Dataset[ExampleRanks] = ranks 
-
-  /**
-  *  Method that returns information about clusters 
-  *
-  *  @return Double 
-  *  @author enrique.grodrigo
-  *  @version 0.1 
-  */
-  def getClusters(): Dataset[ExampleCluster]= clusters 
 }
