@@ -44,13 +44,13 @@ our package pre-loaded using:
 
 .. code-block:: shell
 
-  spark-shell --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.0
+  spark-shell --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.1
 
 Likewise, you can submit an application to your cluster that uses `spark-crowd` using:
 
 .. code-block:: shell
 
-  spark-submit --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.0 application.scala
+  spark-submit --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.1 application.scala
 
 To use this option you do not need to have a cluster of computers, you can also execute the code form 
 your local machine as Apache Spark can also be installed locally. For more information on how to install 

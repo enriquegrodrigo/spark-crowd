@@ -84,37 +84,47 @@ import org.apache.spark.mllib.optimization._
  */
 object CGlad {
 
-  /****************************************************/
-  /****************** CASE CLASSES ********************/
-  /****************************************************/
+/****************************************************/
+/****************** CASE CLASSES ********************/
+/****************************************************/
 
-  /**
-  * Class that stores the params for the model 
-  *
-  *  @author enrique.grodrigo
-  *  @version 0.2.1 
-  */
-  case class CGladParams(alpha: Array[Double], w: Array[Double], beta: Array[Double])
+/**
+* Class that stores the params for the model 
+*
+*  @author enrique.grodrigo
+*  @version 0.2.1 
+*/
+private[crowd] case class CGladParams(alpha: Array[Double], w: Array[Double], beta: Array[Double])
 
   /****************************************************/
   /******************     UDAF    ********************/
   /****************************************************/
 
 /**
-  * Mu estimation user aggregate funciton 
-  *
-  *  @author enrique.grodrigo
-  *  @version 0.2.1 
-  */
-class MuEstimate(alpha: Array[Double], beta: Array[Double], weights: Array[Double]) extends UserDefinedAggregateFunction {
-  def inputSchema: StructType = StructType(Array(StructField("annotator", IntegerType),StructField("cluster", IntegerType),StructField("value", DoubleType)))
+* Mu estimation user aggregate funciton 
+*
+*  @author enrique.grodrigo
+*  @version 0.2.1 
+*/
+private[crowd] class MuEstimate(alpha: Array[Double], 
+                                  beta: Array[Double], 
+                                  weights: Array[Double]) extends UserDefinedAggregateFunction {
+
+  def inputSchema: StructType = StructType(Array(StructField("annotator", IntegerType),
+                                            StructField("cluster", IntegerType),
+                                            StructField("value", DoubleType)))
+
   def bufferSchema: StructType = StructType(Array(StructField("result0", DoubleType), StructField("result1", DoubleType)))
+
   def dataType: DataType = DoubleType
+
   def deterministic: Boolean = true
+
   def initialize(buffer: MutableAggregationBuffer): Unit = {
     buffer(0) = 1.0
     buffer(1) = 1.0
   }
+
   def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
     val annotator = input.getAs[Integer](0)
     val cluster = input.getAs[Integer](1)
@@ -124,10 +134,12 @@ class MuEstimate(alpha: Array[Double], beta: Array[Double], weights: Array[Doubl
     buffer(0) = buffer.getAs[Double](0) * p
     buffer(1) = buffer.getAs[Double](1) * (1-p)
   }
+
   def merge(buffer1: MutableAggregationBuffer, buffer2: Row) = {
     buffer1(0) = buffer1.getAs[Double](0) * buffer2.getAs[Double](0)
     buffer1(1) = buffer1.getAs[Double](1) * buffer2.getAs[Double](1)
   }
+
   def evaluate(buffer: Row): Any = {
       val b0 = buffer.getAs[Double](0)
       val b1 = buffer.getAs[Double](1)
@@ -144,9 +156,15 @@ class MuEstimate(alpha: Array[Double], beta: Array[Double], weights: Array[Doubl
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-class LogLikelihoodEstimate(alpha: Array[Double], beta: Array[Double], weights: Array[Double]) extends UserDefinedAggregateFunction {
-  def inputSchema: StructType = StructType(Array(StructField("annotator", IntegerType),StructField("cluster", IntegerType),StructField("value", DoubleType),StructField("mu", DoubleType)))
-  def bufferSchema: StructType = StructType(Array(StructField("result0", DoubleType), StructField("result1", DoubleType)))
+private[crowd] class LogLikelihoodEstimate(alpha: Array[Double], 
+                                            beta: Array[Double], 
+                                            weights: Array[Double]) extends UserDefinedAggregateFunction {
+  def inputSchema: StructType = StructType(Array(StructField("annotator", IntegerType),
+                                                  StructField("cluster", IntegerType),
+                                                  StructField("value", DoubleType),
+                                                  StructField("mu", DoubleType)))
+  def bufferSchema: StructType = StructType(Array(StructField("result0", DoubleType), 
+                                            StructField("result1", DoubleType)))
   def dataType: DataType = DoubleType
   def deterministic: Boolean = true
   def initialize(buffer: MutableAggregationBuffer): Unit = {
@@ -180,9 +198,9 @@ class LogLikelihoodEstimate(alpha: Array[Double], beta: Array[Double], weights: 
 }
 
 
-  /****************************************************/
-  /******************** Gradient **********************/
-  /****************************************************/
+/****************************************************/
+/******************** Gradient **********************/
+/****************************************************/
 
 /**
 * Gradient calculation for the Stochastic Gradient descent method 
@@ -190,9 +208,12 @@ class LogLikelihoodEstimate(alpha: Array[Double], beta: Array[Double], weights: 
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-class CGladGradient(nExamples: Long, nAnnotators: Integer, nClusters: Integer) extends Gradient {
+private[crowd] class CGladGradient(nExamples: Long, nAnnotators: Integer, nClusters: Integer) extends Gradient {
 
-    override def compute(data: org.apache.spark.mllib.linalg.Vector,label: Double,weights: org.apache.spark.mllib.linalg.Vector,cumGradient: org.apache.spark.mllib.linalg.Vector): Double = {
+    override def compute(data: org.apache.spark.mllib.linalg.Vector,
+                          label: Double,
+                          weights: org.apache.spark.mllib.linalg.Vector,
+                          cumGradient: org.apache.spark.mllib.linalg.Vector): Double = {
       
       val cumG = cumGradient.toDense.values
       
@@ -242,8 +263,10 @@ class CGladGradient(nExamples: Long, nAnnotators: Integer, nClusters: Integer) e
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-class CGladUpdater() extends Updater {
-    def compute(weightsOld: org.apache.spark.mllib.linalg.Vector, gradient: org.apache.spark.mllib.linalg.Vector, stepSize: Double, iter: Int, regParam: Double) = {
+private[crowd] class CGladUpdater() extends Updater {
+    def compute(weightsOld: org.apache.spark.mllib.linalg.Vector, 
+                gradient: org.apache.spark.mllib.linalg.Vector, 
+                stepSize: Double, iter: Int, regParam: Double) = {
 
       val stepS = stepSize //Atenuates step size
 
@@ -253,7 +276,7 @@ class CGladUpdater() extends Updater {
       val newVector = Vectors.dense(newWeights)
       (newVector, 0) //Second parameter is not used
     }
-  }
+}
 
   /****************************************************/
   /******************** METHODS **********************/
@@ -266,7 +289,7 @@ class CGladUpdater() extends Updater {
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def votingbin(dataset: DataFrame) = {
+private[crowd] def votingbin(dataset: DataFrame) = {
   dataset.groupBy("example").agg(mean(col("value")) as "mu")
 }
 
@@ -290,7 +313,7 @@ def votingbin(dataset: DataFrame) = {
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def rowToVectorMu(r: Row): (Double,Vector) = {
+private[crowd] def rowToVectorMu(r: Row): (Double,Vector) = {
   val s: Seq[Double] = r.toSeq.map( x => 
           x match {
             case d: Double => d
@@ -307,8 +330,11 @@ def rowToVectorMu(r: Row): (Double,Vector) = {
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def mStep(data: DataFrame, gradIters: Integer, gradThreshold: Double, gradLearningRate: Double, gradientDataFraction: Double, alpha: Array[Double], beta: Array[Double], 
-            classWeights: Array[Double], nExamples: Long, nAnnotators: Int, nClusters: Int): (Array[Double], Array[Double], Array[Double]) = {
+private[crowd] def mStep(data: DataFrame, gradIters: Integer, 
+                          gradThreshold: Double, gradLearningRate: Double, 
+                          gradientDataFraction: Double, alpha: Array[Double], 
+                          beta: Array[Double], classWeights: Array[Double], 
+                          nExamples: Long, nAnnotators: Int, nClusters: Int): (Array[Double], Array[Double], Array[Double]) = {
   val dataset = data.cache()
   val optiData = dataset.rdd.map(rowToVectorMu _)
   val grad = new CGladGradient(nExamples, nAnnotators, nClusters)
@@ -329,7 +355,8 @@ def mStep(data: DataFrame, gradIters: Integer, gradThreshold: Double, gradLearni
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def eStep(dataset: DataFrame, alpha: Array[Double], beta: Array[Double], classWeights: Array[Double]): DataFrame = {
+private[crowd] def eStep(dataset: DataFrame, alpha: Array[Double], 
+                          beta: Array[Double], classWeights: Array[Double]): DataFrame = {
   val partialDataset = dataset.cache()
   val mu_af = new MuEstimate(alpha, beta, classWeights)
   val mu = partialDataset.groupBy("example").agg(mu_af(col("annotator"), col("cluster"), col("value")) as "mu")
@@ -343,7 +370,9 @@ def eStep(dataset: DataFrame, alpha: Array[Double], beta: Array[Double], classWe
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def nLogLikelihood(partialDataset: DataFrame, alpha: Array[Double], beta: Array[Double], classWeights: Array[Double]): Double = {
+private[crowd] def nLogLikelihood(partialDataset: DataFrame, alpha: Array[Double], 
+                    beta: Array[Double], 
+                    classWeights: Array[Double]): Double = {
   val like_uf = new LogLikelihoodEstimate(alpha, beta, classWeights)
   -partialDataset.groupBy("example").agg(like_uf(col("annotator"), col("cluster"), col("value"), col("mu")) as "like").agg(sum(col("like"))).collect()(0).getDouble(0)
 }
@@ -355,7 +384,8 @@ def nLogLikelihood(partialDataset: DataFrame, alpha: Array[Double], beta: Array[
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def initialization(dataset: DataFrame, rank: Integer, k: Integer, seed: Long): (DataFrame, Array[Double],Array[Double],Array[Double], Long, Int, Dataset[ExampleRanks]) = {
+private[crowd] def initialization(dataset: DataFrame, rank: Integer, k: Integer, 
+                    seed: Long): (DataFrame, Array[Double],Array[Double],Array[Double], Long, Int, Dataset[ExampleRanks]) = {
   import dataset.sparkSession.implicits._
   val datasetCached = dataset.cache() 
   val nAnnotators = datasetCached.select("annotator").distinct().count()
@@ -386,7 +416,7 @@ def initialization(dataset: DataFrame, rank: Integer, k: Integer, seed: Long): (
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-def step(partialDataset: DataFrame, alpha: Array[Double], beta: Array[Double], 
+private[crowd] def step(partialDataset: DataFrame, alpha: Array[Double], beta: Array[Double], 
           classWeights: Array[Double], logLike: Double, gradIters: Int, gradThreshold: Double, 
           gradLearningRate: Double, gradDataFraction: Double, backtrackingLimit: Double, nExamples: Long, nAnnotators: Int, nClusters: Int, iter: Int, reductionFactor: Double = 1): (DataFrame, Array[Double], Array[Double], Array[Double], Double, Double, Double) = {
 

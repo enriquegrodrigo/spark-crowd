@@ -50,11 +50,11 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p> Provides functions for transforming an annotation dataset into
- a standard label dataset using the Glad algorithm.</p><p> This algorithm only works with <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets.</p><p> The algorithm returns a <a href="../types/CGladModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.CGladModel">types.CGladModel</a>, with information about
- the class true label estimation, the annotator precision, the
- instances difficulty and the log-likilihood of the model.
+ a standard label dataset using the CGlad algorithm.</p><p> This algorithm only works with <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets.</p><p> The algorithm returns a <a href="../types/CGladModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.CGladModel">types.CGladModel</a>, with information as
+ the class true label estimation, the annotator precision or the
+ cluster difficulty.
 </p></div><dl class="attributes block"> <div class="block">Example:
-               <ol><li class="cmt"><p></p><pre><span class="kw">import</span> com.enriquegrodrigo.spark.crowd.methods.Glad
+               <ol><li class="cmt"><p></p><pre><span class="kw">import</span> com.enriquegrodrigo.spark.crowd.methods.CGlad
 <span class="kw">import</span> com.enriquegrodrigo.spark.crowd.types._
 sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
 <span class="kw">val</span> annFile = <span class="lit">"data/binary-ann.parquet"</span>
@@ -66,12 +66,10 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
 <span class="cmt">//Annotator precision matrices</span>
 <span class="kw">val</span> annprec = mode.getAnnotatorPrecision()
 <span class="cmt">//Annotator precision matrices</span>
-<span class="kw">val</span> annprec = mode.getInstanceDifficulty()
-<span class="cmt">//Annotator likelihood</span>
-<span class="kw">val</span> like = mode.getLogLikelihood()</pre></li></ol>
-            </div><dt>Version</dt><dd><p>0.2.0</p></dd><dt>See also</dt><dd><span class="cmt"><p>Whitehill, Jacob, et al. &quot;Whose vote should count more: Optimal
- integration of labels from labelers of unknown expertise.&quot; Advances in
- neural information processing systems. 2009.</p></span></dd></dl><div class="toggleContainer block">
+<span class="kw">val</span> annprec = mode.getClusterDifficulty()
+<span class="cmt">//Cluster for each example</span>
+<span class="kw">val</span> annprec = mode.getClusters()</pre></li></ol>
+            </div><dt>Version</dt><dd><p>0.2.1</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -168,7 +166,7 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.CGlad#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],eMIters:Int,eMThreshold:Double,gradIters:Int,gradThreshold:Double,gradLearningRate:Double,alphaPrior:Double,betaPrior:Double,rank:Integer,k:Integer,seed:Long):com.enriquegrodrigo.spark.crowd.types.CGladModel"></a>
+      <a id="apply(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],eMIters:Int,eMThreshold:Double,gradIters:Int,gradThreshold:Double,gradLearningRate:Double,gradDataFraction:Double,backtrackingLimit:Double,rank:Integer,k:Integer,seed:Long):com.enriquegrodrigo.spark.crowd.types.CGladModel"></a>
       <a id="apply(Dataset[BinaryAnnotation],Int,Double,Int,Double,Double,Double,Double,Integer,Integer,Long):CGladModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -176,15 +174,15 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="eMIters">eMIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">5</span></span>, <span name="eMThreshold">eMThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.1</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">30</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.5</span></span>, <span name="gradLearningRate">gradLearningRate: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.01</span></span>, <span name="alphaPrior">alphaPrior: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1</span></span>, <span name="betaPrior">betaPrior: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">10</span></span>, <span name="rank">rank: <span class="extype" name="java.lang.Integer">Integer</span> = <span class="symbol">3</span></span>, <span name="k">k: <span class="extype" name="java.lang.Integer">Integer</span> = <span class="symbol">3</span></span>, <span name="seed">seed: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1L</span></span>)</span><span class="result">: <a href="../types/CGladModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.CGladModel">CGladModel</a></span>
+        <span class="name">apply</span><span class="params">(<span name="dataset">dataset: <span class="extype" name="org.apache.spark.sql.Dataset">Dataset</span>[<a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">BinaryAnnotation</a>]</span>, <span name="eMIters">eMIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="eMThreshold">eMThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0</span></span>, <span name="gradIters">gradIters: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="gradThreshold">gradThreshold: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0</span></span>, <span name="gradLearningRate">gradLearningRate: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.01</span></span>, <span name="gradDataFraction">gradDataFraction: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1.0</span></span>, <span name="backtrackingLimit">backtrackingLimit: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.1</span></span>, <span name="rank">rank: <span class="extype" name="java.lang.Integer">Integer</span> = <span class="symbol">8</span></span>, <span name="k">k: <span class="extype" name="java.lang.Integer">Integer</span> = <span class="symbol">32</span></span>, <span name="seed">seed: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1L</span></span>)</span><span class="result">: <a href="../types/CGladModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.CGladModel">CGladModel</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.CGlad$@apply(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],eMIters:Int,eMThreshold:Double,gradIters:Int,gradThreshold:Double,gradLearningRate:Double,alphaPrior:Double,betaPrior:Double,rank:Integer,k:Integer,seed:Long):com.enriquegrodrigo.spark.crowd.types.CGladModel" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.enriquegrodrigo.spark.crowd.methods.CGlad$@apply(dataset:org.apache.spark.sql.Dataset[com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation],eMIters:Int,eMThreshold:Double,gradIters:Int,gradThreshold:Double,gradLearningRate:Double,gradDataFraction:Double,backtrackingLimit:Double,rank:Integer,k:Integer,seed:Long):com.enriquegrodrigo.spark.crowd.types.CGladModel" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt"> Apply the CGlad Algorithm.</p><div class="fullcomment"><div class="comment cmt"><p> Apply the CGlad Algorithm.
-</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The dataset (spark Dataset of type <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> over which the algorithm will execute.</p></dd><dt class="param">eMIters</dt><dd class="cmt"><p>Number of iterations for the EM algorithm</p></dd><dt class="param">eMThreshold</dt><dd class="cmt"><p>LogLikelihood variability threshold for the EM algorithm</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>Maximum number of iterations for the GradientDescent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>Threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt class="param">gradLearningRate</dt><dd class="cmt"><p>Learning rate for the gradient descent algorithm</p></dd><dt class="param">alphaPrior</dt><dd class="cmt"><p>First value for all alpha parameters</p></dd><dt class="param">betaPrior</dt><dd class="cmt"><p>First value for all beta parameters</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1.5</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">dataset</dt><dd class="cmt"><p>The dataset (spark Dataset of type <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> over which the algorithm will execute.</p></dd><dt class="param">eMIters</dt><dd class="cmt"><p>Number of iterations for the EM algorithm</p></dd><dt class="param">eMThreshold</dt><dd class="cmt"><p>LogLikelihood variability threshold for the EM algorithm</p></dd><dt class="param">gradIters</dt><dd class="cmt"><p>Maximum number of iterations for the GradientDescent algorithm</p></dd><dt class="param">gradThreshold</dt><dd class="cmt"><p>Threshold for the log likelihood variability for the gradient descent algorithm</p></dd><dt class="param">gradLearningRate</dt><dd class="cmt"><p>Learning rate for the gradient descent algorithm</p></dd><dt class="param">gradDataFraction</dt><dd class="cmt"><p>fraction of the data used in the stochastic gradient descent optimization</p></dd><dt class="param">backtrackingLimit</dt><dd class="cmt"><p>minimum value that gradientLearningRate can take in the backtracking mechanism</p></dd><dt class="param">rank</dt><dd class="cmt"><p>size of vectors in the matrix factorization</p></dd><dt class="param">k</dt><dd class="cmt"><p>number of clusters</p></dd></dl><dl class="attributes block"> <dt>Version</dt><dd><p>0.1.5</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>

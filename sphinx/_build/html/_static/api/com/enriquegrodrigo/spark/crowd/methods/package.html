@@ -120,12 +120,12 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
       </a>
     </span>
       <p class="shortcomment cmt"> Provides functions for transforming an annotation dataset into
- a standard label dataset using the Glad algorithm.</p><div class="fullcomment"><div class="comment cmt"><p> Provides functions for transforming an annotation dataset into
- a standard label dataset using the Glad algorithm.</p><p> This algorithm only works with <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets.</p><p> The algorithm returns a <a href="../types/CGladModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.CGladModel">types.CGladModel</a>, with information about
- the class true label estimation, the annotator precision, the
- instances difficulty and the log-likilihood of the model.
+ a standard label dataset using the CGlad algorithm.</p><div class="fullcomment"><div class="comment cmt"><p> Provides functions for transforming an annotation dataset into
+ a standard label dataset using the CGlad algorithm.</p><p> This algorithm only works with <a href="../types/BinaryAnnotation.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation">types.BinaryAnnotation</a> datasets.</p><p> The algorithm returns a <a href="../types/CGladModel.html" class="extype" name="com.enriquegrodrigo.spark.crowd.types.CGladModel">types.CGladModel</a>, with information as
+ the class true label estimation, the annotator precision or the
+ cluster difficulty.
 </p></div><dl class="attributes block"> <div class="block">Example:
-               <ol><li class="cmt"><p></p><pre><span class="kw">import</span> com.enriquegrodrigo.spark.crowd.methods.Glad
+               <ol><li class="cmt"><p></p><pre><span class="kw">import</span> com.enriquegrodrigo.spark.crowd.methods.CGlad
 <span class="kw">import</span> com.enriquegrodrigo.spark.crowd.types._
 sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
 <span class="kw">val</span> annFile = <span class="lit">"data/binary-ann.parquet"</span>
@@ -137,12 +137,10 @@ sc.setCheckpointDir(<span class="lit">"checkpoint"</span>)
 <span class="cmt">//Annotator precision matrices</span>
 <span class="kw">val</span> annprec = mode.getAnnotatorPrecision()
 <span class="cmt">//Annotator precision matrices</span>
-<span class="kw">val</span> annprec = mode.getInstanceDifficulty()
-<span class="cmt">//Annotator likelihood</span>
-<span class="kw">val</span> like = mode.getLogLikelihood()</pre></li></ol>
-            </div><dt>Version</dt><dd><p>0.2.0</p></dd><dt>See also</dt><dd><span class="cmt"><p>Whitehill, Jacob, et al. &quot;Whose vote should count more: Optimal
- integration of labels from labelers of unknown expertise.&quot; Advances in
- neural information processing systems. 2009.</p></span></dd></dl></div>
+<span class="kw">val</span> annprec = mode.getClusterDifficulty()
+<span class="cmt">//Cluster for each example</span>
+<span class="kw">val</span> annprec = mode.getClusters()</pre></li></ol>
+            </div><dt>Version</dt><dd><p>0.2.1</p></dd></dl></div>
     </li><li name="com.enriquegrodrigo.spark.crowd.methods.DawidSkene" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="DawidSkene"></a>
       <a id="DawidSkene:DawidSkene"></a>

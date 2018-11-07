@@ -21,13 +21,13 @@ application:
 
 .. code-block:: shell
 
-  spark-submit --packages com.enriquegrodrigo:spark-crowd_2.11:0.1.5 application.scala
+  spark-submit --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.1 application.scala
 
 You can also open a `spark-shell` using: 
 
 .. code-block:: shell
 
-  spark-shell --packages com.enriquegrodrigo:spark-crowd_2.11:0.1.5
+  spark-shell --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.1
 
 Likewise, you can submit an application that uses `spark-crowd` using:
 
@@ -40,7 +40,7 @@ For example, in *sbt* you can add the dependency as shown below:
 
 .. code-block:: scala 
 
-  libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.5"
+  libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.2.1"
 
 This will allow you to use the methods inside your Apache Spark projects. 
 
