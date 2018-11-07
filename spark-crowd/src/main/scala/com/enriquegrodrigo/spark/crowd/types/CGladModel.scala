@@ -45,7 +45,7 @@ class CGladModel(mu: Dataset[BinarySoftLabel],
   *  @author enrique.grodrigo
   *  @version 0.2.1 
   */
-  def getInstanceDifficulty(): Array[Double] = diffic 
+  def getClusterDifficulty(): Array[Double] = diffic 
 
   /**
   *  Method that returns information about ranks  
