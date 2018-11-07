@@ -36,8 +36,8 @@ val pred = mode.getMu().as[BinarySoftLabel]
 val annprec = mode.getAnnotatorPrecision()
 
 //Cluster difficulties 
-val annprec = mode.getClusterDifficulty()
+val clusterDifficulty = mode.getClusterDifficulty()
 
 //Cluster for each example
-val annprec = mode.getClusters()
+val exampleCluster = mode.getClusters()
 
