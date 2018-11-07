@@ -60,8 +60,8 @@ project with the following line:
 
 ### Running the examples
 
-[![Docker Automated buil](https://img.shields.io/docker/automated/enriquegrodrigo/docker-pydata.svg)](https://hub.docker.com/r/enriquegrodrigo/docker-pydata/)
-[![Docker Build Statu](https://img.shields.io/docker/build/enriquegrodrigo/docker-pydata.svg)](https://hub.docker.com/r/enriquegrodrigo/docker-pydata/)
+[![Docker Automated buil](https://img.shields.io/docker/automated/enriquegrodrigo/spark-crowd.svg)](https://hub.docker.com/r/enriquegrodrigo/spark-crowd/)
+[![Docker Build Statu](https://img.shields.io/docker/build/enriquegrodrigo/spark-crowd.svg)](https://hub.docker.com/r/enriquegrodrigo/spark-crowd/)
 
 For running the examples of this package one can use our docker image with the latest version of spark-crowd. Let's see how to run the `DawidSkeneExample.scala` file:
 
