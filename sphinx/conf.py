@@ -24,9 +24,9 @@ copyright = '2018, Enrique G. Rodrigo'
 author = 'Enrique G. Rodrigo, Juan A. Aledo, Jose A. Gámez'
 
 # The short X.Y version
-version = '0.1'
+version = '0.2'
 # The full version, including alpha/beta/rc tags
-release = '0.1.6'
+release = '0.2.1'
 
 
 # -- General configuration ---------------------------------------------------

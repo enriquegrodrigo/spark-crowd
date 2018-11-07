@@ -52,9 +52,9 @@
 
 
 \title{spark-crowd Documentation}
-\date{Nov 06, 2018}
-\release{0.1.6}
-\author{Enrique G. Rodrigo}
+\date{Nov 07, 2018}
+\release{0.2.1}
+\author{Enrique G. Rodrigo \and Juan A. Aledo \and Jose A. Gamez}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
 \makeindex
@@ -72,6 +72,36 @@ Learning from crowdsourced Big Data
 
 
 \bigskip\hrule\bigskip
+Learning from crowdsourced data imposes new challenges
+in the area of machine learning. \sphinxtitleref{spark-crowd} helps practitioners
+when dealing with this kind of data at scale, using Apache Spark.
+
+\noindent\sphinxincludegraphics{{illustration}.png}
+
+The main features of \sphinxtitleref{spark-crowd} are the following:
+\begin{itemize}
+\item {} 
+It implements well-known methods for learning from crowdsourced labeled data.
+
+\item {} 
+It is suitable for working with both large and small datasets.
+
+\item {} 
+It uses Apache Spark, which allows the code to run in different environments, from a computer to a multi-node cluster.
+
+\item {} 
+It is suitable both for research and production environments.
+
+\item {} 
+It provides an easy to use API, allowing the practitioner to start using the library in minutes.
+
+\end{itemize}
+
+See the {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DUrole{std,std-ref}{Quick Start}}}} to get started using \sphinxtitleref{spark-crowd}
+
+\sphinxtitleref{spark-crowd} is licensed under the \sphinxhref{https://opensource.org/licenses/MIT/}{MIT license}.
+
+
 
 
 
@@ -119,14 +149,14 @@ our package pre-loaded using:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.0
+spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1
 \end{sphinxVerbatim}
 
 Likewise, you can submit an application to your cluster that uses \sphinxtitleref{spark-crowd} using:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.0 application.scala
+spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1 application.scala
 \end{sphinxVerbatim}
 
 To use this option you do not need to have a cluster of computers, you can also execute the code form
@@ -213,14 +243,14 @@ application:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.1.5 application.scala
+spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1 application.scala
 \end{sphinxVerbatim}
 
 You can also open a \sphinxtitleref{spark-shell} using:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.1.5
+spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1
 \end{sphinxVerbatim}
 
 Likewise, you can submit an application that uses \sphinxtitleref{spark-crowd} using:
@@ -233,7 +263,7 @@ For example, in \sphinxstyleemphasis{sbt} you can add the dependency as shown be
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{n}{libraryDependencies} \PYG{o}{+=} \PYG{l+s}{\PYGZdq{}com.enriquegrodrigo\PYGZdq{}} \PYG{o}{\PYGZpc{}\PYGZpc{}} \PYG{l+s}{\PYGZdq{}spark\PYGZhy{}crowd\PYGZdq{}} \PYG{o}{\PYGZpc{}} \PYG{l+s}{\PYGZdq{}0.1.5\PYGZdq{}}
+\PYG{n}{libraryDependencies} \PYG{o}{+=} \PYG{l+s}{\PYGZdq{}com.enriquegrodrigo\PYGZdq{}} \PYG{o}{\PYGZpc{}\PYGZpc{}} \PYG{l+s}{\PYGZdq{}spark\PYGZhy{}crowd\PYGZdq{}} \PYG{o}{\PYGZpc{}} \PYG{l+s}{\PYGZdq{}0.2.1\PYGZdq{}}
 \end{sphinxVerbatim}
 
 This will allow you to use the methods inside your Apache Spark projects.
@@ -514,7 +544,7 @@ the continuous version is implemented as other algorithms seem to work better in
 \section{PM and PMTI}
 \label{\detokenize{package/methods:pm-and-pmti}}
 Another method for continuous target variables. We implement two versions, one following the formulas appearing
-in the original paper and the modification implemented in  \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this package}. This modification seems to obtain better results in our experimentation (you can check it in \DUrole{xref,std,std-ref}{comparison}.
+in the original paper and the modification implemented in  \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this package}. This modification seems to obtain better results in our experimentation (you can check it in {\hyperref[\detokenize{package/other:comparison}]{\sphinxcrossref{\DUrole{std,std-ref}{Comparison with other packages}}}}.
 
 
 \chapter{Examples}
@@ -990,79 +1020,80 @@ crowdscale
 
 Regarding accuracy, both packages achieve comparable results. However, regarding execution time, spark-crowd obtains
 significantly better results among all datasets especially on the bigger datasets, where it can solve problems that
-Ceka is not able to. You can see the speedup results in the table below.
+Ceka is not able to. 
 
-
-\begin{savenotes}\sphinxattablestart
-\centering
-\sphinxcapstartof{table}
-\sphinxcaption{Speedup in comparison to Ceka}\label{\detokenize{package/other:id4}}
-\sphinxaftercaption
-\begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|}
-\hline
-\sphinxstyletheadfamily &\sphinxstartmulticolumn{4}%
-\begin{varwidth}[t]{\sphinxcolwidth{4}{5}}
-\sphinxstyletheadfamily MajorityVoting  \textbar{}      DawidSkene
-\par
-\vskip-\baselineskip\vbox{\hbox{\strut}}\end{varwidth}%
-\sphinxstopmulticolumn
-\\
-\hline\sphinxstyletheadfamily 
-Method
-&\sphinxstyletheadfamily 
-t1
-&\sphinxstyletheadfamily 
-tc
-&\sphinxstyletheadfamily 
-t1
-&\sphinxstyletheadfamily 
-tc
-\\
-\hline
-binary1
-&
-1.86
-&
-2.93
-&
-1.84
-&
-1.78
-\\
-\hline
-binary2
-&
-1453
-&
-2283
-&
-272
-&
-1146
-\\
-\hline
-crowdscale
-&
-804
-&
-1494
-&
-69
-&
-360
-\\
-\hline
-\end{tabulary}
-\par
-\sphinxattableend\end{savenotes}
-
-We can see that spark-crowd obtains a high speedup in bigger datasets and performs
-slightly better in the smaller ones.
+%You can see the speedup results in the table below.
+%
+%\begin{savenotes}\sphinxattablestart
+%\centering
+%\sphinxcapstartof{table}
+%\sphinxcaption{Speedup in comparison to Ceka}\label{\detokenize{package/other:id4}}
+%\sphinxaftercaption
+%\begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|}
+%\hline
+%\sphinxstyletheadfamily &\sphinxstartmulticolumn{4}%
+%\begin{varwidth}[t]{\sphinxcolwidth{4}{5}}
+%\sphinxstyletheadfamily MajorityVoting  \textbar{}      DawidSkene
+%\par
+%\vskip-\baselineskip\vbox{\hbox{\strut}}\end{varwidth}%
+%\sphinxstopmulticolumn
+%\\
+%\hline\sphinxstyletheadfamily 
+%Method
+%&\sphinxstyletheadfamily 
+%t1
+%&\sphinxstyletheadfamily 
+%tc
+%&\sphinxstyletheadfamily 
+%t1
+%&\sphinxstyletheadfamily 
+%tc
+%\\
+%\hline
+%binary1
+%&
+%1.86
+%&
+%2.93
+%&
+%1.84
+%&
+%1.78
+%\\
+%\hline
+%binary2
+%&
+%1453
+%&
+%2283
+%&
+%272
+%&
+%1146
+%\\
+%\hline
+%crowdscale
+%&
+%804
+%&
+%1494
+%&
+%69
+%&
+%360
+%\\
+%\hline
+%\end{tabulary}
+%\par
+%\sphinxattableend\end{savenotes}
+%
+%We can see that spark-crowd obtains a high speedup in bigger datasets and performs
+%slightly better in the smaller ones.
 
 
 \section{Truth inference in crowdsourcing}
 \label{\detokenize{package/other:id2}}
-Now we compare spark-crowd with the methods available in this paper. Although the methods
+Now we compare spark-crowd with the methods made available by thee authors of this paper. Although the methods
 can certainly be used for to compare and try the algorithms, the integration of these
 methods into a large ecosystem will be very difficult, as the authors do not provide
 a software package structure. However, as it is an available package with a great number
@@ -1071,10 +1102,9 @@ as the ones used in the previous comparison. In this case, we can compare a high
 number of models, as most of the methods are written in python. However, we were only able
 to execute the methods over datasets with binary or continuous target variables. As far as we
 know, the use of multiclass target variables seems to not be possible. Moreover, the use of
-feature sets is also restricted, although algorithms that should be capable of dealing with
-this kind of data are implemented, as is the case with the Raykar’s methods.
+feature sets is also not possible. 
 
-First, we compare the algorithms capable of learning from binary classes without feature sets.
+First, we compare the algorithms capable of learning from binary classes.
 Inside this category, we will compare MajorityVoting, DawidSkene, GLAD and IBCC. For each dataset, we show
 results in terms of Accuracy (Acc) and time (in seconds). The table below shows the results for
 MajorityVoting and DawidSkene. Both packages obtain the same results in terms of
@@ -1087,7 +1117,7 @@ package is not able to complete the execution because of memory constraints in t
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Comparative with Truth inference in Crowdsourcing package}\label{\detokenize{package/other:id5}}
+\sphinxcaption{MajorityVoting and DawidSkene comparison}\label{\detokenize{package/other:id5}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|T|T|T|T|T|}
 \hline
@@ -1253,14 +1283,14 @@ Next we show the results for GLAD and IBCC. As the user can see, both packages o
 in terms of accuracy. Regarding execution time, both packages obtain comparable results
 in the two smaller datasets (with a slight speedup in the \sphinxcode{\sphinxupquote{binary2}}) for the GLAD algorithm. However,
 Truth-inf is not able to complete the execution for the two largest datasets.
-In the case of IBCC, the speedup starts to be noticeable from the second dataset. Again, Truth-inf was
-unable to complete the execution in a reasonable ammount of time for the last dataset.
+In the case of IBCC, the speedup starts to be noticeable from the second dataset but did not complete the execution 
+on the last dataset. 
 
 
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Comparative with Truth inference in Crowdsourcing package (2)}\label{\detokenize{package/other:id6}}
+\sphinxcaption{GLAD and IBCC comparison}\label{\detokenize{package/other:id6}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|T|T|T|T|T|}
 \hline
@@ -1423,13 +1453,14 @@ X
 \sphinxattableend\end{savenotes}
 
 A thing to notice regarding the last execution of this algorithm is that at large scale, the performance of the
-algorithm seems to degrade. This may be due to the ammount of parameters the algorithm needs to estimate (for the
-difficulty, one for every example). A way to improve the estimation goes through decrease the learning rate, which
-makes the algorithm slower, as it needs a lot more iterations to obtain a good solution. This makes the algorithm
+algorithm seems to degrade. 
+This may be due to the ammount of parameters the algorithm needs to estimate. 
+A way to improve the estimation goes through decrease the learning rate, which
+makes the algorithm slower, as it needs a lot more iterations to obtain a good solution. 
+This makes the algorithm
 unsuitable for several big data contexts.  To tackle this kind of problems, we developed and enhancement, CGlad, recently
 published and which is included in the package (See the last section of this page for results of other
 methods in the package, as well as this enhancement)
-
 Next we analize methods that are able to learn from continuous target variables: MajorityVoting (mean), CATD and PM (with mean initialization). We show the results in terms of MAE (Mean absolute error) and time (in seconds). The
 results for MajorityVoting and CATD can be found below in the table below.
 
@@ -1437,7 +1468,7 @@ results for MajorityVoting and CATD can be found below in the table below.
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Comparative with Truth inference in Crowdsourcing package on continuous target variables}\label{\detokenize{package/other:id7}}
+  \sphinxcaption{MajorityVoting (mean) and CATD comparison}\label{\detokenize{package/other:id7}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|T|T|T|T|T|}
 \hline
@@ -1613,7 +1644,7 @@ In the table below you can find the results for PM and PMTI algorithms.
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Comparative with Truth inference in Crowdsourcing package on continuous target variables (2)}\label{\detokenize{package/other:id8}}
+\sphinxcaption{PM and PMTI comparison}\label{\detokenize{package/other:id8}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|T|T|T|T|T|}
 \hline
@@ -1778,9 +1809,7 @@ X
 Although similar, the modification implemented in Truth-inf from the original algorithm seems to be more
 accurate. The code for the original version was also available, although it was commented in the source code.
 Even in the smaller dataset, our package obtains a slight speedup. However as the datasets increase in size,
-our package is able to obtain a much higher speedup. As was the case with CATD, it was impossible for us to
-solve them in a reasonable ammount of time with Truth-inf.
-
+our package is able to obtain a much higher speedup. 
 
 \section{Other methods}
 \label{\detokenize{package/other:other-methods}}
@@ -1794,7 +1823,7 @@ we show the results obtained by the Raykar’s methods for discrete target varia
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Other methods implemented in spark-crowd. Raykar’s methods for discrete target variables.}\label{\detokenize{package/other:id9}}
+\sphinxcaption{Raykar’s methods in spark-crowd for discrete targets .}\label{\detokenize{package/other:id9}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|T|}
 \hline
@@ -1910,7 +1939,7 @@ Next we show the Raykar method for tackling continous target variables.
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Other methods implemented in spark-crowd. Raykar method for continuous target variables.}\label{\detokenize{package/other:id10}}
+\sphinxcaption{Raykar method for continuous target variables.}\label{\detokenize{package/other:id10}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|}
 \hline
@@ -2005,7 +2034,7 @@ but it performs better in the larger cases.
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{Other methods implemented in spark-crowd. CGlad, an enhancement over Glad algorithm.}\label{\detokenize{package/other:id11}}
+\sphinxcaption{CGlad, an enhancement over the Glad algorithm.}\label{\detokenize{package/other:id11}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|}
 \hline
@@ -2168,7 +2197,7 @@ should take into account the scalability of the learning process.
 To contribute an algorithm first create a request using Github Issues, for the maintainers to review the suggestion. This request should provide the following information:
 \begin{itemize}
 \item {} 
-Publication where the algorithm detais can be reviewed.
+Publication where the algorithm details can be reviewed.
 
 \item {} 
 Explain why this algorithm would be useful to the users.
@@ -2177,36 +2206,6 @@ Explain why this algorithm would be useful to the users.
 
 If the request is accepted, create a Github pull request with the new algorithm, as well as all necessary types to use it, so that the maintainers can review the
 code and add it to the package.
-
-Learning from crowdsourced data imposes new challenges
-in the area of machine learning. \sphinxtitleref{spark-crowd} helps practitioners
-when dealing with this kind of data at scale, using Apache Spark.
-
-\noindent\sphinxincludegraphics{{illustration}.png}
-
-The main features of \sphinxtitleref{spark-crowd} are the following:
-\begin{itemize}
-\item {} 
-It implements well-known methods for learning from crowdsourced labeled data.
-
-\item {} 
-It is suitable for working with both large and small datasets.
-
-\item {} 
-It uses Apache Spark, which allows the code to run in different environments, from a computer to a multi-node cluster.
-
-\item {} 
-It is suitable both for research and production environments.
-
-\item {} 
-It provides an easy to use API, allowing the practitioner to start using the library in minutes.
-
-\end{itemize}
-
-See the {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DUrole{std,std-ref}{Quick Start}}}} to get started using \sphinxtitleref{spark-crowd}
-
-\sphinxtitleref{spark-crowd} is licensed under the \sphinxhref{https://opensource.org/licenses/MIT/}{MIT license}.
-
 
 
 \renewcommand{\indexname}{Index}

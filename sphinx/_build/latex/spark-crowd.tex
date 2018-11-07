@@ -52,8 +52,8 @@
 
 
 \title{spark-crowd Documentation}
-\date{Nov 06, 2018}
-\release{0.1.6}
+\date{Nov 07, 2018}
+\release{0.2.1}
 \author{Enrique G. Rodrigo}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
@@ -119,14 +119,14 @@ our package pre-loaded using:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.0
+spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1
 \end{sphinxVerbatim}
 
 Likewise, you can submit an application to your cluster that uses \sphinxtitleref{spark-crowd} using:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.0 application.scala
+spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1 application.scala
 \end{sphinxVerbatim}
 
 To use this option you do not need to have a cluster of computers, you can also execute the code form
@@ -213,14 +213,14 @@ application:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.1.5 application.scala
+spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1 application.scala
 \end{sphinxVerbatim}
 
 You can also open a \sphinxtitleref{spark-shell} using:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.1.5
+spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1
 \end{sphinxVerbatim}
 
 Likewise, you can submit an application that uses \sphinxtitleref{spark-crowd} using:
@@ -233,7 +233,7 @@ For example, in \sphinxstyleemphasis{sbt} you can add the dependency as shown be
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{n}{libraryDependencies} \PYG{o}{+=} \PYG{l+s}{\PYGZdq{}com.enriquegrodrigo\PYGZdq{}} \PYG{o}{\PYGZpc{}\PYGZpc{}} \PYG{l+s}{\PYGZdq{}spark\PYGZhy{}crowd\PYGZdq{}} \PYG{o}{\PYGZpc{}} \PYG{l+s}{\PYGZdq{}0.1.5\PYGZdq{}}
+\PYG{n}{libraryDependencies} \PYG{o}{+=} \PYG{l+s}{\PYGZdq{}com.enriquegrodrigo\PYGZdq{}} \PYG{o}{\PYGZpc{}\PYGZpc{}} \PYG{l+s}{\PYGZdq{}spark\PYGZhy{}crowd\PYGZdq{}} \PYG{o}{\PYGZpc{}} \PYG{l+s}{\PYGZdq{}0.2.1\PYGZdq{}}
 \end{sphinxVerbatim}
 
 This will allow you to use the methods inside your Apache Spark projects.
@@ -514,7 +514,7 @@ the continuous version is implemented as other algorithms seem to work better in
 \section{PM and PMTI}
 \label{\detokenize{package/methods:pm-and-pmti}}
 Another method for continuous target variables. We implement two versions, one following the formulas appearing
-in the original paper and the modification implemented in  \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this package}. This modification seems to obtain better results in our experimentation (you can check it in \DUrole{xref,std,std-ref}{comparison}.
+in the original paper and the modification implemented in  \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this package}. This modification seems to obtain better results in our experimentation (you can check it in {\hyperref[\detokenize{package/other:comparison}]{\sphinxcrossref{\DUrole{std,std-ref}{Comparison with other packages}}}}.
 
 
 \chapter{Examples}

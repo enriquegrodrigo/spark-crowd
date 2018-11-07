@@ -30,7 +30,7 @@
 \contentsline {section}{\numberline {6.2}CEKA}{15}{section.6.2}
 \contentsline {section}{\numberline {6.3}Truth inference in crowdsourcing}{16}{section.6.3}
 \contentsline {section}{\numberline {6.4}Other methods}{18}{section.6.4}
-\contentsline {chapter}{\numberline {7}Contributors}{21}{chapter.7}
-\contentsline {section}{\numberline {7.1}Bug reports}{21}{section.7.1}
-\contentsline {section}{\numberline {7.2}Suggesting enhancements}{22}{section.7.2}
-\contentsline {section}{\numberline {7.3}New algorithms}{22}{section.7.3}
+\contentsline {chapter}{\numberline {7}Contributors}{19}{chapter.7}
+\contentsline {section}{\numberline {7.1}Bug reports}{19}{section.7.1}
+\contentsline {section}{\numberline {7.2}Suggesting enhancements}{20}{section.7.2}
+\contentsline {section}{\numberline {7.3}New algorithms}{20}{section.7.3}
