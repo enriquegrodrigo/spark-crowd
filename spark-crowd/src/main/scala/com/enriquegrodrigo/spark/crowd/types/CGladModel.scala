@@ -4,16 +4,16 @@ import org.apache.spark.sql._
 import org.apache.spark.broadcast.Broadcast
 
 /**
-*  Glad model returned by the Glad method 
+*  CGlad model returned by the CGlad method 
 *
 *  @param mu label estimation returned from the model.
-*  @param alphas precision of annotator given by the Glad model.
-*  @param betas instance difficulty given by Glad model. 
+*  @param alphas precision of annotator given by the CGlad model.
+*  @param betas instance difficulty given by CGlad model. 
 *  @param logLikelihood logLikelihood of the final estimation of the model.  
 *  @author enrique.grodrigo
-*  @version 0.2 
+*  @version 0.2.1 
 */
-class CGladModel2(mu: Dataset[BinarySoftLabel], 
+class CGladModel(mu: Dataset[BinarySoftLabel], 
                           prec: Array[Double], 
                           diffic: Array[Double], 
                           clusters: DataFrame
@@ -45,6 +45,7 @@ class CGladModel2(mu: Dataset[BinarySoftLabel],
   *  @version 0.1 
   */
   def getInstanceDifficulty(): Array[Double] = diffic 
+
   def getInstanceCluster(): DataFrame = clusters 
 
 }
