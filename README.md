@@ -24,7 +24,7 @@ The simplest way to use the package is adding the next dependency directly
 into the `build.sbt` file of your project:
 
 ```scala
-libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.5"
+libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.2.1"
 ```
 
 If this is not a possibility, you can compile the project and create a 
@@ -38,7 +38,7 @@ In the `spark-crowd` folder, one should execute the command
     > sbt package 
 
 to create a `.jar` file. Usually, it is located in 
-`target/scala-2.11/spark-crowd_2.11-0.1.jar`.
+`target/scala-2.11/spark-crowd_2.11-0.2.1.jar`.
 
 This `.jar` can be added to new projects using this library. In `sbt` one
 can add `.jar` files to the `lib` folder.
@@ -53,7 +53,7 @@ to publish the library to a local Ivy repository. The
 library can be added to the `build.sbt` file of a new
 project with the following line:
 ```scala
-    libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.1.5"
+    libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.2.1"
 ```
 
 ## Usage 
@@ -72,7 +72,7 @@ For running a spark-shell with the library pre-loaded, one can use:
 	docker run --rm -it -v $(pwd)/:/home/work/project enriquegrodrigo/spark-crowd 
 
 One can also generate a `.jar` file as seen previously and use it with `spark-shell` or `spark-submit`. For example, with `spark-shell`:
-	spark-shell --jars spark-crowd_2.11-0.1.5.jar -i DawidSkeneExample.scala
+	spark-shell --jars spark-crowd_2.11-0.2.1.jar -i DawidSkeneExample.scala
 
 
 ### Types
@@ -101,8 +101,8 @@ import com.enriquegrodrigo.spark.crowd.types.BinaryAnnotation
 
 val df = annotationDataFrame
 
-val converted = fixed.map(x => BinaryAnnotation(x.getLong(0), x.getLong(1), x.getInt(2)))
-                     .as[BinaryAnnotation]
+val converted = df.map(x => BinaryAnnotation(x.getLong(0), x.getLong(1), x.getInt(2)))
+                  .as[BinaryAnnotation]
 ```
 The process is similar for the other types of annotation data. The `converted` Spark Dataset is ready to be use with the methods commented in the *Methods* subsection.
 
@@ -121,8 +121,13 @@ Method | Binary | Multiclass | Real | Reference
 :-----:|:------:|:----------:|:----:|:----------:
 [MajorityVoting](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$) | :white_check_mark: | :white_check_mark: | :white_check_mark: |  
 [DawidSkene](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.DawidSkene$) |:white_check_mark: | :white_check_mark: | | [JRSS](https://www.jstor.org/stable/2346806?seq=1#page_scan_tab_contents) 
+[IBCC](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.IBCC$) |:white_check_mark: | :white_check_mark: | | [AISTATS](http://proceedings.mlr.press/v22/kim12.html)
 [GLAD](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.Glad$) | :white_check_mark: | | | [NIPS](https://papers.nips.cc/paper/3644-whose-vote-should-count-more-optimal-integration-of-labels-from-labelers-of-unknown-expertise)
+[CGLAD](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.CGlad$) | :white_check_mark: | | | [NIPS](https://papers.nips.cc/paper/3644-whose-vote-should-count-more-optimal-integration-of-labels-from-labelers-of-unknown-expertise)
 [Raykar](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$) | :white_check_mark: | :white_check_mark:| :white_check_mark:| [JMLR](http://jmlr.csail.mit.edu/papers/v11/raykar10a.html) 
+[CATD](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.CATD$) | | | :white_check_mark:| [VLDB](http://www.vldb.org/pvldb/vol8/p425-li.pdf)
+[PM](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.PM$) | | | :white_check_mark:| [SIGMOD](https://dl.acm.org/citation.cfm?id=2588555.2610509)
+[PMTI](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.PMTI$) | | | :white_check_mark:| [VLDB2](https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.PMTI$)
 
 The algorithm name links to the documentation of the implemented method in our application. The
 Reference column contains a link to where the algorithm was published. As an example, the 
