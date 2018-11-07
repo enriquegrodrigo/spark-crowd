@@ -135,17 +135,11 @@ package is not able to complete the execution because of memory constraints in t
 
 
 Next we show the results for GLAD and IBCC. As the user can see, both packages obtain similar results 
-in terms of accuracy. Regarding execution time, both packages obtain similar results 
+in terms of accuracy. Regarding execution time, both packages obtain comparable results 
 in the two smaller datasets (with a slight speedup in the ``binary2``) for the GLAD algorithm. However, 
-Truth-inf is not able to complete the execution for the two largest datasets. A last thing to notice 
-regarding the last execution of this algorithm is that at large scale, the performance of the 
-algorithm seems to degrade. To tackle this kind of problems, we developed and enhancement, CGlad, recently
-published and which is included in the package (See the last section of this page for results of other 
-methods in the package, as well as this enhancement)
+Truth-inf is not able to complete the execution for the two largest datasets. 
 In the case of IBCC, the speedup starts to be noticeable from the second dataset. Again, Truth-inf was 
 unable to complete the execution in a reasonable ammount of time for the last dataset.  
-
-
 
 
 
@@ -162,14 +156,18 @@ unable to complete the execution in a reasonable ammount of time for the last da
   +------------------------+-------+-------+---------+------+------+-------+-------+---------+------+------+
   | binary2                | 0.994 | 4168  |  0.994  | 2959 | 2051 | 0.994 | 372   |  0.994  | 97   | 76   |
   +------------------------+-------+-------+---------+------+------+-------+-------+---------+------+------+
-  | binary3                | X     | X     |  0.994  | 7538 | 4770 | 0.994 | 25764 |  0.994  | 203  | 129  |
+  | binary3                | X     | X     |  0.491  | 600  | 226  | 0.994 | 25764 |  0.994  | 203  | 129  |
   +------------------------+-------+-------+---------+------+------+-------+-------+---------+------+------+
   | binary4                | X     | X     |  0.974  | 2407 | 1158 |   X   |   X   |    X    | 1529 | 823  |
   +------------------------+-------+-------+---------+------+------+-------+-------+---------+------+------+
 
-
-
-
+A thing to notice regarding the last execution of this algorithm is that at large scale, the performance of the 
+algorithm seems to degrade. This may be due to the ammount of parameters the algorithm needs to estimate (for the
+difficulty, one for every example). A way to improve the estimation goes through decrease the learning rate, which 
+makes the algorithm slower, as it needs a lot more iterations to obtain a good solution. This makes the algorithm 
+unsuitable for several big data contexts.  To tackle this kind of problems, we developed and enhancement, CGlad, recently
+published and which is included in the package (See the last section of this page for results of other 
+methods in the package, as well as this enhancement)
 
 Next we analize methods that are able to learn from continuous target variables: MajorityVoting (mean), CATD and PM (with mean initialization). We show the results in terms of MAE (Mean absolute error) and time (in seconds). The 
 results for MajorityVoting and CATD can be found below in the table below. 
@@ -249,13 +247,13 @@ we show the results obtained by the Raykar's methods for discrete target variabl
    +------------------------+---------+------+----------------------+---------+------+----------------------+
    | Method                 |   Acc   |  t1  |  tc                  |   Acc   |  t1  |  tc                  |
    +========================+=========+======+======================+=========+======+======================+
-   | binary1                |  0.994  | 31   | 32                   |  0.994  | 31   | 32                   |
+   | binary1                |  0.994  |  65  | 63                   |  0.994  | 167  | 147                  |
    +------------------------+---------+------+----------------------+---------+------+----------------------+
-   | binary2                |  0.994  | 60   | 51                   |  0.994  | 60   | 51                   |
+   | binary2                |  0.994  | 92   | 74                   |  0.994  | 241  | 176                  |
    +------------------------+---------+------+----------------------+---------+------+----------------------+
-   | binary3                |  0.994  | 111  | 69                   |  0.994  | 111  | 69                   |
+   | binary3                |  0.994  | 181  | 190                  |  0.994  | 532  | 339                  |
    +------------------------+---------+------+----------------------+---------+------+----------------------+
-   | binary4                |  0.994  | 703  | 426                  |  0.994  | 703  | 426                  |
+   | binary4                |  0.994  | 1149 | 560                  |  0.994  | 4860 | 1196                 |
    +------------------------+---------+------+----------------------+---------+------+----------------------+
 
 
@@ -281,22 +279,22 @@ Next we show the Raykar method for tackling continous target variables.
    +------------------------+---------+------+----------------------+
 
 Lastly, we show the results for the CGlad algorithm. As you can see, it obtains similar results to the GLAD algorithm
-but it performs better in the largest case, which makes it a good alternative to GLAD in such cases. 
+but it performs better in the larger cases. 
 
 .. table:: Other methods implemented in spark-crowd. CGlad, an enhancement over Glad algorithm. 
 
-   +------------------------+---------------------------------------+
-   |                        | CGlad                                 |
-   +------------------------+---------------+-----------------------+
-   |                        | spark-crowd                           |
-   +------------------------+---------+------+----------------------+
-   | Method                 |   Acc   |  t1  |  tc                  |
-   +========================+=========+======+======================+
-   | binary1                |  0.994  | 31   | 32                   |
-   +------------------------+---------+------+----------------------+
-   | binary2                |  0.994  | 60   | 51                   |
-   +------------------------+---------+------+----------------------+
-   | binary3                |  0.994  | 111  | 69                   |
-   +------------------------+---------+------+----------------------+
-   | binary4                |  0.994  | 703  | 426                  |
-   +------------------------+---------+------+----------------------+
+   +------------------------+-------------------------+
+   |                        | CGlad                   |
+   +------------------------+-------------------------+
+   |                        | spark-crowd             |
+   +------------------------+--------+-------+--------+
+   | Method                 |   Acc  |  t1   |  tc    |
+   +========================+========+=======+========+
+   | binary1                |  0.994 | 128   | 128    |
+   +------------------------+--------+-------+--------+
+   | binary2                |  0.995 | 233   | 185    |
+   +------------------------+--------+-------+--------+
+   | binary3                |  0.995 | 1429  | 607    |
+   +------------------------+--------+-------+--------+
+   | binary4                |  0.995 | 17337 | 6190   |
+   +------------------------+--------+-------+--------+

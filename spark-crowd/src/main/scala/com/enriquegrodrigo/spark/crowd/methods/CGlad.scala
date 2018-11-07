@@ -424,7 +424,7 @@ object CGlad {
                                     .map(x => ClusterBeta(x._1,x._2))
 
       //Add the estimation to the annotation dataset
-      //TODO: Clustering
+      //Clustering
       val dataset = oldModel.dataset.joinWith(newBeta, oldModel.dataset.col("exampleCluster") === newBeta.col("exampleCluster"))
                                     .map(x => CGladPartial(x._1.example, x._1.exampleCluster, x._1.annotator,x._1.value, x._1.est, x._2.beta))
                                     .as[CGladPartial]

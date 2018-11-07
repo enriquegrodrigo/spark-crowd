@@ -17,6 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import com.enriquegrodrigo.spark.crowd.methods.CGlad2
 import com.enriquegrodrigo.spark.crowd.methods.CGlad
 import com.enriquegrodrigo.spark.crowd.types._
 
@@ -27,14 +28,14 @@ val annFile = "examples/data/binary-ann.parquet"
 val annData = spark.read.parquet(annFile).as[BinaryAnnotation] 
 
 //Applying the learning algorithm
-val mode = CGlad(annData)
+val mode = CGlad2(annData, gradLearningRate=0.1, gradThreshold=0.0001)
 
 //Get MulticlassLabel with the class predictions
 val pred = mode.getMu().as[BinarySoftLabel] 
-
-//Annotator precision matrices
+//
+////Annotator precision matrices
 val annprec = mode.getAnnotatorPrecision()
-
-//Annotator precision matrices
+//
+////Annotator precision matrices
 val annprec = mode.getInstanceDifficulty()
 
