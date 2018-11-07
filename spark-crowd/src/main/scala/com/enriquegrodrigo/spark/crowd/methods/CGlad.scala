@@ -49,7 +49,6 @@ object CGlad {
   /****************** CASE CLASSES ********************/
   /****************************************************/
 
-  case class ExampleRanks(id: Integer, features: org.apache.spark.ml.linalg.Vector)
   case class CGladParams(alpha: Array[Double], w: Array[Double], beta: Array[Double])
 
   /****************************************************/
@@ -257,7 +256,7 @@ def nLogLikelihood(partialDataset: DataFrame, alpha: Array[Double], beta: Array[
   -partialDataset.groupBy("example").agg(like_uf(col("annotator"), col("cluster"), col("value"), col("mu")) as "like").agg(sum(col("like"))).collect()(0).getDouble(0)
 }
 
-def initialization(dataset: DataFrame, rank: Integer, k: Integer, seed: Long): (DataFrame, Array[Double],Array[Double],Array[Double], Long, Int) = {
+def initialization(dataset: DataFrame, rank: Integer, k: Integer, seed: Long): (DataFrame, Array[Double],Array[Double],Array[Double], Long, Int, Dataset[ExampleRanks]) = {
   import dataset.sparkSession.implicits._
   val datasetCached = dataset.cache() 
   val nAnnotators = datasetCached.select("annotator").distinct().count()
@@ -279,7 +278,7 @@ def initialization(dataset: DataFrame, rank: Integer, k: Integer, seed: Long): (
   val betaInit = Array.tabulate(k)(x => 0.5)
   val alphaInit = Array.tabulate(nAnnotators.toInt)(x => 0.5)
   val classWeights = Array.fill(2)(0.5) //Placeholder
-  (joined, alphaInit, betaInit, classWeights, nExamples, nAnnotators.toInt)
+  (joined, alphaInit, betaInit, classWeights, nExamples, nAnnotators.toInt, featurevectors)
 }
 
 def step(partialDataset: DataFrame, alpha: Array[Double], beta: Array[Double], 
@@ -328,7 +327,7 @@ def step(partialDataset: DataFrame, alpha: Array[Double], beta: Array[Double],
     val d = dataset.toDF()
     //d.filter("example < 5").show(50, false)
 
-    val (partialDataset, alpha, beta, classWeights, nExamples, nAnnotators) = initialization(d, rank, k, seed)
+    val (partialDataset, alpha, beta, classWeights, nExamples, nAnnotators, exampleRank) = initialization(d, rank, k, seed)
 //partialDataset: DataFrame, alpha: Array[Double], 
 //                  beta: Array[Double], 
 //                  classWeights: Array[Double], logLike: Double, improvement: Double,
@@ -352,7 +351,8 @@ def step(partialDataset: DataFrame, alpha: Array[Double], beta: Array[Double],
     new CGladModel(preparedDataset.as[BinarySoftLabel], //Ground truth estimate
                         l._2, //Model parameters 
                         l._3, //Difficulty for each example
-                        l._1.select("example", "cluster"))
+                        l._1.select("example", "cluster").as[ExampleCluster],
+                        exampleRank)
   }
 
 }

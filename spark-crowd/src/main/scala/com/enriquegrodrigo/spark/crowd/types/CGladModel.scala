@@ -16,7 +16,8 @@ import org.apache.spark.broadcast.Broadcast
 class CGladModel(mu: Dataset[BinarySoftLabel], 
                           prec: Array[Double], 
                           diffic: Array[Double], 
-                          clusters: DataFrame
+                          clusters: Dataset[ExampleCluster],
+                          ranks: Dataset[ExampleRanks]
                           ) extends Model[BinarySoftLabel] {
                             
   /**
@@ -38,14 +39,29 @@ class CGladModel(mu: Dataset[BinarySoftLabel],
   def getAnnotatorPrecision(): Array[Double] = prec 
 
   /**
-  *  Method that returns information about instance difficulty
+  *  Method that returns information about difficulty for each cluster
+  *
+  *  @return Double 
+  *  @author enrique.grodrigo
+  *  @version 0.2.1 
+  */
+  def getInstanceDifficulty(): Array[Double] = diffic 
+
+  /**
+  *  Method that returns information about ranks  
+  *
+  *  @return Double 
+  *  @author enrique.grodrigo
+  *  @version 0.2.1 
+  */
+  def getRankData(): Dataset[ExampleRanks] = ranks 
+
+  /**
+  *  Method that returns information about clusters 
   *
   *  @return Double 
   *  @author enrique.grodrigo
   *  @version 0.1 
   */
-  def getInstanceDifficulty(): Array[Double] = diffic 
-
-  def getInstanceCluster(): DataFrame = clusters 
-
+  def getClusters(): Dataset[ExampleCluster]= clusters
 }

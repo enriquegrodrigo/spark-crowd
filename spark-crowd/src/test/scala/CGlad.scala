@@ -57,20 +57,20 @@ class CGladTest extends fixture.FlatSpec with Matchers {
     val exampleData = spark.read.parquet(exampleFile).as[BinaryAnnotation] 
     val mode = CGlad(exampleData, eMIters=3, gradIters=5)
     val fis = mode.getMu().filter(_.example == 0).collect()(0).value
-    assert(fis ===  1.0, "First example") 
+    assert(fis ===  0.925586, "First example") 
     val fis2 = mode.getMu().filter(_.example == 1).collect()(0).value 
-    assert(fis2 ===  1.0, "Second example") 
+    assert(fis2 ===  0.925586, "Second example") 
     val fis3 = mode.getMu().filter(_.example == 10).collect()(0).value
-    assert(fis3 ===  0.0, "Eleventh example") 
+    assert(fis3 ===  0.1838099, "Eleventh example") 
     val fis4 = mode.getMu().filter(_.example == 2).collect()(0).value
-    assert(fis4 ===  1.0, "Third example") 
+    assert(fis4 ===  0.882246, "Third example") 
     val fis5 = mode.getAnnotatorPrecision()(0)
-    assert(fis5 ===  -210.2846, "First annotator") 
-    val fis7 = mode.getInstanceDifficulty().filter(_.example==1).collect()(0).beta
-    assert(fis7 ===  -67.04876368, "First example difficulty") 
-    //val fis8 = mode.getRankData().filter(_.id==1).collect()(0).features(0)
-    //assert(fis8 ===  -0.25503179, "First example rank data") 
-    val fis9 = mode.getInstanceClusters().filter(_.example==1).collect()(0).cluster
+    assert(fis5 ===  0.500566, "First annotator") 
+    val fis7 = mode.getInstanceDifficulty()(0)
+    assert(fis7 ===  0.5001543, "First cluster difficulty") 
+    val fis8 = mode.getRankData().filter(_.id==1).collect()(0).features(0)
+    assert(fis8 ===  0.2128566, "First example rank data") 
+    val fis9 = mode.getClusters().filter(_.example==1).collect()(0).cluster
     assert(fis9 ===  1, "First example cluster") 
   }
 

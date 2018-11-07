@@ -28,4 +28,4 @@ package com.enriquegrodrigo.spark.crowd.types
 *  @author enrique.grodrigo
 *  @version 0.16
 */
-case class ExampleCluster(example: Integer, cluster: Integer)
+case class ExampleCluster(example: Long, cluster: Integer)

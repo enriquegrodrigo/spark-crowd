@@ -602,7 +602,6 @@ object RaykarBinary {
     val m = mStep(model, gradIters, gradThreshold, gradLearning)
     val e = eStep(m)
     val result = logLikelihood(e)
-    println(result.logLikelihood)
     result
   }
 
