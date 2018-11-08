@@ -1,8 +1,8 @@
 
 .. _MajorityVoting: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$ 
 .. _DawidSkene: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.DawidSkene$
-.. _GLAD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.GLAD$
-.. _CGLAD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.CGLAD$
+.. _GLAD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.Glad$
+.. _CGLAD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.CGlad$
 .. _RaykarBinary: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
 .. _RaykarMulti: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
 .. _RaykarCont: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
