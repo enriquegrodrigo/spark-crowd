@@ -1,16 +1,15 @@
 
-
-.. _MajorityVoting: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$ 
-.. _DawidSkene: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.DawidSkene$
-.. _GLAD: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.GLAD$
-.. _CGLAD: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.CGLAD$
-.. _RaykarBinary: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
-.. _RaykarMulti: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
-.. _RaykarCont: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
-.. _IBCC: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.IBCC$
-.. _PM: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.PM$
-.. _PMTI: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.PMTI$
-.. _CATD: https://enriquegrodrigo.github.io/spark-crowd/#com.enriquegrodrigo.spark.crowd.methods.CATD$
+.. _MajorityVoting: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.MajorityVoting$ 
+.. _DawidSkene: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.DawidSkene$
+.. _GLAD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.GLAD$
+.. _CGLAD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.CGLAD$
+.. _RaykarBinary: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
+.. _RaykarMulti: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
+.. _RaykarCont: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.RaykarBinary$
+.. _IBCC: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.IBCC$
+.. _PM: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.PM$
+.. _PMTI: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.PMTI$
+.. _CATD: https://enriquegrodrigo.github.io/spark-crowd/_static/api/index.html#com.enriquegrodrigo.spark.crowd.methods.CATD$
 .. _JRSS: https://www.jstor.org/stable/2346806?seq=1#page_scan_tab_contents
 .. _NIPS: https://papers.nips.cc/paper/3644-whose-vote-should-count-more-optimal-integration-of-labels-from-labelers-of-unknown-expertise
 .. _IDEAL: https://aida.ii.uam.es/ideal2018/#!/main 
