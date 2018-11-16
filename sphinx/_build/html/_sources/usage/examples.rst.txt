@@ -1,13 +1,13 @@
 Examples
 ==========
 
-In this page we provide examples for several of the algorithms in the library. 
+In this page you can find examples for several of the algorithms in the library. 
 You can find the data used for the examples in the Github repository. 
 
 MajorityVoting
 ----------------
 
-Let's start with the simpler algorithm to illustrate how to use the library, MajorityVoting:
+The example below shows how to use the MajorityVoting algorithm for estimating the ground truth for a binary target variable. 
 
 .. code-block:: scala
 
@@ -22,7 +22,7 @@ Let's start with the simpler algorithm to illustrate how to use the library, Maj
 
   muBinary.show()
 
-This will show a result similar to this one:
+The method returns a result similar to this one: 
 
 .. code-block:: scala
 
@@ -38,8 +38,8 @@ This will show a result similar to this one:
     |    418|    1|
     ....
 
-MajorityVoting algorithms suppose that all annotators are equally accurate, so they choose the 
-most frequent annotation as the ground truth label. Therefore, they only return the ground 
+MajorityVoting algorithms assume that all annotators are equally accurate, so they choose the 
+most frequent annotation as the ground truth label. Because of this, they only return the ground 
 truth for the problem. 
 
 The data file in this example follow the format from the ``BinaryAnnotation`` type:
@@ -57,15 +57,14 @@ efficiency. However, we do not limit the types of files you can use, as long as 
 converted to typed datasets of ``BinaryAnnotation``, ``MulticlassAnnotation`` or ``RealAnnotation``.
 However, algorithms will suppose that there are no missing examples or annotators. 
 
-Concretely, MajorityVoting object can make predictions both for discrete classes (``BinaryAnnotation`` and
+Specifically, MajorityVoting can make predictions both for discrete classes (``BinaryAnnotation`` and
 ``MulticlassAnnotation``) and continuous-valued target variables. (``RealAnnotation``). You can find 
-information about these methods in the `API Docs <_static/api/index.html>`_. 
+information about these methods in the `API Docs <https://enriquegrodrigo.github.io/spark-crowd/_static/api/#package/>`_. 
 
 DawidSkene
 ------------
 
-This algorithm is one of the most recommended for its ease of use as well as for it capabilities. It does not 
-have a great number of free parameters and obtains good results usually. 
+This algorithm is one of the most recommended both for its simplicity and its good results generally. 
 
 
 .. code-block:: scala
@@ -84,23 +83,20 @@ have a great number of free parameters and obtains good results usually.
   val annprec = mode.getAnnotatorPrecision()
    
 
-In our implementation, we use 2 parameters for controlling the algorithm execution, the maximum number
-of EM iterations and the threshold for the likelihood change. The execution will stop if the it has reach
-the established iterations or if the change in likelihood is less than the threshold. You do not need to 
-provided these parameters, as they have default values. 
+In the implementation, two parameters are used for controlling the algorithm execution,
+the maximum number of EM iterations and the threshold for the likelihood change.  The execution stops if the number of 
+iterations reaches the established maximum or if the change in likelihood is less than the threshold. You do not need to 
+provide these parameters, as they have default values. 
 
-One executed, the model will provide us with an estimation of the ground truth, taking into account the 
-annotations and the quality of each annotator. We can access this information as shown on the example.  
-Concretely, the provided annotator precision is a three dimensional array with, first dimension representing 
-the annotator and the second and third, the confusion matrix for the annotator.
-
+One executed, the model provides an estimation of the ground truth, and an estimation of 
+the quality of each annotator, in the form of a confusion matrix. This information can be obtained as shown on the example.  
 
 
 GLAD
 -------
 
 The GLAD algorithm is interesting as it provides both annotator accuracies and example difficulties obtained 
-solely from the annotations. Here is an example of how to use it:
+solely from the annotations. An example of how to use it can be found below.
 
 .. code-block:: scala
 
@@ -127,24 +123,24 @@ solely from the annotations. Here is an example of how to use it:
   val annprec = mode.getInstanceDifficulty()
   
 
-This model as it is implemented in the library is only compatible with binary class problems. It has a 
+This model as implemented in the library is only compatible with binary class problems. It has a 
 higher number of free parameters in comparison with the previous algorithm, but we provided default 
 values for all of them for convenience. The meaning of each of these parameters is commented in the 
-example above, as it is on the documentation. The annotator precision is given in a vector, with an 
-entry for each annotator. The difficulty is given in the form of a DataFrame, returning 
-a difficulty value for each example. For more information about this you can consult the documentation 
-and/or the paper.
+example above, as it is on the `API Docs <https://enriquegrodrigo.github.io/spark-crowd/_static/api/#package/>`_. 
+The annotator precision is given as a vector, with an entry for each annotator. The difficulty is given in the form of a DataFrame, returning 
+a difficulty value for each example. For more information, you can consult the documentation and/or the paper. 
 
 
 RaykarBinary, RaykarMulti and RaykarCont 
 -----------------------------------------
 
-We implement the three variants of this algorithm, for discrete and continuous target variables. 
+We implement the three variants of this algorithm, two for discrete target variables (``RaykarBinary`` and 
+``RaykarMulti``) and one for continuous variables (``RaykarCont``). 
 These algorithms have in common that they are able to use features to estimate the ground truth 
 and even learn a linear model. The model also is able to use prior information about annotators, 
-which can be useful to add more confidence to certain annotators. In the next example we show 
-how to use this model adding a prior that indicates that we trust a lot in the first annotator 
-and that we now that the second annotator is not reliable. 
+which can be useful to add more confidence to certain annotators. The next example shows 
+how to use this priors to indicate that the trust put in the first annotator is higher and 
+that the second annotator is not reliable.
 
 .. code-block:: scala
 
@@ -190,10 +186,10 @@ and that we now that the second annotator is not reliable.
 
 
 Apart form the features matrix and the priors, the meaning of the parameters is the same as in the previous examples. 
-The priors are matrices of A by 2. In each row we have the hyperparameters of a Beta distribution for each annotator.
-The ``a_prior`` gives prior information about the ability of annotators to classify correctly a positive example. The 
+The priors are matrices of dimension A by 2, where A is the number of annotators. In each row we have the hyperparameters of a Beta distribution for each annotator.
+The ``a_prior`` gives prior information about the ability of annotators to correctly classify a positive example. The 
 ``b_prior`` does the same thing but for the negative examples. More information about this method as well as the methods
-for discrete and continuous target variables can be found in the API docs. 
+for discrete and continuous target variables can be found in the `API Docs <https://enriquegrodrigo.github.io/spark-crowd/_static/api/#package/>`_. 
 
 
 CATD
@@ -226,10 +222,10 @@ This method allows to estimate continuous-value target variables from annotation
 
 
 It returns a model from which you can get the ground truth estimation and 
-also the annotator weight used (more weight would signify a better annotator). 
+also the annotator weight used (more weight means a better annotator). 
 The algorithm uses parameters such as ``iterations`` and ``threshold`` for 
 controlling the execution, and also ``alpha``, which is a parameter of the model
-(check the API docs for more information).
+(check the `API Docs <https://enriquegrodrigo.github.io/spark-crowd/_static/api/#package/>`_ for more information).
 
 
 

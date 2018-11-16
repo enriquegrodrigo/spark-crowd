@@ -73,7 +73,7 @@ Learning from crowdsourced Big Data
 
 \bigskip\hrule\bigskip
 Learning from crowdsourced data imposes new challenges
-in the area of machine learning. \sphinxtitleref{spark-crowd} helps practitioners
+in the area of machine learning. This package, \sphinxtitleref{spark-crowd}, helps practitioners
 when dealing with this kind of data at scale, using Apache Spark.
 
 \noindent\sphinxincludegraphics{{illustration}.png}
@@ -95,11 +95,13 @@ It is suitable both for research and production environments.
 \item {} 
 It provides an easy to use API, allowing the practitioner to start using the library in minutes.
 
+\item {}
+It is licensed under the \sphinxhref{https://opensource.org/licenses/MIT/}{MIT license}.
+
 \end{itemize}
 
-See the {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DUrole{std,std-ref}{Quick Start}}}} to get started using \sphinxtitleref{spark-crowd}
+See the {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DUrole{std,std-ref}{Quick Start}}}} to started using \sphinxtitleref{spark-crowd}
 
-\sphinxtitleref{spark-crowd} is licensed under the \sphinxhref{https://opensource.org/licenses/MIT/}{MIT license}.
 
 
 
@@ -107,22 +109,22 @@ See the {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DU
 
 \chapter{Quick Start}
 \label{\detokenize{usage/quickstart:quick-start}}\label{\detokenize{usage/quickstart:quickstart}}\label{\detokenize{usage/quickstart::doc}}
-You can start using our package easily through our \sphinxhref{https://www.docker.com/}{docker} image or through \sphinxhref{https://spark-packages.org/}{spark-packages}.
-See {\hyperref[\detokenize{usage/installation:installation}]{\sphinxcrossref{\DUrole{std,std-ref}{Installation}}}}, for all installation alternatives (such as how to add the package as a dependency in your project).
+You can easily start using \texttt{spark-crowd} package through our \sphinxhref{https://www.docker.com/}{docker} image or through \sphinxhref{https://spark-packages.org/}{Spark Packages}.
+See {\hyperref[\detokenize{usage/installation:installation}]{\sphinxcrossref{\DUrole{std,std-ref}{Installation}}}}, for all the installation alternatives (such as how to add the package as a dependency in your project).
 
 
 \section{Start with our docker image}
 \label{\detokenize{usage/quickstart:start-with-our-docker-image}}
-The quickest way to try our package is using the
+The quickest way to try out the package is through the
 \sphinxhref{https://hub.docker.com/r/enriquegrodrigo/spark-crowd/}{provided docker image} with the latest version of
-our package, as you won’t need to install anything (apart from docker).
+the package, as you do not need to install any other software (apart from docker).
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 docker pull enriquegrodrigo/spark\PYGZhy{}crowd
 \end{sphinxVerbatim}
 
-With it you can run the examples provided along with the
+Thanks to it, you can run the examples provided along with the
 \sphinxhref{https://github.com/enriquegrodrigo/spark-crowd}{package}. For example,
 to run \sphinxtitleref{DawidSkeneExample.scala} we can use:
 
@@ -138,13 +140,13 @@ You can also open a spark shell with the library preloaded.
 docker run \PYGZhy{}\PYGZhy{}rm \PYGZhy{}it \PYGZhy{}v \PYG{k}{\PYGZdl{}(}\PYG{n+nb}{pwd}\PYG{k}{)}/:/home/work/project enriquegrodrigo/spark\PYGZhy{}crowd
 \end{sphinxVerbatim}
 
-So you can test your code directly. In this way you will not benefit from the advantages of Apache Spark
-but you could use the algorithms with medium datasets (as docker can use several cores in your machine).
+By doing that, you can test your code directly. You will not benefit from the distributed execution of Apache Spark, but you are still
+able to use the algorithms with medium-sized datasets (since docker can use several cores in your machine).
 
 
-\section{Start with \sphinxtitleref{spark-packages}}
+\section{Start with Spark Packages}
 \label{\detokenize{usage/quickstart:start-with-spark-packages}}
-If you have an installation of \sphinxhref{https://spark.apache.org/}{Apache Spark}  you can open a \sphinxtitleref{spark-shell} with
+If you have an installation of \sphinxhref{https://spark.apache.org/}{Apache Spark}, you can open a \sphinxtitleref{spark-shell} with
 our package pre-loaded using:
 
 \fvset{hllines={, ,}}%
@@ -159,14 +161,14 @@ Likewise, you can submit an application to your cluster that uses \sphinxtitlere
 spark\PYGZhy{}submit \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1 application.scala
 \end{sphinxVerbatim}
 
-To use this option you do not need to have a cluster of computers, you can also execute the code form
-your local machine as Apache Spark can also be installed locally. For more information on how to install
-Apache Spark please refer to its \sphinxhref{https://spark.apache.org/}{homepage}.
+To use this option you do not need to have a cluster of computers, you may also execute the code from
+your local machine because Apache Spark can be installed locally. For more information on how to install
+Apache Spark, please refer to its \sphinxhref{https://spark.apache.org/}{homepage}. 
 
 
 \section{Basic usage}
 \label{\detokenize{usage/quickstart:basic-usage}}
-Once you have chosen your preferred procedure, you only need to import the corresponding method
+Once you have chosen a procedure to run the package, you have to import the method
 that you want to use as well as the types for your data, as you can see below:
 
 \fvset{hllines={, ,}}%
@@ -188,41 +190,41 @@ that you want to use as well as the types for your data, as you can see below:
 \PYG{k}{val} \PYG{n}{annprec} \PYG{k}{=} \PYG{n}{mode}\PYG{o}{.}\PYG{n}{getAnnotatorPrecision}\PYG{o}{(}\PYG{o}{)}
 \end{sphinxVerbatim}
 
-Let’s go through each step of the code:
+You can find a description of the code below:
 \begin{enumerate}
 \def\theenumi{\arabic{enumi}}
 \def\labelenumi{\theenumi .}
 \makeatletter\def\p@enumii{\p@enumi \theenumi .}\makeatother
 \item {} 
-First we import the method, in this case \sphinxcode{\sphinxupquote{DawidSkene}} and the annotations type (\sphinxcode{\sphinxupquote{MulticlassAnnotation}}) that
-we will need to load the data.
+First the method and the type are imported, in this case \sphinxcode{\sphinxupquote{DawidSkene}} and \sphinxcode{\sphinxupquote{MulticlassAnnotation}}. The type is needed
+as the package API only accepts typed datasets for the annotations. 
 
 \item {} 
-Then we load a data file (provided with the package) that contains annotations for different examples. We use
-the method \sphinxcode{\sphinxupquote{as}} to convert the Spark DataFrame in a typed Spark Dataset (with type \sphinxcode{\sphinxupquote{MulticlassAnnotation}}).
+Then the data file (provided with the package) is loaded. It contains annotations for different examples. As you can see,  
+the example uses the method \sphinxcode{\sphinxupquote{as}} to convert the Spark DataFrame in a typed Spark Dataset (with type \sphinxcode{\sphinxupquote{MulticlassAnnotation}}).
 
 \item {} 
-To execute the model and obtain the result we use the model name directly.
-This function returns a \sphinxcode{\sphinxupquote{DawidSkeneModel}}, that includes several methods to obtain results from the algorithm.
+To execute the model and obtain the result you can use the model name directly.
+This function returns a \sphinxcode{\sphinxupquote{DawidSkeneModel}}, which includes several methods to obtain results from the algorithm.
 
 \item {} 
-We use the  \sphinxcode{\sphinxupquote{getMu}} to obtain the ground truth estimations made by the model.
+The method \sphinxcode{\sphinxupquote{getMu}} returns the ground truth estimations made by the model.
 
 \item {} 
 We use \sphinxcode{\sphinxupquote{getAnnotatorPrecision}} to obtain the annotator quality calculated by the model.
 
 \end{enumerate}
 
-You can consult the models implemented in this package in {\hyperref[\detokenize{package/methods:methods}]{\sphinxcrossref{\DUrole{std,std-ref}{Methods}}}}, where you will find a link to the
+You can consult the models implemented in this package in {\hyperref[\detokenize{package/methods:methods}]{\sphinxcrossref{\DUrole{std,std-ref}{Methods}}}}, where you can find a link to the
 original article for the algorithm.
 
 
 \chapter{Installation}
 \label{\detokenize{usage/installation:installation}}\label{\detokenize{usage/installation:id1}}\label{\detokenize{usage/installation::doc}}
-You can use our package in your own developments in three ways:
+There are three alternatives to use the package in your own software:
 \begin{itemize}
 \item {} 
-Using the package directly using spark-packages
+Using the package directly from Spark Packages 
 
 \item {} 
 Adding it as a dependency to your project through Maven central.
@@ -233,7 +235,7 @@ Compiling the source code and using the \sphinxcode{\sphinxupquote{jar}} file.
 \end{itemize}
 
 Alternatively, if you just want to execute simple scala scripts locally,
-you can use our docker image as explained in {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DUrole{std,std-ref}{Quick Start}}}}
+you can use the provided docker image as explained in {\hyperref[\detokenize{usage/quickstart:quickstart}]{\sphinxcrossref{\DUrole{std,std-ref}{Quick Start}}}}
 
 
 \section{Using Spark Packages}
@@ -253,12 +255,10 @@ You can also open a \sphinxtitleref{spark-shell} using:
 spark\PYGZhy{}shell \PYGZhy{}\PYGZhy{}packages com.enriquegrodrigo:spark\PYGZhy{}crowd\PYGZus{}2.11:0.2.1
 \end{sphinxVerbatim}
 
-Likewise, you can submit an application that uses \sphinxtitleref{spark-crowd} using:
 
-
-\section{Adding it as a dependency}
+\section{Adding \texttt{spark-crowd} as a dependency}
 \label{\detokenize{usage/installation:adding-it-as-a-dependency}}
-In addition to Spark Packages, the package is also in Maven Central, so you can add the package as a dependency in your scala project.
+In addition to Spark Packages, the library is also in Maven Central, so you can add it as a dependency in your scala project.
 For example, in \sphinxstyleemphasis{sbt} you can add the dependency as shown below:
 
 \fvset{hllines={, ,}}%
@@ -266,19 +266,19 @@ For example, in \sphinxstyleemphasis{sbt} you can add the dependency as shown be
 \PYG{n}{libraryDependencies} \PYG{o}{+=} \PYG{l+s}{\PYGZdq{}com.enriquegrodrigo\PYGZdq{}} \PYG{o}{\PYGZpc{}\PYGZpc{}} \PYG{l+s}{\PYGZdq{}spark\PYGZhy{}crowd\PYGZdq{}} \PYG{o}{\PYGZpc{}} \PYG{l+s}{\PYGZdq{}0.2.1\PYGZdq{}}
 \end{sphinxVerbatim}
 
-This will allow you to use the methods inside your Apache Spark projects.
+This allows you to use the methods inside your Apache Spark projects.
 
 
 \section{Compiling the source code}
 \label{\detokenize{usage/installation:compiling-the-source-code}}
-To build the package using \sphinxstyleemphasis{sbt} you can use the following command inside the spark-crowd folder:
+To build the package using \sphinxstyleemphasis{sbt} you can use the following command inside the \texttt{spark-crowd} folder:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 sbt package
 \end{sphinxVerbatim}
 
-It will generate a compiled \sphinxcode{\sphinxupquote{jar}} file that you can add to your project.
+It generates a compiled \sphinxcode{\sphinxupquote{jar}} file that you can add to your project.
 
 
 \chapter{Design and architechture}
@@ -287,30 +287,32 @@ The package design can be found in the figure below.
 
 \noindent\sphinxincludegraphics{{package}.png}
 
-Although, the library contains several folders, the only folders important for the users
+Although the library contains several folders, the only important ones for the users
 are the \sphinxcode{\sphinxupquote{types}} folder, and the \sphinxcode{\sphinxupquote{methods}}. The other folders contain auxiliary
-functions some of the methods. Concretely, in interesting to explore the data types, as
-they are key to understanding how the package works, as well as the common interface of
+functions for some of the methods. Specifically, it is interesting to explore the data types, as
+they are essential to understand how the package works, as well as the common interface of
 the methods.
 
 
 \section{Data types}
 \label{\detokenize{package/design:data-types}}
-We provide types for annotations datasets and ground truth datasets, as they usually follow
-the same structure. These types are used in all the methods so you would need to convert
-your annotations dataset the correct format accepted by the algorithm.
+The package provides types for annotation datasets and ground truth datasets, as they usually follow
+the same structure. These types are used in all the methods so you need to convert
+your annotations dataset to the correct format accepted by the algorithm.
 
-There are three types of annotations that we support for which we provide Scala case classes,
+There are three types of annotations that the package supports for which we provide Scala case classes,
 making it possible to detect errors at compile time when using the algorithms:
 \begin{itemize}
 \item {} 
-\sphinxcode{\sphinxupquote{BinaryAnnotation}}: a Dataset of this type provides three columns, an example column, that
-is the example for which the annotation is made, an annotator column, representing the
-annotator that made the annotation and a value column, with the value of the annotation, that
-can take value 0 or 1.
+\sphinxcode{\sphinxupquote{BinaryAnnotation}}: a dataset of this type provides three columns: 
+\begin{itemize}
+    \item The \sphinxcode{\sphinxupquote{example}} column (i.e the example for which the annotation is made). 
+    \item The \sphinxcode{\sphinxupquote{annotator}} column (representing the annotator that made the annotation).
+    \item The \sphinxcode{\sphinxupquote{value}} column, (with the value of the annotation, that can take value 0 or 1).
+\end{itemize}
 
 \item {} 
-\sphinxcode{\sphinxupquote{MulticlassAnnotation}}: The difference form \sphinxcode{\sphinxupquote{BinaryAnnotation}} is that the value column can
+\sphinxcode{\sphinxupquote{MulticlassAnnotation}}: The difference from \sphinxcode{\sphinxupquote{BinaryAnnotation}} is that the value column can
 take more than two values, in the range from 0 to the total number of values.
 
 \item {} 
@@ -318,8 +320,8 @@ take more than two values, in the range from 0 to the total number of values.
 
 \end{itemize}
 
-You can convert an annotation dataframe with columns example, annotator and value to a
-typed dataset easily with the following instruction:
+You can convert an annotation dataframe with columns: \sphinxcode{\sphinxupquote{example}}, \sphinxcode{\sphinxupquote{annotator}} 
+and \sphinxcode{\sphinxupquote{value}} to a typed dataset with the following instruction:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -330,36 +332,36 @@ In the case of labels, we provide 5 types of labels, 2 of which are probabilisti
 types are:
 \begin{itemize}
 \item {} 
-\sphinxcode{\sphinxupquote{BinaryLabel}}: represents a dataset of example, value pairs where value is a binary value (0 or 1).
+  \sphinxcode{\sphinxupquote{BinaryLabel}}. A dataset with two columns: \sphinxcode{\sphinxupquote{example}} and \sphinxcode{\sphinxupquote{value}}. The column \sphinxcode{\sphinxupquote{value}} is a binary number (0 or 1).
 
 \item {} 
-\sphinxcode{\sphinxupquote{MulticlassLabel}}: where value can take more than two values.
+  \sphinxcode{\sphinxupquote{MulticlassLabel}}. A dataset with the same structure as the previous one but where the column \sphinxcode{\sphinxupquote{value}} can take more than two values.
 
 \item {} 
-\sphinxcode{\sphinxupquote{RealLabel}}: where value can take any numeric value.
+  \sphinxcode{\sphinxupquote{RealLabel}}. In this case, the column \sphinxcode{\sphinxupquote{value}} can take any numeric value.
 
 \end{itemize}
 
-The probabilistic types are used by some algorithms, to provide more information about the confidence of each
+The probabilistic types are used by some algorithms to provide more information about the confidence of each
 class value for an specific example.
 \begin{itemize}
 \item {} 
-\sphinxcode{\sphinxupquote{BinarySoftLabel}}: represents a dataset with two columns: example, and probability (prob). For each example, the probability
-of positive is given.
+\sphinxcode{\sphinxupquote{BinarySoftLabel}}. A dataset with two columns: \sphinxcode{\sphinxupquote{example}} and \sphinxcode{\sphinxupquote{prob}}. The column  \sphinxcode{\sphinxupquote{prob}}
+represents the probability of the example being positive.
 
 \item {} 
-\sphinxcode{\sphinxupquote{MultiSoftLabel}}: representas a dataset with three columns: example, class and probability (prob). For each example, there will be
-several entries depending on the number of classes of the problem, with the probability estimate.
+\sphinxcode{\sphinxupquote{MultiSoftLabel}}: A dataset with three columns: \sphinxcode{\sphinxupquote{example}}, \sphinxcode{\sphinxupquote{class}}, \sphinxcode{\sphinxupquote{prob}}. This last column 
+represents the probability of the example taking the class in the column \sphinxcode{\sphinxupquote{class}}.
 
 \end{itemize}
 
 
 \section{Methods}
 \label{\detokenize{package/design:methods}}
-All methods implemented are in the \sphinxcode{\sphinxupquote{methods}} package and are mostly independent of each other. There is only one exception to this, the
-use of the MajorityVoting algorithms, as most of the algorithms used these methods in the initialization step. Apart from that, all logic
-is implemented in their specific files.  This makes it easier to extend the package with new algorithms. Although independent, all algorithms have
-a similar interface, which facilitates its use. To execute an algorithm, the user normally needs to use the \sphinxcode{\sphinxupquote{apply}} method of the model, as shown below
+All the implemented methods are in the \sphinxcode{\sphinxupquote{methods}} subpackage and are mostly independent of each other. The MajorityVoting algorithms are the the only exception,
+as most of the other methods use them in the initialization step. Apart from that, each algorithm 
+is implemented in its specific file.  This makes it easier to extend the package with new algorithms. Although independent, all the algorithms have
+a similar interface, which facilitates their use. To execute an algorithm, the user normally needs to use the \sphinxcode{\sphinxupquote{apply}} method of the model (which in \sphinxcode{\sphinxupquote{scala}}, is equivalent to applying the object itself), as shown below
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -368,17 +370,17 @@ a similar interface, which facilitates its use. To execute an algorithm, the use
 \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
 \end{sphinxVerbatim}
 
-After the model completes its execution, a model object is returned, which will have information about the ground truth estimations and
-annotator’s quality and instance difficulties.
+After the algorithm completes its execution, an object is returned, which has information about the ground truth estimations and
+other estimations that are dependent on the chosen algorithm.
 
-The only algorithm that do not follow this pattern is \sphinxcode{\sphinxupquote{MajorityVoting}}, which has methods for each of the class types and also to obtain
+The only algorithm that does not follow this pattern is \sphinxcode{\sphinxupquote{MajorityVoting}}, which has methods for each of the class types and also to obtain
 probabilistic labels. See the API Docs for details.
 
 
 \chapter{Methods}
 \label{\detokenize{package/methods:methods}}\label{\detokenize{package/methods:id1}}\label{\detokenize{package/methods::doc}}
-You can find the methods implemented in this library below. All methods contain a link to its API where you
-can find more information.
+You can find the methods implemented in the library below. All of them contain a link to its API where you
+can find more information. Besides, in the table column, you can find a link to the reference. 
 
 
 \begin{savenotes}\sphinxattablestart
@@ -480,71 +482,74 @@ Raykar
 \par
 \sphinxattableend\end{savenotes}
 
-Below, we provide a short summary of each method. However, to understand the method completely we suggest the
-user to study the reference.
+Below, we provide a short summary of each method (see the references for the details). 
 
 
 \section{MajorityVoting}
 \label{\detokenize{package/methods:id2}}
-With this, we refer to the mean for continuous target variables and the most frequent class for the discrete
-case. Expressing this methods in terms of annotator accuracy, these methods suppose that all annotators have
+With this, we refer to the mean for continuous target variables and the most frequent class (the mode) for the discrete
+case. Expressing these methods in terms of annotator accuracy, they suppose that all the annotators have
 the same experience. Therefore, their contributions are weighted equally. Apart from the classical mean and
 most frequent class, we also provide methods that return the proportion of each class value for each example.
-See the API Docs for more information on these methods.
+See the API Docs for more information.
 
 
 \section{DawidSkene}
 \label{\detokenize{package/methods:id3}}
 This method estimates the accuracy of the annotators from the annotations themselves. For this, it uses the EM
 algorithm, starting from the most frequent class and improving the estimations through several iterations. The
-algorithm returns both the estimation of the ground truth and the accuracy of these annotators (a confusion
+algorithm returns both the estimation of the ground truth and the accuracy of the annotators (a confusion
 matrix for each). This algorithm is a good alternative when looking for a simple way of aggregating annotations
-without the assumption that all annotators are equally accurate.
+without the assumption that all of the annotators are equally accurate.
 
 
 \section{IBCC}
 \label{\detokenize{package/methods:id4}}
 This method is similar to the previous one but uses probabilistic estimations for the classes. For each example,
 the model returns probabilities for each class, so they can be useful in problems where a probability is needed.
-Both in our tests and in the test \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{here}, so it is
-a good compromise between the complexity of the model and its performance.
+It shows a good compromise between the complexity of the model and its performance, as can be seen in \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{here} 
+or in our {\hyperref[\detokenize{package/other:comparison-with-other-packages}]{\sphinxcrossref{\DUrole{std,std-ref}{own experimentation}}}}.
 
 
 \section{GLAD}
 \label{\detokenize{package/methods:id5}}
 This method estimates both the accuracy of the annotators (one parameter per annotator) and the difficulty
-of each example (a parameter for each instance), through EM algorithm and gradient descent. This complexity
-comes at a cost of a slower algorithm in general, but it is one of the only two algorithms implemented capable of estimating these two parameters.
+of each example (a parameter for each instance) through EM algorithm and gradient descent. This computational complexity
+comes at a cost of a higher execution time in general. However, GLAD, and its enhancement, CGLAD, also implemented here, are the only two algorithms 
+capable of estimating the difficulty of the instances.
 
 
 \section{CGLAD}
 \label{\detokenize{package/methods:id6}}
 This method is an enhancement over the original GLAD algorithm to tackle bigger datasets more easily, using
-clustering techniques over the examples to recude the number of parameters to be estimated, following a similar
+clustering techniques over the examples to reduce the number of parameters to be estimated. It follows a similar
 learning process to GLAD algorithm.
 
 
 \section{Raykar’s algorithms}
 \label{\detokenize{package/methods:raykar-s-algorithms}}
-We implement the three methods proposed in the paper Learning from crowds (referenced in the table) for learning
-from crowdsourced data when features are available. These methods use an annotations matrix, as the previous ones,
-but also a feature matrix, with the features for each instance. Then, the algorithms infer together a logistic
-model, for the discrete case, or a regression model, for the continuous case, the ground truth from the data,
-and the quality of the annotators, with are returned from the methods in our package.
+We implement the three methods proposed in the paper Learning from crowds 
+(see \sphinxhref{http://jmlr.csail.mit.edu/papers/v11/raykar10a.html}{the paper} for the details) 
+for learning
+from crowdsourced data when features are available. These methods use an annotations dataset and the 
+features for each instance. The algorithms infers together a logistic
+model (or a regression model, for the continuous case), the ground truth
+and the quality of the annotators, which are all returned by the methods in our package.
 
 
 \section{CATD}
 \label{\detokenize{package/methods:id7}}
 This method estimates both the quality of the annotators (as a weight in the aggregation) and the ground truth
-for continuous target variables. It only uses the annotations for the aggregation, learning from them which
-annotators should be more trusted, assigning more weight to them, for the aggregation. In the package, only
-the continuous version is implemented as other algorithms seem to work better in the discrete cases (see \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this paper} for more information)
+for continuous target variables. From the annotations, it estimates which annotators provide better labels.
+Then, it assigns more weight to them for the aggregation. In the package, only
+the continuous version is implemented as other algorithms seem to work better in the discrete cases (see \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this paper} for more information).
 
 
 \section{PM and PMTI}
 \label{\detokenize{package/methods:pm-and-pmti}}
-Another method for continuous target variables. We implement two versions, one following the formulas appearing
-in the original paper and the modification implemented in  \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this package}. This modification seems to obtain better results in our experimentation (you can check it in {\hyperref[\detokenize{package/other:comparison}]{\sphinxcrossref{\DUrole{std,std-ref}{Comparison with other packages}}}}.
+They are methods for continuous target variables. We implement two versions, one following the formulas appearing
+in the original paper, and the modification implemented in  \sphinxhref{https://zhydhkcws.github.io/crowd\_truth\_inference/index.html}{this package}. The modification obtains better results in our experimentation 
+(see {\hyperref[\detokenize{package/other:comparison}]{\sphinxcrossref{\DUrole{std,std-ref}{Comparison with other packages}}}}).
 
 
 \chapter{Examples}
@@ -555,7 +560,7 @@ You can find the data used for the examples in the Github repository.
 
 \section{MajorityVoting}
 \label{\detokenize{usage/examples:majorityvoting}}
-Let’s start with the simpler algorithm to illustrate how to use the library, MajorityVoting:
+The example below shows how to use the MajorityVoting algorithm for estimating the ground truth for a binary target variable. 
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -571,7 +576,7 @@ Let’s start with the simpler algorithm to illustrate how to use the library, M
 \PYG{n}{muBinary}\PYG{o}{.}\PYG{n}{show}\PYG{o}{(}\PYG{o}{)}
 \end{sphinxVerbatim}
 
-This will show a result similar to this one:
+The method returns a result similar to this one:
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -588,8 +593,8 @@ This will show a result similar to this one:
 \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
 \end{sphinxVerbatim}
 
-MajorityVoting algorithms suppose that all annotators are equally accurate, so they choose the
-most frequent annotation as the ground truth label. Therefore, they only return the ground
+MajorityVoting algorithms assume that all the annotators are equally accurate, so they choose the
+most frequent annotation as the ground truth label. Because of this, they only return the ground
 truth for the problem.
 
 The data file in this example follow the format from the \sphinxcode{\sphinxupquote{BinaryAnnotation}} type:
@@ -606,17 +611,16 @@ The data file in this example follow the format from the \sphinxcode{\sphinxupqu
 In this example, we use a \sphinxcode{\sphinxupquote{.parquet}} data file, which is usually a good option in terms of
 efficiency. However, we do not limit the types of files you can use, as long as they can be
 converted to typed datasets of \sphinxcode{\sphinxupquote{BinaryAnnotation}}, \sphinxcode{\sphinxupquote{MulticlassAnnotation}} or \sphinxcode{\sphinxupquote{RealAnnotation}}.
-However, algorithms will suppose that there are no missing examples or annotators.
+The algorithms do assume that there are no missing examples or annotators.
 
-Concretely, MajorityVoting object can make predictions both for discrete classes (\sphinxcode{\sphinxupquote{BinaryAnnotation}} and
-\sphinxcode{\sphinxupquote{MulticlassAnnotation}}) and continuous-valued target variables. (\sphinxcode{\sphinxupquote{RealAnnotation}}). You can find
-information about these methods in the \sphinxhref{\_static/api/index.html}{API Docs}.
+Specifically, MajorityVoting can make predictions both for discrete classes (\sphinxcode{\sphinxupquote{BinaryAnnotation}} and
+\sphinxcode{\sphinxupquote{MulticlassAnnotation}}) and continuous-valued target variables (\sphinxcode{\sphinxupquote{RealAnnotation}}). You can find
+information about these methods in the API Docs.
 
 
 \section{DawidSkene}
 \label{\detokenize{usage/examples:dawidskene}}
-This algorithm is one of the most recommended for its ease of use as well as for it capabilities. It does not
-have a great number of free parameters and obtains good results usually.
+This algorithm is one of the most recommended both for its simplicity and its good results generally. 
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -634,21 +638,20 @@ have a great number of free parameters and obtains good results usually.
 \PYG{k}{val} \PYG{n}{annprec} \PYG{k}{=} \PYG{n}{mode}\PYG{o}{.}\PYG{n}{getAnnotatorPrecision}\PYG{o}{(}\PYG{o}{)}
 \end{sphinxVerbatim}
 
-In our implementation, we use 2 parameters for controlling the algorithm execution, the maximum number
-of EM iterations and the threshold for the likelihood change. The execution will stop if the it has reach
-the established iterations or if the change in likelihood is less than the threshold. You do not need to
-provided these parameters, as they have default values.
+In the implementation, two parameters are used for controlling the algorithm execution, the maximum number
+of EM iterations and the threshold for the likelihood change. The execution stops if the number of iterations reaches 
+the established maximum or if the change in likelihood is less than the threshold. You do not need to
+provide these parameters, as they have default values.
 
-One executed, the model will provide us with an estimation of the ground truth, taking into account the
-annotations and the quality of each annotator. We can access this information as shown on the example.
-Concretely, the provided annotator precision is a three dimensional array with, first dimension representing
-the annotator and the second and third, the confusion matrix for the annotator.
+Once executed, the model provide an estimation of the ground truth
+and an estimation of the quality of each annotator, in the form of a confusion matrix. This information can be obtained 
+as shown on the example.
 
 
 \section{GLAD}
 \label{\detokenize{usage/examples:glad}}
 The GLAD algorithm is interesting as it provides both annotator accuracies and example difficulties obtained
-solely from the annotations. Here is an example of how to use it:
+solely from the annotations. An example of how to use it can be found below.
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -675,23 +678,24 @@ solely from the annotations. Here is an example of how to use it:
 \PYG{k}{val} \PYG{n}{annprec} \PYG{k}{=} \PYG{n}{mode}\PYG{o}{.}\PYG{n}{getInstanceDifficulty}\PYG{o}{(}\PYG{o}{)}
 \end{sphinxVerbatim}
 
-This model as it is implemented in the library is only compatible with binary class problems. It has a
-higher number of free parameters in comparison with the previous algorithm, but we provided default
+This model as implemented in the library is only compatible with binary class problems. It has a
+higher number of free parameters in comparison with the previous algorithms, but we provided default
 values for all of them for convenience. The meaning of each of these parameters is commented in the
-example above, as it is on the documentation. The annotator precision is given in a vector, with an
+example above, as it is in the API Docs. The annotator precision is given as a vector, with an
 entry for each annotator. The difficulty is given in the form of a DataFrame, returning
-a difficulty value for each example. For more information about this you can consult the documentation
+a difficulty value for each example. For more information, you can consult the documentation
 and/or the paper.
 
 
 \section{RaykarBinary, RaykarMulti and RaykarCont}
 \label{\detokenize{usage/examples:raykarbinary-raykarmulti-and-raykarcont}}
-We implement the three variants of this algorithm, for discrete and continuous target variables.
+We implement the three variants of this algorithm, two for discrete target variables (\texttt{RaykarBinary} and \texttt{RaykarMulti}) 
+and one for continuous variables (\texttt{RaykarCont}).
 These algorithms have in common that they are able to use features to estimate the ground truth
-and even learn a linear model. The model also is able to use prior information about annotators,
+and even learn a linear model. The model is also able to use prior information about annotators,
 which can be useful to add more confidence to certain annotators. In the next example we show
-how to use this model adding a prior that indicates that we trust a lot in the first annotator
-and that we now that the second annotator is not reliable.
+how to use this model adding a prior which indicates that we trust a lot in the first annotator
+and that we know that the second annotator is not reliable.
 
 \fvset{hllines={, ,}}%
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -736,9 +740,9 @@ and that we now that the second annotator is not reliable.
 \PYG{k}{val} \PYG{n}{annprec} \PYG{k}{=} \PYG{n}{mode}\PYG{o}{.}\PYG{n}{getAnnotatorPrecision}\PYG{o}{(}\PYG{o}{)}
 \end{sphinxVerbatim}
 
-Apart form the features matrix and the priors, the meaning of the parameters is the same as in the previous examples.
-The priors are matrices of A by 2. In each row we have the hyperparameters of a Beta distribution for each annotator.
-The \sphinxcode{\sphinxupquote{a\_prior}} gives prior information about the ability of annotators to classify correctly a positive example. The
+Apart from the feature matrix and the priors, the meaning of the parameters is the same as in the previous examples.
+The priors are matrices of dimension $A \times 2$ where $A$ is the number of annotators. In each row we have the hyperparameters of a Beta distribution for each annotator.
+The \sphinxcode{\sphinxupquote{a\_prior}} gives prior information about the ability of annotators to correctly classify a positive example. The
 \sphinxcode{\sphinxupquote{b\_prior}} does the same thing but for the negative examples. More information about this method as well as the methods
 for discrete and continuous target variables can be found in the API docs.
 
@@ -771,7 +775,7 @@ This method allows to estimate continuous-value target variables from annotation
 \end{sphinxVerbatim}
 
 It returns a model from which you can get the ground truth estimation and
-also the annotator weight used (more weight would signify a better annotator).
+also the annotator weight used (more weight means a better annotator).
 The algorithm uses parameters such as \sphinxcode{\sphinxupquote{iterations}} and \sphinxcode{\sphinxupquote{threshold}} for
 controlling the execution, and also \sphinxcode{\sphinxupquote{alpha}}, which is a parameter of the model
 (check the API docs for more information).
@@ -779,8 +783,8 @@ controlling the execution, and also \sphinxcode{\sphinxupquote{alpha}}, which is
 
 \chapter{Comparison with other packages}
 \label{\detokenize{package/other:comparison-with-other-packages}}\label{\detokenize{package/other:comparison}}\label{\detokenize{package/other::doc}}
-There exists other packages implementing similar methods in other languages, but with
-different goals in mind. To our knowledge, there are 2 software packages with the goal
+There exist other packages implementing similar methods in other languages, but with
+different aims in mind. To our knowledge, there are 2 software packages with the goal
 of learning from crowdsourced data:
 \begin{itemize}
 \item {} 
@@ -793,15 +797,15 @@ of methods in Python to learn from crowdsourced data.
 
 \end{itemize}
 
-Both are useful packages when dealing with crowdsourced data, with a focus on research. \sphinxtitleref{spark-crowd} is different, in the sense that
-not only is useful in research, but in production as well, providing tests for all of its methods with a high test coverage. Moreover,
-methods have been implemented with a focus on scalability, so it is useful in a wide variety of situations. We provide a
-comparison of the methods over a set of datasets next, taking into account both quality of the models and execution time.
+Both are useful packages when dealing with crowdsourced data, with a focus mainly on research. Differently, \sphinxtitleref{spark-crowd} is 
+useful not only in research, but also in production. It provides a clear usage interface as well as software tests for all of its methods with a high test 
+coverage. Moreover, methods have been implemented with a focus on scalability, so it is useful in a wide variety of situations. A
+comparison of the methods over a set of datasets is provided in this section, taking into account both quality of the models and execution time.
 
 
 \section{Data}
 \label{\detokenize{package/other:data}}
-For this performance test we use simulated datasets of increasing size:
+For this performance test we use simulated datasets of increasing size and a real multiclass dataset:
 \begin{itemize}
 \item {} 
 \sphinxstylestrong{binary1-4}: simulated binary class datasets with 10K, 100K, 1M and 10M instances respectively. Each of them
@@ -820,7 +824,7 @@ which is used for evaluation.
 
 \end{itemize}
 
-All datasets are available through this \sphinxhref{https://www.dropbox.com/sh/odmhdf83latvezu/AAB6om3Oy7-waf-msIvk9yX6a?dl=0}{link}
+All the datasets are available through this \sphinxhref{https://www.dropbox.com/sh/odmhdf83latvezu/AAB6om3Oy7-waf-msIvk9yX6a?dl=0}{link}
 
 
 \section{CEKA}
@@ -830,7 +834,7 @@ spark-crowd also implement GLAD and Raykar’s algorithms. However, in Ceka, the
 The library for the GLAD algorithm is not available on our platform, as it is given as an EXE Windows file, and the wrapper for Raykar’s algorithms
 does not admit any configuration parameters.
 
-We provide the results of the execution of these methods in terms of accuracy (Acc) and time (in seconds). For our package, we also include
+We provide the results of the execution in terms of accuracy (Acc) and time (in seconds). For our package, we also include
 the execution time for a cluster (tc) with 3 executor nodes of 10 cores and 30Gb of memory each.
 
 
@@ -1019,8 +1023,8 @@ crowdscale
 \sphinxattableend\end{savenotes}
 
 Regarding accuracy, both packages achieve comparable results. However, regarding execution time, spark-crowd obtains
-significantly better results among all datasets especially on the bigger datasets, where it can solve problems that
-Ceka is not able to. 
+significantly better results among all datasets, especially on the bigger ones, where it tackle problems that
+Ceka is not able to solve. 
 
 %You can see the speedup results in the table below.
 %
@@ -1093,23 +1097,24 @@ Ceka is not able to.
 
 \section{Truth inference in crowdsourcing}
 \label{\detokenize{package/other:id2}}
-Now we compare spark-crowd with the methods made available by thee authors of this paper. Although the methods
-can certainly be used for to compare and try the algorithms, the integration of these
-methods into a large ecosystem will be very difficult, as the authors do not provide
-a software package structure. However, as it is an available package with a great number
-of methods, a comparison with them is needed. We will use the same datasets
-as the ones used in the previous comparison. In this case, we can compare a higher
-number of models, as most of the methods are written in python. However, we were only able
-to execute the methods over datasets with binary or continuous target variables. As far as we
-know, the use of multiclass target variables seems to not be possible. Moreover, the use of
-feature sets is also not possible. 
+Now we compare \texttt{spark-crowd} with the methods implemented by the authors. Although they
+can certainly be used to compare and test algorithms, the integration of these
+methods into a large ecosystem might be difficult, as the authors do not provide
+a software package structure. Nevertheless, as it is an available package with a great number
+of methods, a comparison with them is advisable. 
+
+For the experimentation, the same datasets are used as well as the same environments. 
+In this case, a higher number of models can be compared, as most of the methods are written in python. 
+However, the methods can only be applied to binary or continuous target variables. As far as we
+know, the use of multiclass target variables is not possible as it is the case of feature information for
+Raykar's methods. 
 
 First, we compare the algorithms capable of learning from binary classes.
-Inside this category, we will compare MajorityVoting, DawidSkene, GLAD and IBCC. For each dataset, we show
-results in terms of Accuracy (Acc) and time (in seconds). The table below shows the results for
+In this category, MajorityVoting, DawidSkene, GLAD and IBCC are compared. For each dataset, the  
+results in terms of Accuracy (Acc) and time (in seconds) are obtained. The table below shows the results for
 MajorityVoting and DawidSkene. Both packages obtain the same results in terms of
-accuracy. For the smaller datasets, the overhead imposed by parallelism makes Truth-inf a better choice,
-at least in terms of execution time. However, as the datasets increase, and specially, in the last two
+accuracy. For the smallest datasets, the overhead imposed by parallelism makes Truth-Inf a better choice,
+at least in terms of execution time. However, as the size of the datasets increase, and especially, in the last two
 cases, the speedup obtained by our algorithm is notable. In the case of DawidSkene, the Truth-inf
 package is not able to complete the execution because of memory constraints in the largest dataset.
 
@@ -1279,12 +1284,12 @@ M
 \par
 \sphinxattableend\end{savenotes}
 
-Next we show the results for GLAD and IBCC. As the user can see, both packages obtain similar results
-in terms of accuracy. Regarding execution time, both packages obtain comparable results
-in the two smaller datasets (with a slight speedup in the \sphinxcode{\sphinxupquote{binary2}}) for the GLAD algorithm. However,
-Truth-inf is not able to complete the execution for the two largest datasets.
-In the case of IBCC, the speedup starts to be noticeable from the second dataset but did not complete the execution 
-on the last dataset. 
+Next we show the results for GLAD and IBCC. As can be seen, both packages obtain similar results
+in terms of accuracy. Regarding execution time, they obtain comparable results
+in the two smaller datasets (with a slight speedup in \sphinxcode{\sphinxupquote{binary2}}) for the GLAD algorithm. However, for
+this algorithm, Truth-inf is not able to complete the execution in the two largest datasets.
+In the case of IBCC, the speedup obtained by our library starts to be noticeable from the second dataset on. It is also noticeable that 
+\texttt{Truth-Inf} did not complete the execution for the last dataset. 
 
 
 \begin{savenotes}\sphinxattablestart
@@ -1452,17 +1457,16 @@ X
 \par
 \sphinxattableend\end{savenotes}
 
-A thing to notice regarding the last execution of this algorithm is that at large scale, the performance of the
-algorithm seems to degrade. 
+Note that the performance of GLAD algorithm seems to degrade in the bigger datasets. 
 This may be due to the ammount of parameters the algorithm needs to estimate. 
-A way to improve the estimation goes through decrease the learning rate, which
-makes the algorithm slower, as it needs a lot more iterations to obtain a good solution. 
+A way to improve the estimation goes through decreasing the learning rate, which
+makes the algorithm slower, as it needs many more iterations to obtain a good solution. 
 This makes the algorithm
-unsuitable for several big data contexts.  To tackle this kind of problems, we developed and enhancement, CGlad, recently
-published and which is included in the package (See the last section of this page for results of other
-methods in the package, as well as this enhancement)
-Next we analize methods that are able to learn from continuous target variables: MajorityVoting (mean), CATD and PM (with mean initialization). We show the results in terms of MAE (Mean absolute error) and time (in seconds). The
-results for MajorityVoting and CATD can be found below in the table below.
+unsuitable for several big data contexts.  To tackle this kind of problems, we developed an enhancement, CGLAD,
+which is included in this package (see the last section of this page for results of other
+methods in the package, as well as this enhancement).
+Next, we analize methods that are able to learn from continuous target variables: MajorityVoting (mean), CATD and PM (with mean initialization). We show the results in terms of MAE (mean absolute error) and time (in seconds). The
+results for MajorityVoting and CATD can be found in the table below.
 
 
 \begin{savenotes}\sphinxattablestart
@@ -1630,13 +1634,14 @@ X
 \par
 \sphinxattableend\end{savenotes}
 
-As you can see in the table, both packages obtain similar results regarding MAE. Regarding performance,
-MajorityVoting is quite performant in the Truth-inf package, specially in the smaller dataset. For smaller datasets,
-the increase overhead impose by parallelism makes the execution time of our package a little worse in comparison.
-However, as the dataset increase in size, the speedup obtained by our package is notable, even in this algorithm,
-which is less complex computationally. Regarding CATD, Truth-inf seems not to be able to solve the 2 bigger problems
-in a reasonable time, however, they can be solved by our package in a small ammount of time. Even for the smaller
-datasets, our package obtains a high speedup in comparison to Truth-inf.
+As can be seen in the table, both packages obtain similar results regarding MAE. Regarding execution time,
+the implementation of MajorityVoting from the \texttt{Truth-inf} package obtains good results, especially in the smaller dataset. 
+It is worth pointing out that, for the smallest datasets, the increase overhead imposed by parallelism makes the execution time of 
+our package a little worse in comparison.
+However, as datasets increase in size, the speedup obtained by our package is notable, even in MajorityVoting,
+which is less complex computationally. Regarding CATD, Truth-inf seems not to be able to solve the two bigger problems
+in a reasonable time. However, they can be solved by our package in a small ammount of time. Even for the smallest sizes, 
+our package obtains a high speedup in comparison to \texttt{Truth-inf} for CATD.
 
 In the table below you can find the results for PM and PMTI algorithms.
 
@@ -1807,16 +1812,16 @@ X
 \sphinxattableend\end{savenotes}
 
 Although similar, the modification implemented in Truth-inf from the original algorithm seems to be more
-accurate. The code for the original version was also available, although it was commented in the source code.
-Even in the smaller dataset, our package obtains a slight speedup. However as the datasets increase in size,
+accurate. 
+Even in the smallest sizes, our package obtains a slight speedup. However, as the datasets increase in size,
 our package is able to obtain a much higher speedup. 
 
 \section{Other methods}
 \label{\detokenize{package/other:other-methods}}
-Experimentation will not be complete without looking at the other methods implemented by our package that
-are not directly implemented by the packages above. These methods are the full implementation of the Raykar’s
+To complete our experimentation, next we focus on other methods other methods implemented by our package that
+are not implemented by \texttt{Ceka} or \texttt{Truth-Inf}. These methods are the full implementation of the Raykar’s
 algorithms (taking into account the features of the instances) and the enhancement over the GLAD algorithm. As a
-note, Truth-inf implements a version of Raykar’s algorithms that do not use the features of the instances. First,
+note, Truth-inf implements a version of Raykar’s algorithms that does not use the features of the instances. First,
 we show the results obtained by the Raykar’s methods for discrete target variables.
 
 
@@ -2027,20 +2032,21 @@ cont4
 \par
 \sphinxattableend\end{savenotes}
 
-Lastly, we show the results for the CGlad algorithm. As you can see, it obtains similar results to the GLAD algorithm
-but it performs better in the larger cases.
+Finally, we show the results for the CGLAD algorithm. As you can see, it obtains similar results to the GLAD algorithm
+in the smallest instances but it performs much better in the larger ones. Regarding execution time, CGLAD obtains a high
+speedup in the cases where accuracy results for both algorithms are similar. 
 
 
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
-\sphinxcaption{CGlad, an enhancement over the Glad algorithm.}\label{\detokenize{package/other:id11}}
+\sphinxcaption{CGLAD, an enhancement over the GLAD algorithm.}\label{\detokenize{package/other:id11}}
 \sphinxaftercaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|}
 \hline
 \sphinxstyletheadfamily &\sphinxstartmulticolumn{3}%
 \begin{varwidth}[t]{\sphinxcolwidth{3}{4}}
-\sphinxstyletheadfamily CGlad
+\sphinxstyletheadfamily CGLAD
 \par
 \vskip-\baselineskip\vbox{\hbox{\strut}}\end{varwidth}%
 \sphinxstopmulticolumn
@@ -2110,22 +2116,20 @@ We are open to contributions in the form of bugs reports, enhancements or even n
 
 \section{Bug reports}
 \label{\detokenize{package/contributors:bug-reports}}
-Bugs are tracked using Github issues. When creating a bug report, try to provide as much information as possible to help maintainers
+Bugs are tracked using Github issues. When creating a bug report, please provide as much information as possible to help maintainers
 reproduce the problem
 \begin{itemize}
 \item {} 
 Use a clear and descriptive title for the issue to identify the problem.
 
 \item {} 
-Describe the exact steps which reproduce the problem in as many details as possible. For example, start by explaining how you prepared the data as well as how the package was installed and what version of the package are you using. When listing steps, don’t just say what you did, but explain how you did it.
+Describe the exact steps which reproduce the problem in as many details as possible. For example, start by explaining how you prepared the data as well as how the package was installed and what version of the package are you using. When listing steps, do not just say what you did, but also explain how you did it.
 
 \item {} 
-Provide specific examples to demonstrate the steps. Include links to files or GitHub projects. If you’re providing snippets in the issue, use Markdown code blocks.
+Provide specific examples to illustrate the steps. Include links to files or GitHub projects. If you are providing snippets in the issue, use Markdown code blocks.
 
 \item {} 
 Describe the behavior you observed after following the steps and point out what exactly is the problem with that behavior.
-
-\item {} 
 Explain which behavior you expected to see instead and why.
 
 \item {} 
@@ -2139,7 +2143,7 @@ Provide more context by answering these questions:
 Did the problem start happening recently (e.g. after updating the version dependencies) or was this always a problem?
 
 \item {} 
-If the problem started happening recently, can you reproduce the problem in an older version? What’s the most recent version in which the problem doesn’t happen?
+If the problem started happening recently, can you reproduce the problem in an older version? What is the most recent version in which the problem does not happen?
 
 \item {} 
 Can you reliably reproduce the issue? If not, provide details about how often the problem happens and under which conditions it normally happens.
@@ -2152,29 +2156,29 @@ Include details about your configuration and environment:
 Which version of spark-crowd are you using?
 
 \item {} 
-What’s the name and version of the OS you’re using?
+What is the name and version of the OS you are using?
 
 \item {} 
-Are you running using the package in a virtual machine? If so, which VM software are you using and which operating systems and versions are used for the host and the guest?
+Are you running the package in a virtual machine? If so, which VM software are you using and which operating systems and versions are used for the host and the guest?
 
 \end{itemize}
 
 
 \section{Suggesting enhancements}
 \label{\detokenize{package/contributors:suggesting-enhancements}}
-We are open to suggestions of new features and minor improvements to existing functionality. Please follow the guidelines to help maintainers and the community
-understand your suggestion. When requesting and enhancement please include as many details as possible.
+We are open to suggestions of new features and improvements to existing functionalities. Please, follow the guidelines to help maintainers and the community
+understand your suggestions. When requesting an enhancement, please include as many details as possible.
 
-Enhancement suggestions are tracked using Github Issues. To request an enhancement create an issue and provide the following information.
+Enhancement suggestions are tracked using Github Issues. To request an enhancement, create an issue and provide the following information:
 \begin{itemize}
 \item {} 
 Use a clear and descriptive title for the issue to identify the suggestion.
 
 \item {} 
-Provide a step-by-step description of the suggested enhancement in as many details as possible.
+Provide a step-by-step description of the suggested enhancement.
 
 \item {} 
-Provide specific examples to demonstrate the steps. Include copy/pasteable snippets which you use in those examples, as Markdown code blocks.
+Provide specific examples to illustrate the steps. Include copy/pasteable snippets which you use in those examples, as Markdown code blocks.
 
 \item {} 
 Describe the current behavior and explain which behavior you expected to see instead and why.
@@ -2183,18 +2187,18 @@ Describe the current behavior and explain which behavior you expected to see ins
 Explain why this enhancement would be useful to the users.
 
 \item {} 
-Specify which version of the package you’re using. Specify the name and version of the OS you’re using.
+Specify which version of the package you are using. Specify the name and version of the OS you are using.
 
 \end{itemize}
 
 
 \section{New algorithms}
 \label{\detokenize{package/contributors:new-algorithms}}
-We are also grateful for contributions of new algorithms, as long as they improve the results or add new functionality to the ones existing in the package.
-New algorithms must be published in peer-review publications for them to be considered. New algorithms must adhere to the architechture of this package and
-should take into account the scalability of the learning process.
+We are also grateful for contributions of new algorithms, as long as they improve the results or add new functionalities to the ones existing in the package.
+New algorithms must be published in peer-review publications to be considered. New algorithms must adhere to the architecture of this package and
+take into account the scalability of the learning process.
 
-To contribute an algorithm first create a request using Github Issues, for the maintainers to review the suggestion. This request should provide the following information:
+To contribute with an algorithm, first create a request using Github Issues, for the maintainers to review the suggestion. This request should provide the following information:
 \begin{itemize}
 \item {} 
 Publication where the algorithm details can be reviewed.
@@ -2204,7 +2208,7 @@ Explain why this algorithm would be useful to the users.
 
 \end{itemize}
 
-If the request is accepted, create a Github pull request with the new algorithm, as well as all necessary types to use it, so that the maintainers can review the
+If the request is accepted, create a Github pull request with the new algorithm, as well as all the necessary types to use it, so that the maintainers can review the
 code and add it to the package.
 
 

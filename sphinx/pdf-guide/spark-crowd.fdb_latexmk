@@ -1,10 +1,10 @@
 # Fdb version 3
-["makeindex spark-crowd.idx"] 1539172887 "spark-crowd.idx" "spark-crowd.ind" "spark-crowd" 1541690719
-  "spark-crowd.idx" 1541690717 0 d41d8cd98f00b204e9800998ecf8427e ""
+["makeindex spark-crowd.idx"] 1539172887 "spark-crowd.idx" "spark-crowd.ind" "spark-crowd" 1542275540
+  "spark-crowd.idx" 1542275538 0 d41d8cd98f00b204e9800998ecf8427e ""
   (generated)
-  "spark-crowd.ind"
   "spark-crowd.ilg"
-["pdflatex"] 1541690716 "spark-crowd.tex" "spark-crowd.pdf" "spark-crowd" 1541690719
+  "spark-crowd.ind"
+["pdflatex"] 1542275537 "spark-crowd.tex" "spark-crowd.pdf" "spark-crowd" 1542275540
   "/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc" 1480098666 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2017/texmf-dist/fonts/map/fontname/texfonts.map" 1480098670 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/adobe/courier/pcrb8r.tfm" 1480098688 1292 3059476c50a24578715759f22652f3d0 ""
@@ -39,7 +39,9 @@
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1480098701 1288 655e228510b4c2a1abe905c368440826 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/public/cm/cmr17.tfm" 1480098701 1292 296a67155bdbfc32aa9c636f21e91433 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm" 1480098701 1124 6c73e740cf17375f03eec0ee63599741 ""
+  "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1480098733 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb" 1480098733 37912 77d683123f92148345f3fc36a38d9ab1 ""
+  "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1480098733 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1480098733 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb" 1480098733 32915 7bf7720c61a5b3a7ff25b0964421c9b6 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb" 1480098746 50493 4ed1f7e9eba8f1f3e1ec25195460190d ""
@@ -157,19 +159,19 @@
   "footnotehyper-sphinx.sty" 1541618734 8888 1bbd7bdeae8c8bed1d10d551bddb1cc9 ""
   "illustration.png" 1541618734 105284 833b5b9e3bf87228df2456e0d769a8dc ""
   "package.png" 1541618734 372513 0d81a30f3f964c2956efd67c8b4d3c39 ""
-  "spark-crowd.aux" 1541690719 10108 bd6c47ad26e5e89832d61333210dd8f3 ""
+  "spark-crowd.aux" 1542275539 10111 62d8e5b0362d7b199e9b8ee80935e3fc ""
   "spark-crowd.ind" 1541618734 0 d41d8cd98f00b204e9800998ecf8427e "makeindex spark-crowd.idx"
-  "spark-crowd.out" 1541690719 4440 a6bc2714e41a9bafc95eb63cf291e70f ""
-  "spark-crowd.tex" 1541690712 69221 71e8923b2c83cdb538e60d16a71f6f07 ""
-  "spark-crowd.toc" 1541690719 2623 5ed3542bc1af62f9e92ebe42ec556fce ""
+  "spark-crowd.out" 1542275539 4488 14f7f39e03bea6d334ae7c123af80eeb ""
+  "spark-crowd.tex" 1542275531 70174 52d73851d0df94f7225a25a9625870b1 ""
+  "spark-crowd.toc" 1542275539 2624 c4a053bea46189d12f0047eb0ab515d7 ""
   "sphinx.sty" 1541618735 69913 6a504e8686d0f955660c2147d7b57d6f ""
   "sphinxhighlight.sty" 1541618735 8137 38a433148fcb7611515a989ff1750dd5 ""
   "sphinxmanual.cls" 1541618735 3529 fa4d4e9f811425ef5966e441eeee9f7f ""
   "sphinxmulticell.sty" 1541618735 14618 0defbdc8536ad2e67f1eac6a1431bc55 ""
   (generated)
-  "spark-crowd.idx"
   "spark-crowd.pdf"
-  "spark-crowd.toc"
   "spark-crowd.out"
+  "spark-crowd.idx"
   "spark-crowd.log"
+  "spark-crowd.toc"
   "spark-crowd.aux"

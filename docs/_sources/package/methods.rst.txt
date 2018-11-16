@@ -24,8 +24,9 @@
 Methods
 =======
 
-You can find the methods implemented in this library below. All methods contain a link to its API where you 
-can find more information. 
+You can find the methods implemented in the library below. All methods contain a link to its API where you 
+can find more information. Besides, in the table column, you can find a link to the reference. 
+
 
 .. table:: Methods implemented in spark-crowd
 
@@ -52,24 +53,23 @@ can find more information.
   | `PMTI`_                |                    |                    |  :math:`\surd`     | `VLDB2`_         |
   +------------------------+--------------------+--------------------+--------------------+------------------+ 
 
-Below, we provide a short summary of each method. However, to understand the method completely we suggest the 
-user to study the reference. 
+Below, we provide a short summary of each method (see the references for details). 
 
 MajorityVoting
 ----------------
 
-With this, we refer to the mean for continuous target variables and the most frequent class for the discrete 
+With this, we refer to the mean for continuous target variables and the most frequent class (the mode) for the discrete 
 case. Expressing this methods in terms of annotator accuracy, these methods suppose that all annotators have 
 the same experience. Therefore, their contributions are weighted equally. Apart from the classical mean and 
-most frequent class, we also provide methods that return the proportion of each class value for each example. 
-See the API Docs for more information on these methods. 
+most frequent class, the package also provides methods that return the proportion of each class value for each example. 
+See the `API Docs <https://enriquegrodrigo.github.io/spark-crowd/_static/api/#package/>`_ for more information on these methods. 
 
 DawidSkene
 ------------
 
 This method estimates the accuracy of the annotators from the annotations themselves. For this, it uses the EM 
 algorithm, starting from the most frequent class and improving the estimations through several iterations. The 
-algorithm returns both the estimation of the ground truth and the accuracy of these annotators (a confusion 
+algorithm returns both the estimation of the ground truth and the accuracy of the annotators (a confusion 
 matrix for each). This algorithm is a good alternative when looking for a simple way of aggregating annotations
 without the assumption that all annotators are equally accurate. 
 
@@ -78,46 +78,47 @@ IBCC
 
 This method is similar to the previous one but uses probabilistic estimations for the classes. For each example, 
 the model returns probabilities for each class, so they can be useful in problems where a probability is needed. 
-Both in our tests and in the test `here <https://zhydhkcws.github.io/crowd_truth_inference/index.html>`_, so it is 
-a good compromise between the complexity of the model and its performance. 
+It shows a good compromise between the complexity of the model and its performance, as can be seen in 
+`this paper <https://zhydhkcws.github.io/crowd_truth_inference/index.html>`_ or in our experimentation in section :ref:`comparison`.  
 
 GLAD
 ---------
 
 This method estimates both the accuracy of the annotators (one parameter per annotator) and the difficulty
-of each example (a parameter for each instance), through EM algorithm and gradient descent. This complexity 
-comes at a cost of a slower algorithm in general, but it is one of the only two algorithms implemented capable of estimating these two parameters. 
+of each example (a parameter for each instance), through EM algorithm and gradient descent. This computational complexity 
+comes at a cost of a higher execution time in general. However, GLAD, and its enhancement, CGLAD, also implemented here, 
+are the only two algorithms capable of estimating the difficulty of the instances.
 
 CGLAD
 ---------
 
 This method is an enhancement over the original GLAD algorithm to tackle bigger datasets more easily, using 
-clustering techniques over the examples to recude the number of parameters to be estimated, following a similar 
-learning process to GLAD algorithm. 
+clustering techniques over the examples to reduce the number of parameters to be estimated. It follows a similar 
+learning process as the GLAD algorithm
 
 
 Raykar's algorithms
 ---------------------
 
-We implement the three methods proposed in the paper Learning from crowds (referenced in the table) for learning
-from crowdsourced data when features are available. These methods use an annotations matrix, as the previous ones, 
-but also a feature matrix, with the features for each instance. Then, the algorithms infer together a logistic 
-model, for the discrete case, or a regression model, for the continuous case, the ground truth from the data, 
-and the quality of the annotators, with are returned from the methods in our package. 
+We implement the three methods proposed in the paper Learning from crowds (see the `paper <http://jmlr.csail.mit.edu/papers/v11/raykar10a.html>`_ 
+for details) for learning
+from crowdsourced data when features are available. These methods use an annotations dataset and the features for 
+each instance. The algorithms infer together a logistic model (or a regression model, for the continuous case), the 
+ground truth and the quality of the annotators, which are all returned by the methods in our package. 
 
 CATD
 -----------------
 
 This method estimates both the quality of the annotators (as a weight in the aggregation) and the ground truth 
-for continuous target variables. It only uses the annotations for the aggregation, learning from them which 
-annotators should be more trusted, assigning more weight to them, for the aggregation. In the package, only 
-the continuous version is implemented as other algorithms seem to work better in the discrete cases (see `this paper <https://zhydhkcws.github.io/crowd_truth_inference/index.html>`_ for more information)
+for continuous target variables. From the annotations, it estimates which annotators provide better labels. Then,
+it assigns more weight to them for the aggregation. In the package, only the continuous version is implemented, as other 
+algorithms seem to work better in the discrete cases.(see `this paper <https://zhydhkcws.github.io/crowd_truth_inference/index.html>`_ for more information).
 
 PM and PMTI
 -----------------
 
-Another method for continuous target variables. We implement two versions, one following the formulas appearing 
-in the original paper and the modification implemented in  `this package <https://zhydhkcws.github.io/crowd_truth_inference/index.html>`_. This modification seems to obtain better results in our experimentation (you can check it in :ref:`comparison`.  
+They are methods for continuous target variables. We implement two versions, one following the formulas appearing 
+in the original paper and the modification implemented in  `this package <https://zhydhkcws.github.io/crowd_truth_inference/index.html>`_. This modification obtains better results in our experimentation (see :ref:`comparison`).  
 
 
 

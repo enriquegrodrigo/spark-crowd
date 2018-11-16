@@ -36,14 +36,14 @@
             
   <div class="section" id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>You can use our package in your own developments in three ways:</p>
+<p>There are three alternatives to use the package in your own software:</p>
 <ul class="simple">
-<li>Using the package directly using spark-packages</li>
+<li>Using the package directly from Spark Packages.</li>
 <li>Adding it as a dependency to your project through Maven central.</li>
 <li>Compiling the source code and using the <code class="docutils literal notranslate"><span class="pre">jar</span></code> file.</li>
 </ul>
 <p>Alternatively, if you just want to execute simple scala scripts locally,
-you can use our docker image as explained in <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quick Start</span></a></p>
+you can use the provided docker image as explained in <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quick Start</span></a></p>
 <div class="section" id="using-spark-packages">
 <h2>Using Spark Packages<a class="headerlink" href="#using-spark-packages" title="Permalink to this headline">¶</a></h2>
 <p>The easiest way of using the package is through <a class="reference external" href="https://spark-packages.org/">Spark Packages</a>, as you only need to add the package in the command line when running your
@@ -55,16 +55,15 @@ application:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>spark-shell --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.1
 </pre></div>
 </div>
-<p>Likewise, you can submit an application that uses <cite>spark-crowd</cite> using:</p>
 </div>
 <div class="section" id="adding-it-as-a-dependency">
 <h2>Adding it as a dependency<a class="headerlink" href="#adding-it-as-a-dependency" title="Permalink to this headline">¶</a></h2>
-<p>In addition to Spark Packages, the package is also in Maven Central, so you can add the package as a dependency in your scala project.
+<p>In addition to Spark Packages, the library is also in Maven Central, so you can add it as a dependency in your scala project.
 For example, in <em>sbt</em> you can add the dependency as shown below:</p>
 <div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;com.enriquegrodrigo&quot;</span> <span class="o">%%</span> <span class="s">&quot;spark-crowd&quot;</span> <span class="o">%</span> <span class="s">&quot;0.2.1&quot;</span>
 </pre></div>
 </div>
-<p>This will allow you to use the methods inside your Apache Spark projects.</p>
+<p>This allows you to use the methods inside your Apache Spark projects.</p>
 </div>
 <div class="section" id="compiling-the-source-code">
 <h2>Compiling the source code<a class="headerlink" href="#compiling-the-source-code" title="Permalink to this headline">¶</a></h2>
@@ -72,7 +71,7 @@ For example, in <em>sbt</em> you can add the dependency as shown below:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sbt package
 </pre></div>
 </div>
-<p>It will generate a compiled <code class="docutils literal notranslate"><span class="pre">jar</span></code> file that you can add to your project.</p>
+<p>It generates a compiled <code class="docutils literal notranslate"><span class="pre">jar</span></code> file that you can add to your project.</p>
 </div>
 </div>
 

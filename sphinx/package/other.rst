@@ -8,14 +8,15 @@ different goals in mind. To our knowledge, there are 2 software packages with th
 of learning from crowdsourced data:
 
 * `Ceka <http://ceka.sourceforge.net/>`_: it is a Java software package based on WEKA, with 
-  a great number of methods that can be used to learn from crowdsource data. 
+  a great number of methods that can be used to learn from crowdsourced data. 
 * `Truth inference in Crowdsourcing <https://zhydhkcws.github.io/crowd_truth_inference/index.html/>`_ makes available a collection
   of methods in Python to learn from crowdsourced data. 
 
-Both are useful packages when dealing with crowdsourced data, with a focus on research. `spark-crowd` is different, in the sense that
-not only is useful in research, but in production as well, providing tests for all of its methods with a high test coverage. Moreover, 
-methods have been implemented with a focus on scalability, so it is useful in a wide variety of situations. We provide a 
-comparison of the methods over a set of datasets next, taking into account both quality of the models and execution time. 
+Both are useful packages when dealing with crowdsourced data, with a focus mainly on research. Differently, `spark-crowd` is useful
+not only in research, but also in production. It provides a clear usage interface as well as software tests for all of its methods
+with a high tests coverage. Moreover, methods have been implemented with a focus on scalability, so it is 
+useful in a wide variety of situations. A comparison of the methods over a set of datasets is provided in this section, taking 
+into account both quality of the models and execution time. 
 
 Data
 -----
@@ -40,7 +41,7 @@ CEKA
 ------
 
 To compare our methods with Ceka, we used two of the main methods implemented in both packages, MajorityVoting and DawidSkene. Ceka and 
-spark-crowd also implement GLAD and Raykar's algorithms. However, in Ceka, these algorithms are implemented using wrappers to other libraries. 
+``spark-crowd`` also implement GLAD and Raykar's algorithms. However, in Ceka, these algorithms are implemented using wrappers to other libraries. 
 The library for the GLAD algorithm is not available on our platform, as it is given as an EXE Windows file, and the wrapper for Raykar's algorithms 
 does not admit any configuration parameters. 
 
@@ -67,51 +68,33 @@ the execution time for a cluster (tc) with 3 executor nodes of 10 cores and 30Gb
   | crowdscale             |  0.88   |   10458       | 0.9     |  13  |  7   | 0.89  | 30999 | 0.9033  | 447  |  86  |
   +------------------------+---------+---------------+---------+------+------+-------+-------+---------+------+------+
  
-Regarding accuracy, both packages achieve comparable results. However, regarding execution time, spark-crowd obtains 
-significantly better results among all datasets especially on the bigger datasets, where it can solve problems that 
-Ceka is not able to. You can see the speedup results in the table below.
-
-.. table:: Speedup in comparison to Ceka 
-
-  +------------------------+-------------------------------------+
-  |                        |  MajorityVoting  |      DawidSkene  | 
-  +------------------------+--------+---------+--------+---------+
-  | Method                 |  t1    |  tc     |   t1   |     tc  |
-  +========================+========+=========+========+=========+
-  | binary1                | 1.86   |  2.93   |  1.84  |   1.78  |
-  +------------------------+--------+---------+--------+---------+
-  | binary2                |  1453  |  2283   |  272   |  1146   |
-  +------------------------+--------+---------+--------+---------+
-  | crowdscale             |  804   |  1494   |  69    |  360    |
-  +------------------------+--------+---------+--------+---------+
-
-
-We can see that spark-crowd obtains a high speedup in bigger datasets and performs 
-slightly better in the smaller ones. 
+Regarding accuracy, both packages achieve comparable results. However, regarding execution time, ``spark-crowd`` obtains 
+significantly better results among all datasets, especially on the bigger datasets, where it can solve problems that 
+Ceka is not able to. 
 
 
 Truth inference in crowdsourcing
 ----------------------------------
 
-Now we compare spark-crowd with the methods available in this paper. Although the methods 
-can certainly be used for to compare and try the algorithms, the integration of these 
-methods into a large ecosystem will be very difficult, as the authors do not provide 
-a software package structure. However, as it is an available package with a great number 
-of methods, a comparison with them is needed. We will use the same datasets 
-as the ones used in the previous comparison. In this case, we can compare a higher
-number of models, as most of the methods are written in python. However, we were only able 
-to execute the methods over datasets with binary or continuous target variables. As far as we 
-know, the use of multiclass target variables seems to not be possible. Moreover, the use of 
-feature sets is also restricted, although algorithms that should be capable of dealing with 
-this kind of data are implemented, as is the case with the Raykar's methods. 
+Now we compare ``spark-crowd`` with the methods implemented by the authors. Although they 
+can certainly be used to compare and test algorithms, the integration of these 
+methods into a large ecosystem might be difficult, as the authors do not provide 
+a software package structure. Nevertheless, as it is an available package with a great number 
+of methods, a comparison with them is advisable. 
 
-First, we compare the algorithms capable of learning from binary classes without feature sets. 
-Inside this category, we will compare MajorityVoting, DawidSkene, GLAD and IBCC. For each dataset, we show 
-results in terms of Accuracy (Acc) and time (in seconds). The table below shows the results for 
+For the experimentation, the same datasets are used as well as the same environments. In this case, 
+a higher number of models can be compared, as most of the methods are written in python. However, 
+the methods can only be applied to binary or continuous target variables. As far as we know, the use of
+multiclass target variables is not possible. Moreover, the use of feature information for Raykar's methods
+it is also unsupported. 
+
+First, we compare the algorithms capable of learning from binary classes. 
+In this category, MajorityVoting, DawidSkene, GLAD and IBCC are compared. For each dataset, the results
+in terms of Accuracy (Acc) and time (in seconds) are obtained. The table below shows the results for 
 MajorityVoting and DawidSkene. Both packages obtain the same results in terms of 
 accuracy. For the smaller datasets, the overhead imposed by parallelism makes Truth-inf a better choice, 
-at least in terms of execution time. However, as the datasets increase, and specially, in the last two 
-cases, the speedup obtained by our algorithm is notable. In the case of DawidSkene, the Truth-inf 
+at least in terms of execution time. However, as the datasets increase, and especially, in the last two 
+instances, the speedup obtained by our algorithm is notable. In the case of DawidSkene, the Truth-inf 
 package is not able to complete the execution because of memory constraints in the largest dataset.  
 
 
@@ -134,12 +117,12 @@ package is not able to complete the execution because of memory constraints in t
   +------------------------+---------+---------------+---------+------+------+-------+-------+---------+------+------+
 
 
-Next we show the results for GLAD and IBCC. As the user can see, both packages obtain similar results 
-in terms of accuracy. Regarding execution time, both packages obtain comparable results 
-in the two smaller datasets (with a slight speedup in the ``binary2``) for the GLAD algorithm. However, 
-Truth-inf is not able to complete the execution for the two largest datasets. 
-In the case of IBCC, the speedup starts to be noticeable from the second dataset. Again, Truth-inf was 
-unable to complete the execution in a reasonable ammount of time for the last dataset.  
+Next we show the results for GLAD and IBCC. As can be seen, both packages obtain similar results 
+in terms of accuracy. Regarding execution time, they obtain comparable results 
+in the two smaller datasets (with a slight speedup in ``binary2``) for the GLAD algorithm. However, 
+for this algorithm, Truth-inf is not able to complete the execution for the two largest datasets. 
+In the case of IBCC, the speedup starts to be noticeable from the second dataset on. It is also noticeable 
+that Truth-Inf did not complete the execution for the last dataset. 
 
 
 
@@ -161,16 +144,17 @@ unable to complete the execution in a reasonable ammount of time for the last da
   | binary4                | X     | X     |  0.974  | 2407 | 1158 |   X   |   X   |    X    | 1529 | 823  |
   +------------------------+-------+-------+---------+------+------+-------+-------+---------+------+------+
 
-A thing to notice regarding the last execution of this algorithm is that at large scale, the performance of the 
-algorithm seems to degrade. This may be due to the ammount of parameters the algorithm needs to estimate (for the
-difficulty, one for every example). A way to improve the estimation goes through decrease the learning rate, which 
+Note that the performance of GLAD algorithm seems to degrade in the bigger datasets. 
+This may be due to the ammount of parameters the algorithm needs to estimate. 
+A way to improve the estimation goes through decreasing the learning rate, which 
 makes the algorithm slower, as it needs a lot more iterations to obtain a good solution. This makes the algorithm 
-unsuitable for several big data contexts.  To tackle this kind of problems, we developed and enhancement, CGlad, recently
-published and which is included in the package (See the last section of this page for results of other 
-methods in the package, as well as this enhancement)
+unsuitable for several big data contexts.  To tackle this kind of problems, we developed and enhancement, CGLAD, which is 
+included in this package  (See the last section of this page for results of other 
+methods in the package, as well as this enhancement).
 
-Next we analize methods that are able to learn from continuous target variables: MajorityVoting (mean), CATD and PM (with mean initialization). We show the results in terms of MAE (Mean absolute error) and time (in seconds). The 
-results for MajorityVoting and CATD can be found below in the table below. 
+Next we analize methods that are able to learn from continuous target variables: MajorityVoting (mean), CATD and PM (with mean initialization). 
+We show the results in terms of MAE (Mean absolute error) and time (in seconds). The 
+results for MajorityVoting and CATD can be found in the table below. 
 
 
 .. table:: Comparative with Truth inference in Crowdsourcing package on continuous target variables 
@@ -192,13 +176,14 @@ results for MajorityVoting and CATD can be found below in the table below.
   +------------------------+---------+---------------+---------+------+------+-------+-------+---------+------+------+
 
 
-As you can see in the table, both packages obtain similar results regarding MAE. Regarding performance, 
-MajorityVoting is quite performant in the Truth-inf package, specially in the smaller dataset. For smaller datasets,
-the increase overhead impose by parallelism makes the execution time of our package a little worse in comparison. 
-However, as the dataset increase in size, the speedup obtained by our package is notable, even in this algorithm, 
-which is less complex computationally. Regarding CATD, Truth-inf seems not to be able to solve the 2 bigger problems 
+As you can see in the table, both packages obtain similar results regarding MAE. Regarding execution time, 
+the implementation of MajorityVoting from the Truth-inf package obtains good results, especially in the smallest
+dataset. It is worth pointing out that, for the smallest datasets, the overhead imposed by parallelism makes the 
+execution time of our package a little worse in comparison. However, as datasets increase in size, the speedup 
+obtained by our package is notable, even in MajorityVoting, which is less complex computationally. 
+Regarding CATD, Truth-inf seems not to be able to solve the 2 bigger problems 
 in a reasonable time, however, they can be solved by our package in a small ammount of time. Even for the smaller 
-datasets, our package obtains a high speedup in comparison to Truth-inf.
+datasets, our package obtains a high speedup in comparison to Truth-inf for CATD.
 
 In the table below you can find the results for PM and PMTI algorithms. 
 
@@ -223,20 +208,17 @@ In the table below you can find the results for PM and PMTI algorithms.
    +------------------------+-------+-------+---------+------+------+-------+-------+---------+------+------+
 
 Although similar, the modification implemented in Truth-inf from the original algorithm seems to be more 
-accurate. The code for the original version was also available, although it was commented in the source code. 
-Even in the smaller dataset, our package obtains a slight speedup. However as the datasets increase in size, 
-our package is able to obtain a much higher speedup. As was the case with CATD, it was impossible for us to 
-solve them in a reasonable ammount of time with Truth-inf. 
+accurate. Even in the smallest sizes, our package obtains a slight speedup. However, as the datasets increase in 
+size, our package is able to obtain a much higher speedup. 
 
 Other methods
 ---------------
 
-Experimentation will not be complete without looking at the other methods implemented by our package that 
-are not directly implemented by the packages above. These methods are the full implementation of the Raykar's 
-algorithms (taking into account the features of the instances) and the enhancement over the GLAD algorithm. As a 
-note, Truth-inf implements a version of Raykar's algorithms that do not use the features of the instances. First, 
-we show the results obtained by the Raykar's methods for discrete target variables. 
-
+To complete our experimentation, next we focus on other methods implemented by our package that are not implemented 
+by Ceka or Truth-Inf. These methods are the full implementation of the Raykar's algorithms (taking into account the 
+features of the instances) and the enhancement over the GLAD algorithm. As a note, Truth-Inf implements a version of Raykar's 
+algorithms that does not use the features of the instances. First, we show the results obtained by the Raykar's methods 
+for discrete target variables. 
 
 .. table:: Other methods implemented in spark-crowd. Raykar's methods for discrete target variables. 
 
@@ -278,8 +260,9 @@ Next we show the Raykar method for tackling continous target variables.
    | cont4                  |  0.994  | 703  | 426                  |
    +------------------------+---------+------+----------------------+
 
-Lastly, we show the results for the CGlad algorithm. As you can see, it obtains similar results to the GLAD algorithm
-but it performs better in the larger cases. 
+Finally, we show the results for the CGLAD algorithm. As you can see, it obtains similar results to the GLAD
+algorithm in the smallest instances but it performs much better in the larger ones. Regarding execution time, CGLAD
+obtains a high speedup in the cases where accuracy results for both algorithms are similar. 
 
 .. table:: Other methods implemented in spark-crowd. CGlad, an enhancement over Glad algorithm. 
 

@@ -23,7 +23,7 @@ Learning from crowdsourced Big Data
 
 
 Learning from crowdsourced data imposes new challenges 
-in the area of machine learning. `spark-crowd` helps practitioners
+in the area of machine learning. This package, `spark-crowd`, helps practitioners
 when dealing with this kind of data at scale, using Apache Spark. 
 
 
@@ -36,10 +36,10 @@ The main features of `spark-crowd` are the following:
 * It uses Apache Spark, which allows the code to run in different environments, from a computer to a multi-node cluster.
 * It is suitable both for research and production environments. 
 * It provides an easy to use API, allowing the practitioner to start using the library in minutes. 
+* It is licensed under the `MIT license <https://opensource.org/licenses/MIT/>`_.
 
 See the :ref:`quickstart` to get started using `spark-crowd`
 
-`spark-crowd` is licensed under the `MIT license <https://opensource.org/licenses/MIT/>`_.
 
 
 

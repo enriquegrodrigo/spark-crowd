@@ -36,17 +36,17 @@
             
   <div class="section" id="quick-start">
 <span id="quickstart"></span><h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<p>You can start using our package easily through our <a class="reference external" href="https://www.docker.com/">docker</a> image or through <a class="reference external" href="https://spark-packages.org/">spark-packages</a>.
+<p>You can easily start using <code class="docutils literal notranslate"><span class="pre">spark-crowd</span></code> through our <a class="reference external" href="https://www.docker.com/">docker</a> image or through <a class="reference external" href="https://spark-packages.org/">spark-packages</a>.
 See <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>, for all installation alternatives (such as how to add the package as a dependency in your project).</p>
 <div class="section" id="start-with-our-docker-image">
 <h2>Start with our docker image<a class="headerlink" href="#start-with-our-docker-image" title="Permalink to this headline">¶</a></h2>
-<p>The quickest way to try our package is using the
+<p>The quickest way to try out the package is through the
 <a class="reference external" href="https://hub.docker.com/r/enriquegrodrigo/spark-crowd/">provided docker image</a> with the latest version of
-our package, as you won’t need to install anything (apart from docker).</p>
+our package, as you do not need to install any other software (apart from docker).</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker pull enriquegrodrigo/spark-crowd
 </pre></div>
 </div>
-<p>With it you can run the examples provided along with the
+<p>Thanks to it, you can run the examples provided along with the
 <a class="reference external" href="https://github.com/enriquegrodrigo/spark-crowd">package</a>. For example,
 to run <cite>DawidSkeneExample.scala</cite> we can use:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker run --rm -it -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/:/home/work/project enriquegrodrigo/spark-crowd DawidSkeneExample.scala
@@ -56,8 +56,9 @@ to run <cite>DawidSkeneExample.scala</cite> we can use:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker run --rm -it -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/:/home/work/project enriquegrodrigo/spark-crowd
 </pre></div>
 </div>
-<p>So you can test your code directly. In this way you will not benefit from the advantages of Apache Spark
-but you could use the algorithms with medium datasets (as docker can use several cores in your machine).</p>
+<p>By doing that, you can test you code directly. You will not benefit from the distributed execution of Apache Spark,
+but you are still able to use the algorithms with medium-sized datasets (since docker can use several cores in your
+machine).</p>
 </div>
 <div class="section" id="start-with-spark-packages">
 <h2>Start with <cite>spark-packages</cite><a class="headerlink" href="#start-with-spark-packages" title="Permalink to this headline">¶</a></h2>
@@ -70,13 +71,13 @@ our package pre-loaded using:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>spark-submit --packages com.enriquegrodrigo:spark-crowd_2.11:0.2.1 application.scala
 </pre></div>
 </div>
-<p>To use this option you do not need to have a cluster of computers, you can also execute the code form
-your local machine as Apache Spark can also be installed locally. For more information on how to install
-Apache Spark please refer to its <a class="reference external" href="https://spark.apache.org/">homepage</a>.</p>
+<p>To use this option you do not need to have a cluster of computers, you can also execute the code from
+your local machine because Apache Spark can be installed locally. For more information on how to install
+Apache Spark, please refer to its <a class="reference external" href="https://spark.apache.org/">homepage</a>.</p>
 </div>
 <div class="section" id="basic-usage">
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>Once you have chosen your preferred procedure, you only need to import the corresponding method
+<p>Once you have chosen a procedure to run the package, you have to import the method
 that you want to use as well as the types for your data, as you can see below:</p>
 <div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.enriquegrodrigo.spark.crowd.methods.DawidSkene</span>
 <span class="k">import</span> <span class="nn">com.enriquegrodrigo.spark.crowd.types.MulticlassAnnotation</span>
@@ -95,19 +96,20 @@ that you want to use as well as the types for your data, as you can see below:</
 <span class="k">val</span> <span class="n">annprec</span> <span class="k">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">getAnnotatorPrecision</span><span class="o">()</span>
 </pre></div>
 </div>
-<p>Let’s go through each step of the code:</p>
+<p>You can find a description of the code below:</p>
 <ol class="arabic simple">
-<li>First we import the method, in this case <code class="docutils literal notranslate"><span class="pre">DawidSkene</span></code> and the annotations type (<code class="docutils literal notranslate"><span class="pre">MulticlassAnnotation</span></code>) that
-we will need to load the data.</li>
-<li>Then we load a data file (provided with the package) that contains annotations for different examples. We use
-the method <code class="docutils literal notranslate"><span class="pre">as</span></code> to convert the Spark DataFrame in a typed Spark Dataset (with type <code class="docutils literal notranslate"><span class="pre">MulticlassAnnotation</span></code>).</li>
-<li>To execute the model and obtain the result we use the model name directly.
-This function returns a <code class="docutils literal notranslate"><span class="pre">DawidSkeneModel</span></code>, that includes several methods to obtain results from the algorithm.</li>
-<li>We use the  <code class="docutils literal notranslate"><span class="pre">getMu</span></code> to obtain the ground truth estimations made by the model.</li>
+<li>First the method and the type are imported, in this case <code class="docutils literal notranslate"><span class="pre">DawidSkene</span></code> and <code class="docutils literal notranslate"><span class="pre">MulticlassAnnotation</span></code>. The type
+is needed as the package API only accepts typed datasets for the annotations.</li>
+<li>Then the data file (provided with the package) is loaded. It contains annotations for different examples. As you
+can see, the examples uses the method <code class="docutils literal notranslate"><span class="pre">as</span></code> to convert the Spark DataFrame in a typed Spark Dataset (with type
+MulticlassAnnotation).</li>
+<li>To execute the model and obtain the result, you can use the model name directly.
+This function returns a <code class="docutils literal notranslate"><span class="pre">DawidSkeneModel</span></code>, which includes several methods to obtain results from the algorithm.</li>
+<li>The method  <code class="docutils literal notranslate"><span class="pre">getMu</span></code> returns the ground truth estimations made by the model.</li>
 <li>We use <code class="docutils literal notranslate"><span class="pre">getAnnotatorPrecision</span></code> to obtain the annotator quality calculated by the model.</li>
 </ol>
-<p>You can consult the models implemented in this package in <a class="reference internal" href="../package/methods.html#methods"><span class="std std-ref">Methods</span></a>, where you will find a link to the
-original article for the algorithm.</p>
+<p>You can consult the models implemented in this package in <a class="reference internal" href="../package/methods.html#methods"><span class="std std-ref">Methods</span></a>, where you can find a link to the
+original article for each algorithm.</p>
 </div>
 </div>
 
