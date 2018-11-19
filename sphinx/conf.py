@@ -90,7 +90,7 @@ html_theme_options = {
         'description_font_style': 'italic',
         'github_user': 'enriquegrodrigo',
         'github_repo': 'spark-crowd',
-        'github_banner': 'true',
+        'github_button': 'true',
         'page_width': '1200px',
         'show_powered_by': 'false',
         
