@@ -21,7 +21,7 @@ The package uses [sbt](http://www.scala-sbt.org) for building the project,
 so we recommend installing this tool if you do not yet have it installed.
 
 The simplest way to use the package is adding the next dependency directly 
-into the `build.sbt` file of your project:
+into the `build.sbt` file of your project.
 
 ```scala
 libraryDependencies += "com.enriquegrodrigo" %% "spark-crowd" % "0.2.1"
