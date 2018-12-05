@@ -396,8 +396,10 @@ private[crowd] def learnEvaluateKMeans(featureVectors: Dataset[ExampleRanks], k:
 *  @author enrique.grodrigo
 *  @version 0.2.1 
 */
-private[crowd] def initialization(dataset: DataFrame, rank: Integer, k: Integer, alsIter:Integer, alsReg: Double,  
-                    seed: Long): (DataFrame, Array[Double],Array[Double],Array[Double], Long, Int, Int, Dataset[ExampleRanks]) = {
+private[crowd] def initialization(dataset: DataFrame, rank: Integer, k: Integer, alsIter:Integer, 
+                                    alsReg: Double, restarts: Integer, seed: Long): (DataFrame, 
+                                    Array[Double],Array[Double],Array[Double], 
+                                    Long, Int, Int, Dataset[ExampleRanks]) = {
   import dataset.sparkSession.implicits._
   val datasetCached = dataset.cache() 
   val nAnnotators = datasetCached.select("annotator").distinct().count()
@@ -409,15 +411,8 @@ private[crowd] def initialization(dataset: DataFrame, rank: Integer, k: Integer,
                               VectorsMl.dense(asScalaBuffer(r.getList[Float](1)).toArray.map(x => x.toDouble))))
                                     .as[ExampleRanks]
   val kmeansSeeds = (seed until seed+5) 
-//  val kmeansClusters = (1 until 6)
-//  val combs = for ( c <- kmeansClusters; s <- kmeansSeeds ) yield (c,s)
   val (mapping,eva,kOpt) = kmeansSeeds.map( s => learnEvaluateKMeans(featurevectors, k, s)).maxBy( x => x._2 )
   
-//  val (mapping, eval) = learnEvaluateKMeans(featurevectors, k, seed)  
-//  val kmeans = new KMeans().setK(k).setSeed(seed)
-//  val kmodel = kmeans.fit(featurevectors)
-//  val clusters = kmodel.transform(featurevectors)
-//  val mapping = clusters.select($"id" as "example", $"prediction" as "cluster")
   val pred = votingbin(datasetCached)
   val joined = datasetCached.join(pred, "example").join(mapping, "example").select(col("*"))
   val betaInit = Array.tabulate(kOpt)(x => 0.5)
@@ -469,13 +464,13 @@ private[crowd] def step(partialDataset: DataFrame, alpha: Array[Double], beta: A
 */ 
 def apply(dataset: Dataset[BinaryAnnotation], eMIters: Int = 10, eMThreshold: Double = 0,  
           gradIters: Int = 100, gradThreshold: Double = 0, gradLearningRate: Double=0.01, gradDataFraction: Double = 1.0,
-          backtrackingLimit: Double = 0.1, rank: Integer = 8, k: Integer= 32, alsIter: Integer = 5, alsReg: Double = 0.05, seed: Long = 1L) = {
+          backtrackingLimit: Double = 0.1, rank: Integer = 8, k: Integer= 32, alsIter: Integer = 5, alsReg: Double = 0.05, restarts: Int=5, seed: Long = 1L) = {
 
   import dataset.sparkSession.implicits._
   //Initialization
   val d = dataset.toDF()
 
-  val (partialDataset, alpha, beta, classWeights, nExamples, nAnnotators, nClusters, exampleRank) = initialization(d, rank, k, alsIter, alsReg, seed)
+  val (partialDataset, alpha, beta, classWeights, nExamples, nAnnotators, nClusters, exampleRank) = initialization(d, rank, k, alsIter, alsReg, restarts, seed)
 
   //Prepare for steps
   val stepF = (iterObject: (DataFrame, Array[Double], Array[Double], Array[Double], Double, Double, Double),

@@ -71,7 +71,7 @@ class CGladTest extends fixture.FlatSpec with Matchers {
     val fis8 = mode.getRankData().filter(_.id==1).collect()(0).features(0)
     assert(fis8 ===  0.11677098, "First example rank data") 
     val fis9 = mode.getClusters().filter(_.example==1).collect()(0).cluster
-    assert(fis9 ===  1, "First example cluster") 
+    assert(fis9 ===  10, "First example cluster") 
   }
 
 }
